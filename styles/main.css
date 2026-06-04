@@ -486,27 +486,30 @@ p:last-child { margin-bottom: 0; }
   .nav__links.open a:nth-child(7) { transition-delay: 0.35s; }
   .nav__links.open a:nth-child(8) { transition-delay: 0.40s; }
 
-  .nav__hamburger {
-    display: flex;
-    z-index: 300; /* always above the overlay */
-    position: relative;
-  }
+  .nav__hamburger { display: flex; z-index: 300; }
 
-  /* When menu is open, grow the hamburger into a clear X button */
-  .nav__hamburger.open {
+  /* Close button inside the overlay */
+  .nav__close {
+    display: none;
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
     width: 44px;
     height: 44px;
-    align-items: center;
-    justify-content: center;
     border: 1px solid var(--color-border);
     border-radius: 50%;
     background: var(--color-surface);
-    gap: 0;
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: var(--color-navy);
+    align-items: center;
+    justify-content: center;
+    z-index: 201;
+    line-height: 1;
   }
 
-  .nav__hamburger.open span {
-    background: var(--color-navy);
-    width: 20px;
+  .nav__links.open .nav__close {
+    display: flex;
   }
 
   .nav__hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
