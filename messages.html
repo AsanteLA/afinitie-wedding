@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wall of Love — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://d30qctp40jwjfl.cloudfront.net" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+
+  <style>
+    /* ── Page base ── */
+    body {
+      background: var(--color-bg);
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .wall-hero {
+      text-align: center;
+      padding: calc(var(--space-xl) + 80px) var(--space-md) var(--space-md);
+      position: relative;
+    }
+
+    .wall-hero h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--color-navy);
+      line-height: 1.1;
+    }
+
+    .wall-hero h1 em {
+      font-style: italic;
+      color: var(--color-gold);
+    }
+
+    .wall-hero p {
+      color: var(--color-muted);
+      font-size: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    /* ── Gold divider ── */
+    .gold-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+      margin: 1.25rem auto;
+    }
+
+    /* ── Scatter wall ── */
+    .wall-stage {
+      position: relative;
+      width: 100%;
+      min-height: 600px;
+      padding: var(--space-md) var(--space-md) var(--space-xl);
+    }
+
+    .wall-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ── Message card ── */
+    .msg-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 1.75rem 1.5rem;
+      position: relative;
+      cursor: default;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.35s ease;
+      will-change: transform;
+    }
+
+    /* Gold top accent bar */
+    .msg-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 1.5rem; right: 1.5rem;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+      opacity: 0.6;
+      transition: opacity 0.35s ease;
+    }
+
+    .msg-card:hover {
+      transform: rotate(0deg) translateY(-8px) scale(1.02) !important;
+      box-shadow: 0 20px 60px rgba(212, 152, 26, 0.15), 0 8px 24px rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+
+    .msg-card:hover::before { opacity: 1; }
+
+    /* Quote mark */
+    .msg-card__quote {
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      line-height: 0.5;
+      color: var(--color-gold);
+      opacity: 0.3;
+      margin-bottom: 0.75rem;
+      display: block;
+      user-select: none;
+    }
+
+    .msg-card__text {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--color-text);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Size variants */
+    .msg-card--sm  .msg-card__text { font-size: 1rem; }
+    .msg-card--md  .msg-card__text { font-size: 1.15rem; }
+    .msg-card--lg  .msg-card__text { font-size: 1.35rem; font-style: italic; }
+    .msg-card--xl  .msg-card__text { font-size: 1.6rem; font-style: italic; font-weight: 300; }
+
+    .msg-card__author {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .msg-card__author::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: var(--color-gold);
+      opacity: 0.5;
+    }
+
+    /* ── Shimmer loading state ── */
+    .msg-card--loading {
+      background: linear-gradient(90deg, #f5f0e8 25%, #faf6f0 50%, #f5f0e8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      min-height: 160px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Empty state ── */
+    .wall-empty {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+      color: var(--color-muted);
+      grid-column: 1 / -1;
+    }
+
+    .wall-empty p { font-family: var(--font-serif); font-size: 1.3rem; font-style: italic; }
+
+    /* ── Count badge ── */
+    .wall-count {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: var(--space-md);
+    }
+
+    /* ── Back link ── */
+    .wall-back {
+      text-align: center;
+      padding: var(--space-md) var(--space-md) var(--space-lg);
+    }
+
+    /* ── Mobile tweaks ── */
+    @media (max-width: 600px) {
+      .wall-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .msg-card { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html" class="active">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <div class="wall-hero">
+    <span class="eyebrow">From Our Guests</span>
+    <h1>Wall of <em>Love</em></h1>
+    <div class="gold-line"></div>
+    <p>Every word means the world to us.</p>
+  </div>
+
+  <!-- ==================== WALL ==================== -->
+  <div class="wall-stage">
+    <div class="wall-count" id="wallCount"></div>
+    <div class="wall-grid" id="wallGrid">
+      <!-- Loading placeholders -->
+      <div class="msg-card msg-card--loading"></div>
+      <div class="msg-card msg-card--loading" style="min-height:200px;"></div>
+      <div class="msg-card msg-card--loading"></div>
+      <div class="msg-card msg-card--loading" style="min-height:220px;"></div>
+      <div class="msg-card msg-card--loading"></div>
+      <div class="msg-card msg-card--loading" style="min-height:180px;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== BACK LINK ==================== -->
+  <div class="wall-back">
+    <a href="guestbook.html" class="btn btn--outline">← Leave a Message</a>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  (function () {
+    const API_URL = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/guestbook';
+    const grid    = document.getElementById('wallGrid');
+    const count   = document.getElementById('wallCount');
+
+    // Rotation angles for scatter effect — cycles through these
+    const ROTATIONS = [-3.5, 1.8, -1.2, 2.9, -2.1, 1.4, -0.8, 3.2, -2.6, 1.0];
+
+    // Card size based on message length
+    function sizeClass(msg) {
+      const len = msg.length;
+      if (len < 60)  return 'msg-card--xl';
+      if (len < 120) return 'msg-card--lg';
+      if (len < 220) return 'msg-card--md';
+      return 'msg-card--sm';
+    }
+
+    function buildCard(item, index) {
+      const rot  = ROTATIONS[index % ROTATIONS.length];
+      const card = document.createElement('div');
+      card.className = `msg-card ${sizeClass(item.message)}`;
+      card.style.transform = `rotate(${rot}deg)`;
+      card.innerHTML = `
+        <span class="msg-card__quote">"</span>
+        <p class="msg-card__text">${escapeHtml(item.message)}</p>
+        <div class="msg-card__author">${escapeHtml(item.name)}</div>
+      `;
+      // Animate in with stagger
+      card.style.opacity = '0';
+      card.style.transition = `opacity 0.5s ease ${index * 0.06}s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease`;
+      setTimeout(() => { card.style.opacity = '1'; }, 50);
+      return card;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    fetch(API_URL)
+      .then(r => r.json())
+      .then(data => {
+        grid.innerHTML = '';
+        const messages = data.messages || data || [];
+
+        if (!messages.length) {
+          grid.innerHTML = '<div class="wall-empty"><p>No messages yet — be the first to leave one.</p></div>';
+          return;
+        }
+
+        // Shuffle so it feels organic on each load
+        const shuffled = [...messages].sort(() => Math.random() - 0.5);
+
+        count.textContent = `${shuffled.length} message${shuffled.length !== 1 ? 's' : ''} of love`;
+        shuffled.forEach((item, i) => grid.appendChild(buildCard(item, i)));
+      })
+      .catch(() => {
+        grid.innerHTML = '<div class="wall-empty"><p>Could not load messages right now — try again shortly.</p></div>';
+      });
+  })();
+  </script>
+</body>
+</html>

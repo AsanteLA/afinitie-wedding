@@ -137,8 +137,11 @@
 
         <!-- Message wall -->
         <div>
-          <span class="eyebrow">Messages</span>
-          <div class="gb-wall" id="gbWall" style="margin-top:1rem;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;">
+            <span class="eyebrow" style="margin-bottom:0;">Messages</span>
+            <a href="messages.html" style="font-size:0.68rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--color-gold); text-decoration:none; border-bottom:1px solid var(--color-gold); padding-bottom:1px;">View full wall →</a>
+          </div>
+          <div class="gb-wall" id="gbWall">
             <div class="gb-empty" id="gbEmpty">
               <p>Messages will appear here — be the first to leave one!</p>
             </div>
