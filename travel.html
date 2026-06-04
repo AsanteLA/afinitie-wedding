@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel & Accommodation — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    .hotel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hotel-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: var(--space-md);
+    }
+
+    .hotel-card__tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-highlight);
+      border: 1px solid var(--color-highlight);
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    .hotel-card h3 { margin-bottom: 0.35rem; }
+    .hotel-card p  { color: var(--color-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+    .info-block {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .info-block h3 {
+      margin-bottom: 0.5rem;
+      margin-top: var(--space-md);
+    }
+
+    .info-block p {
+      color: var(--color-muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html" class="active">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== PAGE HERO ==================== -->
+  <div class="page-hero">
+    <span class="eyebrow">Getting Here</span>
+    <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem);">Travel & Stay</h1>
+    <div class="divider"></div>
+    <p style="color:var(--color-muted); margin-top:1rem; max-width:500px; margin-left:auto; margin-right:auto;">
+      Everything you need to plan your trip and get a good night's rest.
+    </p>
+  </div>
+
+  <!-- ==================== HOTELS ==================== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section__header">
+        <span class="eyebrow">Where to Stay</span>
+        <h2>Recommended Hotels</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="hotel-grid">
+
+        <div class="hotel-card">
+          <div class="hotel-card__tag">Block Rate Available</div>
+          <h3><!-- HOTEL NAME --></h3>
+          <p><!-- ADDRESS --></p>
+          <p><!-- Distance from venue --></p>
+          <a href="#" class="btn btn--primary" target="_blank" rel="noopener" style="margin-top:0.75rem;">
+            Book Room
+          </a>
+        </div>
+
+        <div class="hotel-card">
+          <h3><!-- HOTEL NAME --></h3>
+          <p><!-- ADDRESS --></p>
+          <p><!-- Distance from venue --></p>
+          <a href="#" class="btn btn--outline" target="_blank" rel="noopener" style="margin-top:0.75rem;">
+            View Hotel
+          </a>
+        </div>
+
+        <div class="hotel-card">
+          <h3><!-- HOTEL NAME --></h3>
+          <p><!-- ADDRESS --></p>
+          <p><!-- Distance from venue --></p>
+          <a href="#" class="btn btn--outline" target="_blank" rel="noopener" style="margin-top:0.75rem;">
+            View Hotel
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GETTING HERE ==================== -->
+  <section class="section">
+    <div class="container">
+      <div class="section__header">
+        <span class="eyebrow">Directions</span>
+        <h2>Getting Here</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="info-block">
+
+        <h3>✈️ By Air</h3>
+        <p><!-- Nearest airport(s) and approximate distance/drive time --></p>
+
+        <h3>🚗 By Car</h3>
+        <p><!-- Driving directions / highway notes --></p>
+
+        <h3>🅿️ Parking</h3>
+        <p><!-- Parking details at or near the venue --></p>
+
+        <h3>🚌 Shuttle</h3>
+        <p><!-- If you're running a shuttle from hotel(s) to venue, note pickup times and location here --></p>
+
+        <div style="margin-top: var(--space-md); text-align:center;">
+          <a href="#" class="btn btn--primary" target="_blank" rel="noopener">Open Venue in Maps</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

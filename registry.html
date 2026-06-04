@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registry & Gifts — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    .registry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .registry-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: var(--space-md);
+      text-align: center;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+
+    .registry-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+    }
+
+    .registry-card__icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .registry-card h3 { margin-bottom: 0.5rem; }
+    .registry-card p  { color: var(--color-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html" class="active">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== PAGE HERO ==================== -->
+  <div class="page-hero">
+    <span class="eyebrow">With Gratitude</span>
+    <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem);">Registry & Gifts</h1>
+    <div class="divider"></div>
+    <p style="color:var(--color-muted); margin-top:1rem; max-width:520px; margin-left:auto; margin-right:auto;">
+      Your presence at our wedding is the greatest gift of all. For those who wish to give, we've put together a few options below.
+    </p>
+  </div>
+
+  <!-- ==================== REGISTRY LINKS ==================== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="registry-grid">
+
+        <!-- Amazon Registry — add your URL when ready -->
+        <div class="registry-card">
+          <div class="registry-card__icon">📦</div>
+          <h3>Amazon Registry</h3>
+          <p>Find our curated wish list on Amazon.</p>
+          <a href="#" class="btn btn--primary" target="_blank" rel="noopener">
+            View Registry
+          </a>
+        </div>
+
+        <!-- Registry 2 — placeholder -->
+        <div class="registry-card">
+          <div class="registry-card__icon">🏠</div>
+          <h3><!-- REGISTRY NAME --></h3>
+          <p><!-- REGISTRY DESCRIPTION --></p>
+          <a href="#" class="btn btn--primary" target="_blank" rel="noopener">
+            View Registry
+          </a>
+        </div>
+
+        <!-- Venmo -->
+        <div class="registry-card">
+          <div class="registry-card__icon">💸</div>
+          <h3>Venmo</h3>
+          <p>Prefer to send a cash gift? We're grateful for anything you'd like to contribute.</p>
+          <a href="#" class="btn btn--outline" target="_blank" rel="noopener">
+            @<!-- VENMO HANDLE -->
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== NOTE ==================== -->
+  <section class="section">
+    <div class="container" style="max-width:580px; text-align:center;">
+      <p style="font-family:var(--font-serif); font-size:1.3rem; color:var(--color-text); line-height:1.6;">
+        We are truly thankful for your love and support as we begin this new chapter together.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

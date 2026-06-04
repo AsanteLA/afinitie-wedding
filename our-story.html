@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Story — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    /* Timeline */
+    .timeline { position: relative; max-width: 700px; margin: 0 auto; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: var(--color-border);
+      transform: translateX(-50%);
+    }
+
+    .timeline__item {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      gap: 0 1.5rem;
+      margin-bottom: 3rem;
+      align-items: start;
+    }
+
+    .timeline__item:nth-child(odd)  .timeline__content { grid-column: 1; text-align: right; }
+    .timeline__item:nth-child(odd)  .timeline__dot     { grid-column: 2; }
+    .timeline__item:nth-child(odd)  .timeline__empty   { grid-column: 3; }
+
+    .timeline__item:nth-child(even) .timeline__empty   { grid-column: 1; }
+    .timeline__item:nth-child(even) .timeline__dot     { grid-column: 2; }
+    .timeline__item:nth-child(even) .timeline__content { grid-column: 3; grid-row: 1; }
+
+    .timeline__dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      border: 2px solid var(--color-bg);
+      box-shadow: 0 0 0 1px var(--color-accent);
+      margin-top: 0.35rem;
+      justify-self: center;
+    }
+
+    .timeline__year {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--color-burgundy);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline__content h3 { margin-bottom: 0.4rem; }
+    .timeline__content p  { color: var(--color-muted); font-size: 0.95rem; margin: 0; }
+
+    @media (max-width: 600px) {
+      .timeline::before { left: 20px; }
+
+      .timeline__item {
+        grid-template-columns: 40px 1fr;
+        gap: 0 1rem;
+      }
+
+      .timeline__item:nth-child(odd)  .timeline__content,
+      .timeline__item:nth-child(even) .timeline__content {
+        grid-column: 2;
+        grid-row: 1;
+        text-align: left;
+      }
+
+      .timeline__item:nth-child(odd)  .timeline__dot,
+      .timeline__item:nth-child(even) .timeline__dot {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .timeline__item:nth-child(odd)  .timeline__empty,
+      .timeline__item:nth-child(even) .timeline__empty { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html" class="active">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== PAGE HERO ==================== -->
+  <div class="page-hero">
+    <span class="eyebrow">The Beginning</span>
+    <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem);">Our Story</h1>
+    <div class="divider"></div>
+    <p style="color:var(--color-muted); margin-top:1rem; max-width:500px; margin-left:auto; margin-right:auto;">
+      Every love story is beautiful, but ours is our favourite.
+    </p>
+  </div>
+
+  <!-- ==================== INTRO ==================== -->
+  <section class="section section--alt">
+    <div class="container" style="max-width:680px; text-align:center;">
+      <p style="font-family: var(--font-serif); font-size: 1.4rem; font-weight:300; line-height:1.6; color:var(--color-text);">
+        Some stories begin with a grand gesture. Ours began with a friendship, a goodbye that wasn't forever, and a surprise reunion in a hallway at BYU — followed by a very anxious text message and a very long five minutes of watching the typing indicator.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== TIMELINE ==================== -->
+  <section class="section">
+    <div class="container">
+      <div class="section__header">
+        <span class="eyebrow">Our Journey</span>
+        <h2>Chapter by Chapter</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="timeline">
+
+        <!-- Item 1 -->
+        <div class="timeline__item">
+          <div class="timeline__content">
+            <div class="timeline__year">2024</div>
+            <h3>First Connection</h3>
+            <p>Asante and Abbie first crossed paths through a mutual connection — and even then, something clicked. They became fast friends, the kind who could talk for hours and always leave the conversation wanting more.</p>
+          </div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__empty"></div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="timeline__item">
+          <div class="timeline__empty"></div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <div class="timeline__year">2025</div>
+            <h3>A Respectful Goodbye</h3>
+            <p>Life shifted and circumstance pulled them apart. Abbie, being the loyal and gracious person she is, stepped back — and Asante respected that too. They went their separate ways, but the friendship never really left either of them.</p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="timeline__item">
+          <div class="timeline__content">
+            <div class="timeline__year">Fall 2025</div>
+            <h3>The Surprise Reunion</h3>
+            <p>Asante volunteered at BYU's Information Systems orientation — the same program he had quietly coached Abbie through applying for. He had no idea she'd gotten in. And then she walked through the door. He gave her a little grief, she laughed it off, and just like that, they were back.</p>
+          </div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__empty"></div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="timeline__item">
+          <div class="timeline__empty"></div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <div class="timeline__year">Fall 2025</div>
+            <h3>Pies with Professors</h3>
+            <p>At an IS program event, Asante watched Abbie light up a room full of professors and classmates and thought: I need to do more things with this person. He went home and sent the text. She started typing. Then kept typing. Five of the longest minutes of his life. Then: <em>"I want to spend more time with you too."</em></p>
+          </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="timeline__item">
+          <div class="timeline__content">
+            <div class="timeline__year">Nov 15, 2025</div>
+            <h3>Making It Official</h3>
+            <p>What started as hangouts and late conversations became something neither of them could ignore. On November 15th, 2025, they made it official — and everything has been amazing ever since.</p>
+          </div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__empty"></div>
+        </div>
+
+        <!-- Item 6 — The Wedding -->
+        <div class="timeline__item">
+          <div class="timeline__empty"></div>
+          <div class="timeline__dot"></div>
+          <div class="timeline__content">
+            <div class="timeline__year">Sep 24, 2026</div>
+            <h3>Forever Starts Here</h3>
+            <p>And now, surrounded by the people they love most, Asante and Abbie say yes to a lifetime together. We're so glad you're here to witness it.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CTA ==================== -->
+  <section class="section section--alt" style="text-align:center;">
+    <div class="container">
+      <p style="color:var(--color-muted); margin-bottom:1.5rem;">Ready to celebrate with us?</p>
+      <a href="rsvp.html" class="btn btn--primary">RSVP</a>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

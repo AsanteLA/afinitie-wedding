@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100svh; }
+
+    .qr-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+    }
+
+    #qr-canvas {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      background: #fff;
+      margin: var(--space-md) auto;
+    }
+
+    .qr-url {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-md);
+      word-break: break-all;
+      max-width: 400px;
+    }
+
+    @media print {
+      .nav, .qr-instructions, .btn { display: none !important; }
+      body { background: #fff; }
+      .qr-wrap { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <div class="qr-wrap">
+    <img src="images/logo.png" alt="Afinitie" style="height:60px; width:auto; margin-bottom:1.5rem;" />
+
+    <span class="eyebrow">Scan to Visit</span>
+    <h2 style="margin-bottom:0.5rem;">Our Wedding Website</h2>
+    <div class="divider"></div>
+
+    <canvas id="qr-canvas" width="280" height="280"></canvas>
+
+    <p class="qr-url" id="qr-url-label"></p>
+
+    <p class="qr-instructions" style="color:var(--color-muted); font-size:0.85rem; max-width:400px; margin-bottom:var(--space-md);">
+      Print this page and include it with your invitations so guests can scan and visit the site on their phone.
+    </p>
+
+    <button onclick="window.print()" class="btn btn--primary">Print QR Code</button>
+  </div>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- QR code library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    (function () {
+      // -------------------------------------------------------
+      // SET YOUR SITE URL HERE once you have your domain/S3 URL
+      // -------------------------------------------------------
+      var SITE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.href.split('/qr.html')[0]
+        : 'https://YOUR-WEDDING-DOMAIN.com'; // <-- REPLACE WITH YOUR URL
+
+      document.getElementById('qr-url-label').textContent = SITE_URL;
+
+      var canvas = document.getElementById('qr-canvas');
+      new QRCode(canvas, {
+        text:           SITE_URL,
+        width:          248,
+        height:         248,
+        colorDark:      '#1b3a6b',
+        colorLight:     '#ffffff',
+        correctLevel:   QRCode.CorrectLevel.H,
+      });
+    })();
+  </script>
+</body>
+</html>

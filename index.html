@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afinitie — Wedding</title>
+  <meta name="description" content="Join us as we celebrate our wedding. We're so glad you're here." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero">
+    <span class="hero__date">September 24, 2026</span>
+    <h1 class="hero__names">
+      Asante <em>&</em> Abbie
+    </h1>
+    <p class="hero__sub"><!-- LOCATION PLACEHOLDER --></p>
+
+    <div class="hero__scroll">Scroll</div>
+  </section>
+
+  <!-- ==================== COUNTDOWN ==================== -->
+  <section class="section section--alt" style="padding: var(--space-lg) 0;">
+    <div class="container" style="text-align:center;">
+      <span class="eyebrow">The Big Day</span>
+      <div style="display:flex; justify-content:center; gap:clamp(1rem,4vw,3rem); margin-top:1.5rem; flex-wrap:wrap;">
+        <div class="countdown-unit">
+          <div class="countdown-num" id="cd-days">--</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="cd-hours">--</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="cd-mins">--</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-num" id="cd-secs">--</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WELCOME ==================== -->
+  <section class="section section--alt">
+    <div class="container" style="max-width: 680px; text-align: center;">
+      <span class="eyebrow">Welcome</span>
+      <h2>We're so glad you're here</h2>
+      <div class="divider"></div>
+      <p style="margin-top: 1.5rem; color: var(--color-muted); font-size: 1.1rem;">
+        This little corner of the internet is our way of sharing all the details of our big day with the people who mean the most to us. Have a look around, and don't forget to RSVP.
+      </p>
+      <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="rsvp.html" class="btn btn--primary">RSVP Now</a>
+        <a href="our-story.html" class="btn btn--outline">Our Story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== QUICK LINKS ==================== -->
+  <section class="section">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
+
+        <a href="our-story.html" class="card" style="display:block; text-align:center; transition: box-shadow 0.25s ease;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">🤍</div>
+          <h3 style="margin-bottom:0.5rem;">Our Story</h3>
+          <p style="color:var(--color-muted); font-size:0.9rem; margin:0;">How we found each other</p>
+        </a>
+
+        <a href="schedule.html" class="card" style="display:block; text-align:center; transition: box-shadow 0.25s ease;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">📅</div>
+          <h3 style="margin-bottom:0.5rem;">Schedule</h3>
+          <p style="color:var(--color-muted); font-size:0.9rem; margin:0;">The day's program & timeline</p>
+        </a>
+
+        <a href="rsvp.html" class="card" style="display:block; text-align:center; transition: box-shadow 0.25s ease;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">✉️</div>
+          <h3 style="margin-bottom:0.5rem;">RSVP</h3>
+          <p style="color:var(--color-muted); font-size:0.9rem; margin:0;">Let us know you're coming</p>
+        </a>
+
+        <a href="registry.html" class="card" style="display:block; text-align:center; transition: box-shadow 0.25s ease;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">🎁</div>
+          <h3 style="margin-bottom:0.5rem;">Registry</h3>
+          <p style="color:var(--color-muted); font-size:0.9rem; margin:0;">Gifts & registry links</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

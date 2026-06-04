@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://YOUR-WEDDING-DOMAIN.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    .gallery-grid {
+      columns: 3 280px;
+      column-gap: 1rem;
+    }
+
+    .gallery-grid__item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--color-accent-lt);
+    }
+
+    .gallery-grid__item img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-grid__item:hover img {
+      transform: scale(1.03);
+    }
+
+    /* Placeholder tiles for before photos are added */
+    .gallery-placeholder {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--color-accent-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .gallery-placeholder:nth-child(even) { aspect-ratio: 3/4; }
+    .gallery-placeholder:nth-child(3n)   { aspect-ratio: 1/1; }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== PAGE HERO ==================== -->
+  <div class="page-hero">
+    <span class="eyebrow">Us</span>
+    <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem);">Gallery</h1>
+    <div class="divider"></div>
+    <p style="color:var(--color-muted); margin-top:1rem; max-width:460px; margin-left:auto; margin-right:auto;">
+      A few of our favourite moments together.
+    </p>
+  </div>
+
+  <!-- ==================== GALLERY ==================== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="gallery-grid" id="galleryGrid">
+        <!--
+          TO ADD PHOTOS:
+          Replace each .gallery-placeholder div with:
+          <div class="gallery-grid__item">
+            <img src="images/gallery/your-photo.jpg" alt="Description" loading="lazy" />
+          </div>
+        -->
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__names"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></div>
+    <p><!-- DATE & LOCATION PLACEHOLDER --></p>
+    <p style="margin-top:0.5rem;">Made with love ♡</p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
