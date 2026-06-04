@@ -22,22 +22,6 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll(); // run on load
 
-  /* --- Inject close button into mobile nav overlay --- */
-  if (navLinks) {
-    var closeBtn = document.createElement('button');
-    closeBtn.className = 'nav__close';
-    closeBtn.setAttribute('aria-label', 'Close menu');
-    closeBtn.innerHTML = '&times;';
-    navLinks.appendChild(closeBtn);
-    closeBtn.addEventListener('click', function () {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', false);
-      document.body.style.overflow = '';
-      if (window.scrollY > 40) nav.classList.add('scrolled');
-    });
-  }
-
   /* --- Hamburger toggle --- */
   if (hamburger && navLinks) {
     hamburger.addEventListener('click', function () {
