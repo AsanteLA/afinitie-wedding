@@ -29,6 +29,14 @@
       hamburger.classList.toggle('open', isOpen);
       hamburger.setAttribute('aria-expanded', isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
+
+      // Remove scrolled/backdrop-filter when menu opens to avoid
+      // stacking context trapping the overlay inside the nav bar
+      if (isOpen) {
+        nav.classList.remove('scrolled');
+      } else {
+        if (window.scrollY > 40) nav.classList.add('scrolled');
+      }
     });
 
     // Close menu when a link is clicked

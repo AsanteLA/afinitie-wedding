@@ -434,41 +434,41 @@ p:last-child { margin-bottom: 0; }
     --space-xl: 5rem;
   }
 
+  /* Mobile nav — always flex but hidden via visibility/opacity
+     so CSS transitions work. z-index 200 beats the nav's 100. */
   .nav__links {
-    display: none;
+    display: flex !important;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: var(--color-bg);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-md);
-    z-index: 99;
-    overflow-y: auto;
-  }
-
-  .nav__links {
+    gap: 2rem;
+    z-index: 200;
+    /* Hidden state */
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
   }
 
   .nav__links.open {
-    display: flex;
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
   }
 
   .nav__links a {
-    font-size: 1rem;
+    font-size: 1.1rem;
     letter-spacing: 0.15em;
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
