@@ -49,46 +49,58 @@ exports.handler = async () => {
   const attending    = items.filter(i => i.attending.S === 'yes');
   const notAttending = items.filter(i => i.attending.S === 'no');
   const totalGuests  = attending.reduce((sum, i) => sum + parseInt(i.guests.S || '1', 10), 0);
-  const songs        = attending.filter(i => i.song.S).map(i => `  • ${i.song.S} (${i.name.S})`);
+
+  // Helper: skip dietary if blank or N/A variant
+  const showDietary = (val) => val && !['na', 'n/a', 'none', 'no', '-'].includes(val.trim().toLowerCase());
 
   const lines = [
-    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `  Afinitie — Weekly RSVP Digest`,
-    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `AFINITIE WEDDING — WEEKLY RSVP DIGEST`,
+    `September 23, 2026 · Asante & Abbie`,
     ``,
-    `New RSVPs this week: ${items.length}`,
-    `  ✓ Attending:     ${attending.length} (${totalGuests} total guests)`,
-    `  ✗ Not attending: ${notAttending.length}`,
+    `─────────────────────────────────────`,
+    `SUMMARY`,
+    `─────────────────────────────────────`,
+    `New responses this week:  ${items.length}`,
+    `Attending:                ${attending.length} people, ${totalGuests} total guests`,
+    `Not attending:            ${notAttending.length}`,
     ``,
   ];
 
   if (attending.length > 0) {
-    lines.push('ATTENDING:');
-    attending.forEach(i => {
-      lines.push(`  • ${i.name.S} (${i.guests.S} guest${i.guests.S !== '1' ? 's' : ''})`);
-      if (i.dietary.S) lines.push(`    Dietary: ${i.dietary.S}`);
-      if (i.message.S) lines.push(`    "${i.message.S}"`);
+    lines.push(`─────────────────────────────────────`);
+    lines.push(`ATTENDING (${attending.length})`);
+    lines.push(`─────────────────────────────────────`);
+    attending.forEach((i, idx) => {
+      const guestCount = i.guests.S || '1';
+      lines.push(`${idx + 1}. ${i.name.S}  —  ${guestCount} guest${guestCount !== '1' ? 's' : ''}`);
+      if (showDietary(i.dietary.S)) lines.push(`   Dietary: ${i.dietary.S}`);
+      if (i.song?.S)                lines.push(`   Song: ${i.song.S}`);
+      if (i.message?.S)             lines.push(`   Note: "${i.message.S}"`);
+      lines.push('');
     });
-    lines.push('');
   }
 
   if (notAttending.length > 0) {
-    lines.push('NOT ATTENDING:');
-    notAttending.forEach(i => {
-      lines.push(`  • ${i.name.S}`);
-      if (i.message.S) lines.push(`    "${i.message.S}"`);
+    lines.push(`─────────────────────────────────────`);
+    lines.push(`NOT ATTENDING (${notAttending.length})`);
+    lines.push(`─────────────────────────────────────`);
+    notAttending.forEach((i, idx) => {
+      lines.push(`${idx + 1}. ${i.name.S}`);
+      if (i.message?.S) lines.push(`   Note: "${i.message.S}"`);
+      lines.push('');
     });
+  }
+
+  const songsWithRequests = attending.filter(i => i.song?.S);
+  if (songsWithRequests.length > 0) {
+    lines.push(`─────────────────────────────────────`);
+    lines.push(`SONG REQUESTS (${songsWithRequests.length})`);
+    lines.push(`─────────────────────────────────────`);
+    songsWithRequests.forEach(i => lines.push(`• ${i.song.S}  (${i.name.S})`));
     lines.push('');
   }
 
-  if (songs.length > 0) {
-    lines.push('SONG REQUESTS:');
-    lines.push(...songs);
-    lines.push('');
-  }
-
-  lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`September 23, 2026 — Asante & Abbie`);
+  lines.push(`─────────────────────────────────────`);
 
   const body = lines.join('\n');
 

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="styles/main.css" />
+
+  <style>
+    body { background: var(--color-bg); }
+
+    /* ── Admin login gate ── */
+    #admin-gate {
+      position: fixed; inset: 0;
+      background: var(--color-bg);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    #admin-gate-box {
+      text-align: center; max-width: 360px; width: 100%;
+    }
+    #admin-gate-box img { height: 64px; width: auto; margin: 0 auto 1.5rem; display: block; }
+    #admin-gate-box h2 { font-family: var(--font-serif); margin-bottom: 0.5rem; }
+    #admin-gate-box p  { color: var(--color-muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+    #admin-key-input {
+      width: 100%; padding: 0.85rem 1rem;
+      border: 1px solid var(--color-border); background: #fff;
+      font-family: var(--font-sans); font-size: 1rem;
+      text-align: center; letter-spacing: 0.1em;
+      margin-bottom: 0.75rem; border-radius: var(--radius);
+    }
+    #admin-key-input:focus { outline: none; border-color: var(--color-accent); }
+    #admin-gate-error { color: var(--color-highlight); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+    /* ── Dashboard layout ── */
+    .admin-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: calc(var(--space-xl) + 60px) var(--space-md) var(--space-xl);
+    }
+
+    .admin-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; margin-bottom: var(--space-lg);
+    }
+
+    .admin-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    .admin-refresh {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--color-navy);
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: 100px; padding: 0.5rem 1.2rem; cursor: pointer;
+      transition: background var(--transition);
+    }
+    .admin-refresh:hover { background: var(--color-accent-lt); }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin-bottom: var(--space-lg);
+    }
+
+    .stat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-card__num {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--color-navy);
+    }
+
+    .stat-card__label {
+      font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-top: 0.5rem;
+    }
+
+    .stat-card--attending .stat-card__num { color: var(--color-navy); }
+    .stat-card--declined  .stat-card__num { color: var(--color-muted); }
+    .stat-card--songs     .stat-card__num { color: var(--color-gold); }
+    .stat-card--guests    .stat-card__num { color: var(--color-highlight); }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;
+    }
+
+    .filter-btn {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.45rem 1rem;
+      border: 1px solid var(--color-border); border-radius: 100px;
+      background: var(--color-surface); cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .filter-btn.active {
+      background: var(--color-navy); color: #fff; border-color: var(--color-navy);
+    }
+
+    /* ── RSVP table ── */
+    .rsvp-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-surface);
+    }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead th {
+      padding: 0.85rem 1rem;
+      font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--color-muted);
+      border-bottom: 1px solid var(--color-border);
+      text-align: left; white-space: nowrap;
+      cursor: pointer; user-select: none;
+    }
+
+    thead th:hover { color: var(--color-navy); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--color-border);
+      transition: background var(--transition);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--color-accent-lt); }
+
+    tbody td { padding: 0.85rem 1rem; vertical-align: top; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .badge--yes { background: #e6f4ea; color: #2d6a4f; }
+    .badge--no  { background: #f5f5f5; color: #888; }
+
+    .dietary-tag {
+      display: inline-block;
+      font-size: 0.7rem; color: var(--color-highlight);
+      background: #fef3e2; padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    .song-text {
+      font-size: 0.82rem; color: var(--color-muted);
+      font-style: italic;
+    }
+
+    .ts-text {
+      font-size: 0.75rem; color: var(--color-muted);
+      white-space: nowrap;
+    }
+
+    /* ── Empty / loading ── */
+    .admin-status {
+      text-align: center; padding: var(--space-lg);
+      color: var(--color-muted); font-family: var(--font-serif);
+      font-size: 1.2rem; font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      thead th:nth-child(4),
+      tbody td:nth-child(4),
+      thead th:nth-child(5),
+      tbody td:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Admin login gate ── -->
+  <div id="admin-gate">
+    <div id="admin-gate-box">
+      <img src="images/logo.png" alt="Afinitie" />
+      <h2>Admin Dashboard</h2>
+      <p>Enter your admin key to continue.</p>
+      <form id="admin-gate-form">
+        <input type="password" id="admin-key-input" placeholder="Admin key" autocomplete="off" />
+        <button type="submit" class="btn btn--primary" style="width:100%;">Enter</button>
+        <p id="admin-gate-error">Incorrect key. Try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Nav ── -->
+  <nav class="nav scrolled" id="nav" style="background:rgba(255,255,255,0.97);">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <span style="font-size:0.7rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--color-muted);">Admin</span>
+  </nav>
+
+  <!-- ── Dashboard ── -->
+  <div class="admin-wrap" id="adminWrap" style="display:none;">
+
+    <div class="admin-header">
+      <div>
+        <span class="eyebrow">Afinitie Wedding</span>
+        <h1>RSVP Dashboard</h1>
+      </div>
+      <button class="admin-refresh" id="refreshBtn">↻ Refresh</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-card stat-card--attending">
+        <div class="stat-card__num" id="stat-attending">—</div>
+        <div class="stat-card__label">Attending</div>
+      </div>
+      <div class="stat-card stat-card--guests">
+        <div class="stat-card__num" id="stat-guests">—</div>
+        <div class="stat-card__label">Total Guests</div>
+      </div>
+      <div class="stat-card stat-card--declined">
+        <div class="stat-card__num" id="stat-declined">—</div>
+        <div class="stat-card__label">Not Attending</div>
+      </div>
+      <div class="stat-card stat-card--songs">
+        <div class="stat-card__num" id="stat-songs">—</div>
+        <div class="stat-card__label">Song Requests</div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="yes">Attending</button>
+      <button class="filter-btn" data-filter="no">Not Attending</button>
+      <button class="filter-btn" data-filter="dietary">Has Dietary Note</button>
+      <button class="filter-btn" data-filter="song">Has Song Request</button>
+    </div>
+
+    <!-- Table -->
+    <div class="rsvp-table-wrap">
+      <div class="admin-status" id="adminStatus">Loading RSVPs...</div>
+      <table id="rsvpTable" style="display:none;">
+        <thead>
+          <tr>
+            <th data-col="name">Name</th>
+            <th data-col="attending">Status</th>
+            <th data-col="guests">Guests</th>
+            <th data-col="dietary">Dietary</th>
+            <th data-col="song">Song Request</th>
+            <th data-col="timestamp">Date</th>
+          </tr>
+        </thead>
+        <tbody id="rsvpBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+  (function () {
+    const API = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/rsvp';
+    const SESSION_KEY = 'afinitie_admin_key';
+
+    let allRsvps  = [];
+    let adminKey  = '';
+    let sortCol   = 'timestamp';
+    let sortAsc   = false;
+    let filter    = 'all';
+
+    // ── Gate ──────────────────────────────────────────────────────
+    const gate     = document.getElementById('admin-gate');
+    const gateForm = document.getElementById('admin-gate-form');
+    const gateErr  = document.getElementById('admin-gate-error');
+    const wrap     = document.getElementById('adminWrap');
+
+    // Check session storage for saved key
+    const savedKey = sessionStorage.getItem(SESSION_KEY);
+    if (savedKey) { adminKey = savedKey; unlockDashboard(); }
+
+    gateForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      adminKey = document.getElementById('admin-key-input').value.trim();
+      fetchRsvps(adminKey).then(ok => {
+        if (ok) {
+          sessionStorage.setItem(SESSION_KEY, adminKey);
+          unlockDashboard();
+        } else {
+          gateErr.style.display = 'block';
+          document.getElementById('admin-key-input').value = '';
+        }
+      });
+    });
+
+    function unlockDashboard() {
+      gate.style.display = 'none';
+      wrap.style.display = 'block';
+      fetchRsvps(adminKey);
+    }
+
+    // ── Fetch ─────────────────────────────────────────────────────
+    async function fetchRsvps(key) {
+      try {
+        const res  = await fetch(API, { headers: { 'x-admin-key': key } });
+        if (res.status === 401) return false;
+        const data = await res.json();
+        allRsvps   = data.rsvps || [];
+        renderStats();
+        renderTable();
+        return true;
+      } catch {
+        document.getElementById('adminStatus').textContent = 'Failed to load RSVPs.';
+        return false;
+      }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => fetchRsvps(adminKey));
+
+    // ── Stats ─────────────────────────────────────────────────────
+    function renderStats() {
+      const attending = allRsvps.filter(r => r.attending === 'yes');
+      const declined  = allRsvps.filter(r => r.attending === 'no');
+      const guests    = attending.reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
+      const songs     = attending.filter(r => r.song && r.song.trim()).length;
+
+      document.getElementById('stat-attending').textContent = attending.length;
+      document.getElementById('stat-guests').textContent    = guests;
+      document.getElementById('stat-declined').textContent  = declined.length;
+      document.getElementById('stat-songs').textContent     = songs;
+    }
+
+    // ── Filter buttons ────────────────────────────────────────────
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        filter = this.dataset.filter;
+        renderTable();
+      });
+    });
+
+    // ── Sort ──────────────────────────────────────────────────────
+    document.querySelectorAll('thead th[data-col]').forEach(th => {
+      th.addEventListener('click', function () {
+        const col = this.dataset.col;
+        if (sortCol === col) sortAsc = !sortAsc;
+        else { sortCol = col; sortAsc = true; }
+        renderTable();
+      });
+    });
+
+    // ── Table ─────────────────────────────────────────────────────
+    function renderTable() {
+      const skipDietary = ['', 'na', 'n/a', 'none', 'no', '-'];
+
+      let rows = [...allRsvps];
+
+      // Apply filter
+      if (filter === 'yes')      rows = rows.filter(r => r.attending === 'yes');
+      if (filter === 'no')       rows = rows.filter(r => r.attending === 'no');
+      if (filter === 'dietary')  rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
+      if (filter === 'song')     rows = rows.filter(r => r.song && r.song.trim());
+
+      // Sort
+      rows.sort((a, b) => {
+        let va = a[sortCol] || '', vb = b[sortCol] || '';
+        if (sortCol === 'guests') { va = parseInt(va) || 0; vb = parseInt(vb) || 0; }
+        const cmp = va < vb ? -1 : va > vb ? 1 : 0;
+        return sortAsc ? cmp : -cmp;
+      });
+
+      const status = document.getElementById('adminStatus');
+      const table  = document.getElementById('rsvpTable');
+      const body   = document.getElementById('rsvpBody');
+
+      if (rows.length === 0) {
+        status.style.display = 'block';
+        status.textContent   = filter === 'all' ? 'No RSVPs yet.' : 'No results for this filter.';
+        table.style.display  = 'none';
+        return;
+      }
+
+      status.style.display = 'none';
+      table.style.display  = '';
+      body.innerHTML = '';
+
+      rows.forEach(r => {
+        const dietary  = r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase());
+        const date     = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${esc(r.name)}</strong>${r.email ? `<br><span class="ts-text">${esc(r.email)}</span>` : ''}</td>
+          <td><span class="badge badge--${r.attending}">${r.attending === 'yes' ? 'Attending' : 'Declined'}</span></td>
+          <td>${r.attending === 'yes' ? (r.guests || '1') : '—'}</td>
+          <td>${dietary ? `<span class="dietary-tag">${esc(r.dietary)}</span>` : '<span style="color:var(--color-muted)">—</span>'}</td>
+          <td>${r.song ? `<span class="song-text">${esc(r.song)}</span>` : '<span style="color:var(--color-muted)">—</span>'}</td>
+          <td><span class="ts-text">${date}</span></td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  })();
+  </script>
+</body>
+</html>
