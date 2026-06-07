@@ -88,7 +88,7 @@ exports.handler = async () => {
   }
 
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`September 24, 2026 — Asante & Abbie`);
+  lines.push(`September 23, 2026 — Asante & Abbie`);
 
   const body = lines.join('\n');
 

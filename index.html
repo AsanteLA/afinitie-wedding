@@ -16,7 +16,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type"        content="website" />
-  <meta property="og:title"       content="Asante &amp; Abbie — September 24, 2026" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 23, 2026" />
   <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
   <meta property="og:image"       content="images/logo.png" />
   <meta property="og:url"         content="https://d30qctp40jwjfl.cloudfront.net" />
@@ -37,7 +37,6 @@
       <li><a href="our-story.html">Our Story</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="schedule.html">Schedule</a></li>
-      <li><a href="travel.html">Travel</a></li>
       <li><a href="rsvp.html">RSVP</a></li>
       <li><a href="registry.html">Registry</a></li>
       <li><a href="guestbook.html">Guestbook</a></li>
@@ -46,11 +45,31 @@
 
   <!-- ==================== HERO ==================== -->
   <section class="hero">
-    <span class="hero__date">September 24, 2026</span>
+    <span class="hero__date">September 23, 2026!</span>
     <h1 class="hero__names">
       Asante <em>&</em> Abbie
     </h1>
     <p class="hero__sub"><!-- LOCATION PLACEHOLDER --></p>
+
+    <!-- Photo carousel — add images to images/gallery/ and list them here -->
+    <div class="hero-carousel" id="heroCarousel">
+      <!--
+        TO ADD PHOTOS: replace each .hero-carousel__placeholder div with:
+        <div class="hero-carousel__slide">
+          <img src="images/gallery/your-photo.jpg" alt="Asante and Abbie" />
+        </div>
+      -->
+      <div class="hero-carousel__slide active">
+        <div class="hero-carousel__placeholder">Photo coming soon</div>
+      </div>
+      <div class="hero-carousel__slide">
+        <div class="hero-carousel__placeholder">Photo coming soon</div>
+      </div>
+      <div class="hero-carousel__slide">
+        <div class="hero-carousel__placeholder">Photo coming soon</div>
+      </div>
+    </div>
+    <div class="hero-carousel__dots" id="heroDots"></div>
 
     <div class="hero__scroll">Scroll</div>
   </section>
@@ -141,5 +160,34 @@
 
   <script src="js/gate.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var slides = document.querySelectorAll('.hero-carousel__slide');
+      var dotsEl = document.getElementById('heroDots');
+      if (!slides.length) return;
+
+      var current = 0;
+      var dots = [];
+
+      slides.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.className = 'hero-carousel__dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.addEventListener('click', function () { goTo(i); });
+        dotsEl.appendChild(dot);
+        dots.push(dot);
+      });
+
+      function goTo(n) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      }
+
+      setInterval(function () { goTo(current + 1); }, 4000);
+    })();
+  </script>
 </body>
 </html>

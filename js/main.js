@@ -50,6 +50,48 @@
     });
   }
 
+  /* --- Scroll reveal (Intersection Observer) --- */
+  var revealEls = document.querySelectorAll('.section, .card, .page-hero, .program__item, .faq-item, .registry-card, .hotel-card, .timeline__item');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    // Wait one frame so the page renders before we apply hidden states.
+    // Then only animate elements that are below the fold — anything already
+    // visible on load is marked revealed immediately (no flash).
+    requestAnimationFrame(function() {
+      var vh = window.innerHeight;
+      revealEls.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < vh * 0.95) {
+          // Already visible — skip animation entirely
+          el.classList.add('revealed');
+        } else {
+          el.classList.add('reveal');
+          observer.observe(el);
+        }
+      });
+    });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('revealed'); });
+  }
+
+  /* --- Back button on inner pages --- */
+  var pageHero = document.querySelector('.page-hero');
+  if (pageHero) {
+    var backBtn = document.createElement('a');
+    backBtn.href = 'index.html';
+    backBtn.className = 'back-btn';
+    backBtn.innerHTML = '← Home';
+    document.body.insertBefore(backBtn, document.body.firstChild.nextSibling);
+  }
+
   /* --- Card hover shadow --- */
   document.querySelectorAll('.card[href]').forEach(function (card) {
     card.addEventListener('mouseenter', function () {
@@ -62,14 +104,14 @@
     });
   });
 
-  /* --- Countdown timer (September 24th of the next upcoming year) --- */
+  /* --- Countdown timer (September 23rd of the next upcoming year) --- */
   var cdDays  = document.getElementById('cd-days');
   var cdHours = document.getElementById('cd-hours');
   var cdMins  = document.getElementById('cd-mins');
   var cdSecs  = document.getElementById('cd-secs');
 
   if (cdDays) {
-    var weddingDate = new Date('September 24, 2026 00:00:00');
+    var weddingDate = new Date('September 23, 2026 00:00:00');
 
     function pad(n) { return n < 10 ? '0' + n : n; }
 
