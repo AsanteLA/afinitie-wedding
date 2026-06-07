@@ -77,11 +77,10 @@ async function spotifyAuth(params) {
 const getAccessToken  = code          => spotifyAuth({ grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI });
 const refreshToken    = refreshTok    => spotifyAuth({ grant_type: 'refresh_token', refresh_token: refreshTok });
 const getMe           = token              => spotifyAPI('/v1/me', 'GET', null, token);
-const getMyPlaylists  = token              => spotifyAPI('/v1/me/playlists?limit=50', 'GET', null, token);
-const deletePlaylist  = (id, token)        => spotifyAPI(`/v1/playlists/${id}/followers`, 'DELETE', null, token);
-const searchTrack     = (query, token)     => spotifyAPI(`/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`, 'GET', null, token);
-const createPlaylist  = token              => spotifyAPI('/v1/me/playlists', 'POST', { name: PLAYLIST_NAME, description: 'Song requests from our wedding guests ♡', public: true }, token);
-const addTracks       = (id, uris, token)  => spotifyAPI(`/v1/playlists/${id}/items`, 'POST', { uris }, token);
+const searchTrack    = (query, token)    => spotifyAPI(`/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`, 'GET', null, token);
+const createPlaylist = token             => spotifyAPI('/v1/me/playlists', 'POST', { name: PLAYLIST_NAME, description: 'Song requests from our wedding guests ♡', public: true }, token);
+const replaceTracks  = (id, uris, token) => spotifyAPI(`/v1/playlists/${id}/items`, 'PUT', { uris }, token);
+const appendTracks   = (id, uris, token) => spotifyAPI(`/v1/playlists/${id}/items`, 'POST', { uris }, token);
 
 // ── OAuth: open browser + catch callback ──────────────────────────────
 
@@ -208,29 +207,26 @@ async function main() {
   const userId = meRes.body.id;
   console.log(`    Logged in as: ${meRes.body.display_name} (${meRes.body.email}) — id: ${userId}`);
 
-  // 4. Delete previous playlist using shared SSM ID
-  const oldPlaylistId = await getSSMParam('/afinitie/spotify/playlist_id');
-  if (oldPlaylistId && oldPlaylistId !== 'placeholder') {
-    console.log(`🗑   Removing previous playlist...`);
-    await deletePlaylist(oldPlaylistId, token);
+  // 4. Get or create playlist
+  let playlistId = await getSSMParam('/afinitie/spotify/playlist_id');
+  if (!playlistId || playlistId === 'placeholder') {
+    console.log(`🎵  Creating playlist "${PLAYLIST_NAME}"...`);
+    const plRes = await createPlaylist(token);
+    if (plRes.status !== 200 && plRes.status !== 201) {
+      console.error('\n❌  Failed to create playlist:', JSON.stringify(plRes.body));
+      process.exit(1);
+    }
+    playlistId = plRes.body.id;
+    await putSSMParam('/afinitie/spotify/playlist_id', playlistId);
+    await new Promise(r => setTimeout(r, 1500));
+    console.log(`    ✓ Created new playlist`);
+  } else {
+    console.log(`🎵  Using existing playlist (${playlistId})`);
   }
-
-  // 5. Create fresh playlist
-  console.log(`🎵  Creating playlist "${PLAYLIST_NAME}"...`);
-  const plRes = await createPlaylist(token);
-  if (plRes.status !== 200 && plRes.status !== 201) {
-    console.error('\n❌  Failed to create playlist:', JSON.stringify(plRes.body));
-    process.exit(1);
-  }
-  const playlistId  = plRes.body.id;
   const playlistUrl = `https://open.spotify.com/playlist/${playlistId}`;
-  await putSSMParam('/afinitie/spotify/playlist_id', playlistId);
 
-  // Small delay to let Spotify provision the new playlist
-  await new Promise(r => setTimeout(r, 1500));
-
-  // 6. Search for each song
-  console.log('\n🔍  Searching Spotify for each song...\n');
+  // 5. Search for all songs
+  console.log('🔍  Searching Spotify for each song...\n');
   const trackUris = [];
   const notFound  = [];
 
@@ -241,24 +237,30 @@ async function main() {
       console.log(`    ✓  "${song}" → ${track.name} — ${track.artists[0].name}`);
       trackUris.push(track.uri);
     } else {
-      console.log(`    ✗  "${song}" — not found (add manually)`);
+      console.log(`    ✗  "${song}" — not found`);
       notFound.push({ song, name });
     }
   }
 
-  // 6. Add tracks (Spotify max 100 per request)
+  // 6. Replace playlist content (PUT first 100, POST the rest)
   if (trackUris.length > 0) {
-    for (let i = 0; i < trackUris.length; i += 100) {
-      await addTracks(playlistId, trackUris.slice(i, i + 100), token);
+    await replaceTracks(playlistId, trackUris.slice(0, 100), token);
+    for (let i = 100; i < trackUris.length; i += 100) {
+      await appendTracks(playlistId, trackUris.slice(i, i + 100), token);
     }
-    console.log(`\n✅  Added ${trackUris.length} track(s) to your Spotify playlist!`);
-    console.log(`    Open it here → ${playlistUrl}\n`);
   }
 
+  // 7. Summary
+  console.log('\n' + '─'.repeat(52));
+  console.log(`✅  ${trackUris.length} song(s) in playlist`);
+  console.log(`    ${playlistUrl}\n`);
+
   if (notFound.length > 0) {
-    console.log(`⚠️   ${notFound.length} song(s) not found on Spotify — add these manually:`);
-    notFound.forEach(({ song, name }) => console.log(`    - "${song}" (requested by ${name})`));
-    console.log();
+    console.log(`⚠️   ${notFound.length} song(s) not found on Spotify:`);
+    notFound.forEach(({ song, name }) => console.log(`    ✗ "${song}" — requested by ${name}`));
+    console.log('    Add these manually to the playlist.\n');
+  } else {
+    console.log('    All songs found — nothing to add manually.\n');
   }
 }
 
