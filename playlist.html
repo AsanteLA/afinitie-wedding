@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Playlist — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Asante &amp; Abbie — September 23, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://d30qctp40jwjfl.cloudfront.net" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+
+  <style>
+    /* ── Layout ── */
+    .playlist-body {
+      background: var(--color-bg);
+    }
+
+    .playlist-layout {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 var(--space-md) var(--space-xl);
+    }
+
+    /* ── Embed card ── */
+    .embed-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(27, 58, 107, 0.08);
+      margin-bottom: var(--space-lg);
+    }
+
+    .embed-card iframe {
+      display: block;
+      width: 100%;
+      border: none;
+    }
+
+    /* ── Stats row ── */
+    .playlist-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: var(--space-md) 0 var(--space-lg);
+      text-align: center;
+    }
+
+    .stat-item__num {
+      font-family: var(--font-serif);
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--color-navy);
+      line-height: 1;
+    }
+
+    .stat-item__label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── Gold divider ── */
+    .gold-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+      margin: 1.25rem auto;
+    }
+
+    /* ── Song request CTA ── */
+    .request-cta {
+      text-align: center;
+      padding: var(--space-md);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+    }
+
+    .request-cta p {
+      color: var(--color-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Note ── */
+    .playlist-note {
+      text-align: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--color-muted);
+      max-width: 480px;
+      margin: 0 auto var(--space-lg);
+      line-height: 1.7;
+    }
+
+    /* ── Spotify open link ── */
+    .spotify-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1DB954;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid #1DB954;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+      margin-top: 1rem;
+    }
+
+    .spotify-link:hover {
+      background: #1DB954;
+      color: #fff;
+    }
+
+    .spotify-link svg {
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      .playlist-stats { gap: 2rem; }
+      .stat-item__num { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body class="playlist-body">
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <div class="page-hero">
+    <span class="eyebrow">Built By Our Guests</span>
+    <h1 style="font-size: clamp(2.5rem, 6vw, 4.5rem);">Our Playlist</h1>
+    <div class="divider"></div>
+    <p style="color:var(--color-muted); margin-top:1rem; max-width:520px; margin-left:auto; margin-right:auto;">
+      Every song was requested by someone coming to celebrate with us.
+      This is the soundtrack our guests are building together.
+    </p>
+  </div>
+
+  <!-- ==================== CONTENT ==================== -->
+  <div class="playlist-layout">
+
+    <!-- Stats -->
+    <div class="playlist-stats reveal">
+      <div class="stat-item">
+        <div class="stat-item__num" id="statSongs">—</div>
+        <div class="stat-item__label">Songs</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-item__num" id="statGuests">—</div>
+        <div class="stat-item__label">Guests</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-item__num" id="statHours">—</div>
+        <div class="stat-item__label">Hours of Music</div>
+      </div>
+    </div>
+
+    <div class="gold-line"></div>
+
+    <!-- Spotify embed -->
+    <div class="embed-card reveal">
+      <!--
+        SETUP: Replace PLAYLIST_ID below with your actual Spotify playlist ID.
+        You can find it by running: node spotify-playlist.js
+        It prints the URL at the end, e.g. https://open.spotify.com/playlist/PLAYLIST_ID
+      -->
+      <iframe
+        id="spotifyEmbed"
+        src="https://open.spotify.com/embed/playlist/5gsuswmHLtsnDk4Unmr386?utm_source=generator&theme=0"
+        height="500"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+
+    <!-- Open in Spotify -->
+    <div style="text-align:center; margin-bottom: var(--space-lg);">
+      <a
+        id="spotifyOpenLink"
+        href="https://open.spotify.com/playlist/5gsuswmHLtsnDk4Unmr386"
+        target="_blank"
+        rel="noopener"
+        class="spotify-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+        </svg>
+        Open in Spotify
+      </a>
+    </div>
+
+    <!-- Note -->
+    <p class="playlist-note reveal">
+      The playlist updates automatically each week as more guests RSVP and add their songs.
+      Check back as the date gets closer — it'll keep growing.
+    </p>
+
+    <!-- CTA -->
+    <div class="request-cta reveal">
+      <p>Haven't added your song yet? We'd love to hear what you want to dance to.</p>
+      <a href="rsvp.html" class="btn btn--primary">Add Your Song →</a>
+    </div>
+
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <img src="images/logo.png" alt="Afinitie" class="footer__logo" />
+      <p>Asante &amp; Abbie &mdash; September 23, 2026</p>
+      <p style="margin-top:0.25rem; font-size:0.8rem;"><!-- DATE & LOCATION PLACEHOLDER --></p>
+    </div>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const PLAYLIST_ID = '5gsuswmHLtsnDk4Unmr386';
+
+    // Wire up links with the real playlist ID
+    function setPlaylistId(id) {
+      if (!id || id === 'PLAYLIST_ID') return;
+      document.getElementById('spotifyEmbed').src =
+        `https://open.spotify.com/embed/playlist/${id}?utm_source=generator&theme=0`;
+      document.getElementById('spotifyOpenLink').href =
+        `https://open.spotify.com/playlist/${id}`;
+    }
+
+    setPlaylistId(PLAYLIST_ID);
+
+    // Fetch song count + attending guest count from RSVP API to populate stats
+    (async () => {
+      const API = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/rsvp';
+      const ADMIN_KEY = 'afinitie-admin-2026';
+
+      try {
+        const res  = await fetch(API, { headers: { 'x-admin-key': ADMIN_KEY } });
+        const data = await res.json();
+        const rsvps = data.rsvps || [];
+
+        const attending   = rsvps.filter(r => r.attending === 'yes');
+        const withSongs   = attending.filter(r => r.song && r.song.trim() !== '');
+        const totalGuests = attending.reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
+
+        // Estimate ~3.5 min per song
+        const hours = (withSongs.length * 3.5 / 60).toFixed(1);
+
+        document.getElementById('statSongs').textContent  = withSongs.length;
+        document.getElementById('statGuests').textContent = totalGuests;
+        document.getElementById('statHours').textContent  = hours;
+      } catch (_) {
+        // Stats are nice-to-have; fail silently
+        document.getElementById('statSongs').textContent  = '—';
+        document.getElementById('statGuests').textContent = '—';
+        document.getElementById('statHours').textContent  = '—';
+      }
+    })();
+  </script>
+
+</body>
+</html>
