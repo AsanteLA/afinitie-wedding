@@ -103,9 +103,14 @@
 
     /* ── Print / Wedding Program ── */
     .print-program-header { display: none; }
+    .print-program-footer { display: none; }
+
+    @page {
+      size: letter portrait;
+      margin: 0;
+    }
 
     @media print {
-      /* Hide everything except the program */
       .nav, .page-hero, .back-btn,
       .section:not(.program-section),
       .section--alt:not(.program-section),
@@ -114,31 +119,36 @@
 
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-      body {
-        background: #fff;
-        font-family: 'Cormorant Garamond', Georgia, serif;
-        margin: 0; padding: 0;
+      html, body { margin: 0; padding: 0; background: #fff; }
+
+      /* Full-page frame wrapper */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 18pt;
+        border: 1.5pt solid #d4981a;
+        box-shadow: inset 0 0 0 4pt #fff, inset 0 0 0 5.5pt #d4981a;
+        pointer-events: none;
+        z-index: 9999;
       }
 
-      /* Show the print-only header */
       .print-program-header {
         display: block !important;
         text-align: center;
-        padding: 3rem 2rem 1.5rem;
-        border-bottom: none;
+        padding: 52pt 60pt 16pt;
       }
 
       .print-program-header .print-ornament {
-        font-size: 1.4rem;
+        font-size: 13pt;
         color: #d4981a;
-        letter-spacing: 0.5em;
+        letter-spacing: 0.6em;
         display: block;
-        margin-bottom: 1rem;
+        margin-bottom: 10pt;
       }
 
       .print-program-header .print-names {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 3.2rem;
+        font-size: 36pt;
         font-weight: 300;
         color: #1b3a6b;
         line-height: 1.1;
@@ -152,56 +162,57 @@
 
       .print-program-header .print-date {
         font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
-        font-size: 0.75rem;
+        font-size: 7.5pt;
         font-weight: 500;
         letter-spacing: 0.3em;
         text-transform: uppercase;
         color: #5a6a7a;
-        margin-top: 0.75rem;
+        margin-top: 8pt;
         display: block;
       }
 
       .print-program-header .print-rule {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin: 1.25rem auto;
-        max-width: 320px;
+        gap: 10pt;
+        margin: 10pt auto;
+        max-width: 280pt;
       }
 
       .print-program-header .print-rule::before,
       .print-program-header .print-rule::after {
         content: '';
         flex: 1;
-        height: 1px;
+        height: 0.75pt;
         background: #d4981a;
       }
 
-      .print-program-header .print-rule span {
-        color: #d4981a;
-        font-size: 1rem;
+      .print-program-header .print-rule span { color: #d4981a; font-size: 10pt; }
+
+      .print-program-header p {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 10pt;
+        color: #5a6a7a;
+        font-style: italic;
+        margin: 0;
       }
 
-      /* Program section */
       .program-section {
         display: block !important;
         background: #fff !important;
         padding: 0 !important;
       }
 
-      .program-section .container { padding: 0 2.5rem; }
+      .program-section .container { padding: 0 60pt; }
 
-      .program {
-        max-width: 100% !important;
-        margin: 0 !important;
-      }
+      .program { max-width: 100% !important; margin: 0 !important; }
 
       .program__item {
         display: grid;
-        grid-template-columns: 90px 1fr;
-        gap: 0 1.5rem;
-        padding: 1.1rem 0;
-        border-bottom: 1px solid #e8e0d4 !important;
+        grid-template-columns: 72pt 1fr;
+        gap: 0 14pt;
+        padding: 8pt 0;
+        border-bottom: 0.5pt solid #e8e0d4 !important;
         break-inside: avoid;
       }
 
@@ -209,38 +220,38 @@
 
       .program__time {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 1rem;
+        font-size: 10pt;
         color: #6b1a2a !important;
-        padding-top: 0.1rem;
+        padding-top: 1pt;
+        font-style: italic;
       }
 
       .program__icon { display: none; }
 
       .program__event h3 {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 1.15rem;
+        font-size: 12pt;
         font-weight: 400;
         color: #1b3a6b;
-        margin-bottom: 0.2rem;
+        margin-bottom: 2pt;
       }
 
       .program__event p {
         font-family: 'Cormorant Garamond', Georgia, serif;
-        font-size: 0.95rem;
+        font-size: 9.5pt;
         color: #5a6a7a !important;
         font-style: italic;
         margin: 0;
       }
 
-      /* Print footer */
       .print-program-footer {
         display: block !important;
         text-align: center;
-        padding: 1.5rem 2rem 2rem;
+        padding: 14pt 60pt 52pt;
         font-family: 'Cormorant Garamond', Georgia, serif;
         font-style: italic;
         color: #5a6a7a;
-        font-size: 0.95rem;
+        font-size: 9.5pt;
       }
     }
   </style>

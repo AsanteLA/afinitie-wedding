@@ -272,12 +272,19 @@
 
     <!-- Sub-table: quick view -->
     <div style="margin-top: var(--space-lg);">
-      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
         <div>
           <span class="eyebrow" style="margin-bottom:0;">Quick View</span>
-          <p style="color:var(--color-muted); font-size:0.85rem; margin:0;" id="subTableLabel">Name + key field for current filter</p>
+          <p style="color:var(--color-muted); font-size:0.85rem; margin:0;" id="subTableLabel">Name & attendance status</p>
         </div>
         <button class="admin-refresh" id="downloadSubBtn">↓ Download Quick View</button>
+      </div>
+      <div class="filter-bar" style="margin-bottom:1rem;">
+        <button class="filter-btn active" data-sub-filter="all">All</button>
+        <button class="filter-btn" data-sub-filter="yes">Attending</button>
+        <button class="filter-btn" data-sub-filter="no">Not Attending</button>
+        <button class="filter-btn" data-sub-filter="dietary">Has Dietary Note</button>
+        <button class="filter-btn" data-sub-filter="song">Has Song Request</button>
       </div>
       <div class="rsvp-table-wrap">
         <table id="subTable" style="display:none;">
@@ -300,6 +307,7 @@
     let sortCol   = 'timestamp';
     let sortAsc   = false;
     let filter    = 'all';
+    let subFilter = 'all';
 
     // ── Gate ──────────────────────────────────────────────────────
     const gate     = document.getElementById('admin-gate');
@@ -362,13 +370,23 @@
       document.getElementById('stat-songs').textContent     = songs;
     }
 
-    // ── Filter buttons ────────────────────────────────────────────
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    // ── Filter buttons (main table) ───────────────────────────────
+    document.querySelectorAll('[data-filter]').forEach(btn => {
       btn.addEventListener('click', function () {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         filter = this.dataset.filter;
         renderTable();
+      });
+    });
+
+    // ── Filter buttons (sub-table, independent) ───────────────────
+    document.querySelectorAll('[data-sub-filter]').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-sub-filter]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        subFilter = this.dataset.subFilter;
+        renderSubTable(allRsvps);
       });
     });
 
@@ -433,16 +451,24 @@
         body.appendChild(tr);
       });
 
-      renderSubTable(rows);
+      renderSubTable(allRsvps);
     }
 
     // ── Sub-table ─────────────────────────────────────────────────
-    function renderSubTable(rows) {
+    function renderSubTable(sourceRows) {
+      const skipDietary = ['', 'na', 'n/a', 'none', 'no', '-'];
       const subTable  = document.getElementById('subTable');
       const subHead   = document.getElementById('subHead');
       const subBody   = document.getElementById('subBody');
       const subStatus = document.getElementById('subStatus');
       const subLabel  = document.getElementById('subTableLabel');
+
+      // Apply sub-filter independently from main filter
+      let rows = [...sourceRows];
+      if (subFilter === 'yes')      rows = rows.filter(r => r.attending === 'yes');
+      if (subFilter === 'no')       rows = rows.filter(r => r.attending === 'no');
+      if (subFilter === 'dietary')  rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
+      if (subFilter === 'song')     rows = rows.filter(r => r.song && r.song.trim());
 
       const configs = {
         all:     { label: 'Name & attendance status',   cols: ['Name', 'Status', 'Guests'],   render: r => [`<strong>${esc(r.name)}</strong>`, `<span class="badge badge--${r.attending}">${r.attending === 'yes' ? 'Attending' : 'Declined'}</span>`, r.attending === 'yes' ? (r.guests || '1') : '—'] },
@@ -452,7 +478,7 @@
         song:    { label: 'Song requests',              cols: ['Name', 'Song Request'],         render: r => [`<strong>${esc(r.name)}</strong>`, `<span class="song-text">${esc(r.song)}</span>`] },
       };
 
-      const cfg = configs[filter] || configs.all;
+      const cfg = configs[subFilter] || configs.all;
       subLabel.textContent = cfg.label;
 
       if (rows.length === 0) {
