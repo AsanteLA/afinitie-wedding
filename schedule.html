@@ -100,6 +100,149 @@
     .faq-a p { color: var(--color-muted); font-size: 0.95rem; margin: 0; }
 
     .faq-a.open { display: block; }
+
+    /* ── Print / Wedding Program ── */
+    .print-program-header { display: none; }
+
+    @media print {
+      /* Hide everything except the program */
+      .nav, .page-hero, .back-btn,
+      .section:not(.program-section),
+      .section--alt:not(.program-section),
+      [data-no-print], .faq-list, .faq-item,
+      .section__header { display: none !important; }
+
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      body {
+        background: #fff;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        margin: 0; padding: 0;
+      }
+
+      /* Show the print-only header */
+      .print-program-header {
+        display: block !important;
+        text-align: center;
+        padding: 3rem 2rem 1.5rem;
+        border-bottom: none;
+      }
+
+      .print-program-header .print-ornament {
+        font-size: 1.4rem;
+        color: #d4981a;
+        letter-spacing: 0.5em;
+        display: block;
+        margin-bottom: 1rem;
+      }
+
+      .print-program-header .print-names {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 3.2rem;
+        font-weight: 300;
+        color: #1b3a6b;
+        line-height: 1.1;
+        margin: 0;
+      }
+
+      .print-program-header .print-names em {
+        font-style: italic;
+        color: #6b1a2a;
+      }
+
+      .print-program-header .print-date {
+        font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #5a6a7a;
+        margin-top: 0.75rem;
+        display: block;
+      }
+
+      .print-program-header .print-rule {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.25rem auto;
+        max-width: 320px;
+      }
+
+      .print-program-header .print-rule::before,
+      .print-program-header .print-rule::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #d4981a;
+      }
+
+      .print-program-header .print-rule span {
+        color: #d4981a;
+        font-size: 1rem;
+      }
+
+      /* Program section */
+      .program-section {
+        display: block !important;
+        background: #fff !important;
+        padding: 0 !important;
+      }
+
+      .program-section .container { padding: 0 2.5rem; }
+
+      .program {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      .program__item {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 0 1.5rem;
+        padding: 1.1rem 0;
+        border-bottom: 1px solid #e8e0d4 !important;
+        break-inside: avoid;
+      }
+
+      .program__item:last-child { border-bottom: none !important; }
+
+      .program__time {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1rem;
+        color: #6b1a2a !important;
+        padding-top: 0.1rem;
+      }
+
+      .program__icon { display: none; }
+
+      .program__event h3 {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.15rem;
+        font-weight: 400;
+        color: #1b3a6b;
+        margin-bottom: 0.2rem;
+      }
+
+      .program__event p {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 0.95rem;
+        color: #5a6a7a !important;
+        font-style: italic;
+        margin: 0;
+      }
+
+      /* Print footer */
+      .print-program-footer {
+        display: block !important;
+        text-align: center;
+        padding: 1.5rem 2rem 2rem;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-style: italic;
+        color: #5a6a7a;
+        font-size: 0.95rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -134,8 +277,17 @@
     </button>
   </div>
 
+  <!-- ==================== PRINT HEADER (hidden on screen) ==================== -->
+  <div class="print-program-header">
+    <span class="print-ornament">✦ ✦ ✦</span>
+    <h1 class="print-names">Asante <em>&</em> Abbie</h1>
+    <span class="print-date">September 23, 2026</span>
+    <div class="print-rule"><span>♡</span></div>
+    <p style="font-family:'Cormorant Garamond',Georgia,serif; font-size:1rem; color:#5a6a7a; font-style:italic; margin:0;">Wedding Day Program</p>
+  </div>
+
   <!-- ==================== PROGRAM ==================== -->
-  <section class="section section--alt">
+  <section class="section section--alt program-section">
     <div class="container">
       <div class="program">
 
@@ -368,6 +520,12 @@
       </div>
     </div>
   </section>
+
+  <!-- ==================== PRINT FOOTER (hidden on screen) ==================== -->
+  <div class="print-program-footer" style="display:none;">
+    We are so glad you are here to celebrate with us.<br>
+    With love, Asante &amp; Abbie
+  </div>
 
   <!-- ==================== FOOTER ==================== -->
   <footer class="footer">
