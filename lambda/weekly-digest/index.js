@@ -3,27 +3,124 @@
 
    Triggered every Sunday at 8am UTC by EventBridge.
    Scans DynamoDB for RSVPs submitted in the past 7 days
-   and publishes a summary to an SNS topic which emails you.
+   and sends an HTML email via SES.
 
-   AWS Services used:
-   - EventBridge (trigger — scheduled, free)
-   - Lambda (this function — free tier)
-   - DynamoDB (reads RSVPs — free tier)
-   - SNS (sends 1 email/week — free tier: 1,000 emails/month)
+   Environment variables required:
+     RSVP_TABLE   — DynamoDB table name (default: afinitie-rsvps)
+     FROM_EMAIL   — SES verified sender address
+     TO_EMAIL     — your email address to receive the digest
    ============================================================ */
 
 const { DynamoDBClient, ScanCommand } = require('@aws-sdk/client-dynamodb');
-const { SNSClient, PublishCommand }   = require('@aws-sdk/client-sns');
+const { SESClient, SendEmailCommand }  = require('@aws-sdk/client-ses');
 
 const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION });
-const sns    = new SNSClient({ region: process.env.AWS_REGION });
+const ses    = new SESClient({ region: process.env.AWS_REGION });
 
-const TABLE_NAME = process.env.RSVP_TABLE   || 'afinitie-rsvps';
-const SNS_TOPIC  = process.env.SNS_TOPIC_ARN;  // set in Lambda env vars
+const TABLE_NAME = process.env.RSVP_TABLE  || 'afinitie-rsvps';
+const FROM_EMAIL = process.env.FROM_EMAIL;
+const TO_EMAIL   = process.env.TO_EMAIL;
+
+const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const showDietary = v => v && !['na','n/a','none','no','-',''].includes(v.trim().toLowerCase());
+
+function buildEmail(items) {
+  const attending    = items.filter(i => i.attending.S === 'yes');
+  const notAttending = items.filter(i => i.attending.S === 'no');
+  const totalGuests  = attending.reduce((s, i) => s + parseInt(i.guests.S || '1', 10), 0);
+  const songs        = attending.filter(i => i.song?.S);
+
+  const stat = (num, label, color) => `
+    <td style="text-align:center;padding:0 16px;">
+      <div style="font-size:2.2rem;font-weight:300;color:${color};line-height:1;">${num}</div>
+      <div style="font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#5a6a7a;margin-top:4px;">${label}</div>
+    </td>`;
+
+  const attendingRows = attending.map((i, idx) => {
+    const g = i.guests.S || '1';
+    const dietary = showDietary(i.dietary?.S) ? `<div style="margin-top:4px;"><span style="background:#fef3e2;color:#c4601a;font-size:11px;padding:2px 8px;border-radius:100px;">${esc(i.dietary.S)}</span></div>` : '';
+    const song    = i.song?.S    ? `<div style="font-size:12px;color:#5a6a7a;font-style:italic;margin-top:4px;">&#9834; ${esc(i.song.S)}</div>` : '';
+    const note    = i.message?.S ? `<div style="font-size:12px;color:#5a6a7a;margin-top:4px;">"${esc(i.message.S)}"</div>` : '';
+    return `
+      <tr style="border-bottom:1px solid #e8e0d4;">
+        <td style="padding:12px 16px;font-size:13px;color:#5a6a7a;text-align:center;">${idx + 1}</td>
+        <td style="padding:12px 16px;">
+          <strong style="color:#1b3a6b;font-size:14px;">${esc(i.name.S)}</strong>
+          ${dietary}${song}${note}
+        </td>
+        <td style="padding:12px 16px;text-align:center;font-size:13px;color:#1b3a6b;font-weight:500;">${g}</td>
+      </tr>`;
+  }).join('');
+
+  const declinedRows = notAttending.map((i, idx) => {
+    const note = i.message?.S ? `<div style="font-size:12px;color:#5a6a7a;margin-top:4px;">"${esc(i.message.S)}"</div>` : '';
+    return `
+      <tr style="border-bottom:1px solid #e8e0d4;">
+        <td style="padding:12px 16px;font-size:13px;color:#5a6a7a;text-align:center;">${idx + 1}</td>
+        <td style="padding:12px 16px;">
+          <strong style="color:#888;font-size:14px;">${esc(i.name.S)}</strong>${note}
+        </td>
+      </tr>`;
+  }).join('');
+
+  const songRows = songs.map(i => `
+    <tr style="border-bottom:1px solid #e8e0d4;">
+      <td style="padding:10px 16px;font-size:13px;color:#1b3a6b;font-style:italic;">${esc(i.song.S)}</td>
+      <td style="padding:10px 16px;font-size:12px;color:#5a6a7a;">${esc(i.name.S)}</td>
+    </tr>`).join('');
+
+  const section = (title, content) => `
+    <div style="margin-bottom:28px;">
+      <div style="border-top:2px solid #d4981a;padding-top:12px;margin-bottom:12px;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#d4981a;">${title}</span>
+      </div>${content}
+    </div>`;
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#f5f0e8;font-family:'Helvetica Neue',Arial,sans-serif;">
+<div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:4px;overflow:hidden;border:1px solid #e2d8cc;">
+  <div style="background:#1b3a6b;padding:32px 40px;text-align:center;">
+    <div style="font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:#d4981a;margin-bottom:8px;">Weekly Digest</div>
+    <div style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#ffffff;line-height:1.2;">Asante &amp; Abbie</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:0.1em;">September 23, 2026</div>
+  </div>
+  <div style="background:#faf6f0;border-bottom:1px solid #e2d8cc;padding:24px 40px;">
+    <table style="width:100%;border-collapse:collapse;"><tr>
+      ${stat(items.length,       'New This Week', '#1b3a6b')}
+      ${stat(attending.length,   'Attending',     '#1b3a6b')}
+      ${stat(totalGuests,        'Total Guests',  '#c4601a')}
+      ${stat(notAttending.length,'Declined',      '#888888')}
+    </tr></table>
+  </div>
+  <div style="padding:32px 40px;">
+    ${attending.length > 0 ? section(`Attending (${attending.length})`, `
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid #e2d8cc;">
+          <th style="text-align:center;padding:8px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5a6a7a;font-weight:500;">#</th>
+          <th style="text-align:left;padding:8px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5a6a7a;font-weight:500;">Name</th>
+          <th style="text-align:center;padding:8px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5a6a7a;font-weight:500;">Guests</th>
+        </tr></thead>
+        <tbody>${attendingRows}</tbody>
+      </table>`) : ''}
+    ${notAttending.length > 0 ? section(`Not Attending (${notAttending.length})`, `
+      <table style="width:100%;border-collapse:collapse;"><tbody>${declinedRows}</tbody></table>`) : ''}
+    ${songs.length > 0 ? section(`Song Requests (${songs.length})`, `
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="border-bottom:1px solid #e2d8cc;">
+          <th style="text-align:left;padding:8px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5a6a7a;font-weight:500;">Song</th>
+          <th style="text-align:left;padding:8px 16px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#5a6a7a;font-weight:500;">Requested By</th>
+        </tr></thead>
+        <tbody>${songRows}</tbody>
+      </table>`) : ''}
+  </div>
+  <div style="background:#faf6f0;border-top:1px solid #e2d8cc;padding:20px 40px;text-align:center;">
+    <div style="font-size:11px;color:#5a6a7a;">Afinitie Wedding &mdash; September 23, 2026</div>
+  </div>
+</div>
+</body></html>`;
+}
 
 exports.handler = async () => {
-
-  // Scan all RSVPs from the past 7 days
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   let items = [];
@@ -45,74 +142,23 @@ exports.handler = async () => {
     return;
   }
 
-  // Build summary
-  const attending    = items.filter(i => i.attending.S === 'yes');
-  const notAttending = items.filter(i => i.attending.S === 'no');
-  const totalGuests  = attending.reduce((sum, i) => sum + parseInt(i.guests.S || '1', 10), 0);
+  const subject  = `Weekly RSVP Update — ${items.length} new response${items.length !== 1 ? 's' : ''}`;
+  const htmlBody = buildEmail(items);
 
-  // Helper: skip dietary if blank or N/A variant
-  const showDietary = (val) => val && !['na', 'n/a', 'none', 'no', '-'].includes(val.trim().toLowerCase());
-
-  const lines = [
-    `AFINITIE WEDDING — WEEKLY RSVP DIGEST`,
-    `September 23, 2026 · Asante & Abbie`,
-    ``,
-    `─────────────────────────────────────`,
-    `SUMMARY`,
-    `─────────────────────────────────────`,
-    `New responses this week:  ${items.length}`,
-    `Attending:                ${attending.length} people, ${totalGuests} total guests`,
-    `Not attending:            ${notAttending.length}`,
-    ``,
-  ];
-
-  if (attending.length > 0) {
-    lines.push(`─────────────────────────────────────`);
-    lines.push(`ATTENDING (${attending.length})`);
-    lines.push(`─────────────────────────────────────`);
-    attending.forEach((i, idx) => {
-      const guestCount = i.guests.S || '1';
-      lines.push(`${idx + 1}. ${i.name.S}  —  ${guestCount} guest${guestCount !== '1' ? 's' : ''}`);
-      if (showDietary(i.dietary.S)) lines.push(`   Dietary: ${i.dietary.S}`);
-      if (i.song?.S)                lines.push(`   Song: ${i.song.S}`);
-      if (i.message?.S)             lines.push(`   Note: "${i.message.S}"`);
-      lines.push('');
-    });
-  }
-
-  if (notAttending.length > 0) {
-    lines.push(`─────────────────────────────────────`);
-    lines.push(`NOT ATTENDING (${notAttending.length})`);
-    lines.push(`─────────────────────────────────────`);
-    notAttending.forEach((i, idx) => {
-      lines.push(`${idx + 1}. ${i.name.S}`);
-      if (i.message?.S) lines.push(`   Note: "${i.message.S}"`);
-      lines.push('');
-    });
-  }
-
-  const songsWithRequests = attending.filter(i => i.song?.S);
-  if (songsWithRequests.length > 0) {
-    lines.push(`─────────────────────────────────────`);
-    lines.push(`SONG REQUESTS (${songsWithRequests.length})`);
-    lines.push(`─────────────────────────────────────`);
-    songsWithRequests.forEach(i => lines.push(`• ${i.song.S}  (${i.name.S})`));
-    lines.push('');
-  }
-
-  lines.push(`─────────────────────────────────────`);
-
-  const body = lines.join('\n');
-
-  // Publish to SNS
   try {
-    await sns.send(new PublishCommand({
-      TopicArn: SNS_TOPIC,
-      Subject:  `Weekly RSVP Update — ${items.length} new response${items.length !== 1 ? 's' : ''}`,
-      Message:  body,
+    await ses.send(new SendEmailCommand({
+      Source:      FROM_EMAIL,
+      Destination: { ToAddresses: [TO_EMAIL] },
+      Message: {
+        Subject: { Data: subject, Charset: 'UTF-8' },
+        Body: {
+          Html: { Data: htmlBody,  Charset: 'UTF-8' },
+          Text: { Data: `${subject}\n\nOpen in an HTML-capable email client to view this digest.`, Charset: 'UTF-8' },
+        },
+      },
     }));
-    console.log('Digest sent successfully.');
+    console.log('HTML digest sent via SES.');
   } catch (err) {
-    console.error('SNS publish error:', err);
+    console.error('SES send error:', err);
   }
 };
