@@ -81,7 +81,7 @@ function buildEmail(items) {
 <div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:4px;overflow:hidden;border:1px solid #e2d8cc;">
   <div style="background:#1b3a6b;padding:32px 40px;text-align:center;">
     <div style="font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:#d4981a;margin-bottom:8px;">Weekly Digest</div>
-    <div style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#ffffff;line-height:1.2;">Asante &amp; Abbie</div>
+    <div style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#ffffff;line-height:1.2;">Abbie &amp; Asante</div>
     <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:0.1em;">September 23, 2026</div>
   </div>
   <div style="background:#faf6f0;border-bottom:1px solid #e2d8cc;padding:24px 40px;">
