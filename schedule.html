@@ -17,11 +17,51 @@
   <meta property="og:title"       content="Abbie &amp; Asante — September 15, 2026" />
   <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
   <meta property="og:image"       content="images/logo.png" />
-  <meta property="og:url"         content="https://d30qctp40jwjfl.cloudfront.net" />
+  <meta property="og:url"         content="https://afinitie.com" />
   <meta name="twitter:card"       content="summary_large_image" />
 
   <link rel="stylesheet" href="styles/main.css" />
   <style>
+    /* ── Venue Photo Strip ── */
+    .venue-strip {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      overflow: hidden;
+      height: 260px;
+      margin: 0 0 1.5rem;
+    }
+    .venue-strip__inner {
+      display: flex;
+      /* no gap — handled by margin-right on each img */
+      animation: venueScroll 40s linear infinite;
+      will-change: transform;
+    }
+    .venue-strip__img {
+      height: 260px;
+      width: 390px;
+      object-fit: cover;
+      flex-shrink: 0;
+      display: block;
+      margin-right: 3px;
+    }
+    /* 6 images × (390 + 3) = 2358px per set */
+    @keyframes venueScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-2358px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .venue-strip__inner { animation: none; }
+    }
+    .maps-btns {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
     .program {
       max-width: 640px;
       margin: 0 auto;
@@ -347,56 +387,89 @@
   </section>
 
   <!-- ==================== VENUE / DIRECTIONS ==================== -->
-  <section class="section">
+  <section class="section" style="overflow:hidden;">
+
     <div class="container" style="max-width:680px;">
       <div class="section__header">
         <span class="eyebrow">Getting There</span>
         <h2>Venue & Directions</h2>
         <div class="divider"></div>
       </div>
+    </div>
 
-      <!-- Temple -->
-      <div class="card" style="text-align:center; margin-bottom:1rem;">
+    <!-- ── Temple card ── -->
+    <div class="container" style="max-width:70vw;">
+      <div class="card" style="text-align:center; margin-bottom:1.5rem;">
         <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Sealing</p>
         <h3 style="margin-bottom:0.5rem;">Lindon Utah Temple</h3>
         <p style="color:var(--color-muted);">850 E Center St, Lindon, UT 84042</p>
-        <a href="https://maps.google.com/?q=850+E+Center+St,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
-          Open in Maps
-        </a>
+        <div class="maps-btns">
+          <a href="https://maps.google.com/?q=850+E+Center+St,+Lindon,+UT+84042" class="btn btn--outline" target="_blank" rel="noopener">Open in Google Maps</a>
+          <a href="https://maps.apple.com/?q=850+E+Center+St,+Lindon,+UT+84042" class="btn btn--outline" target="_blank" rel="noopener">Open in Apple Maps</a>
+        </div>
       </div>
-      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--color-border); margin-bottom:2.5rem;">
-        <iframe
-          src="about:blank"
-          data-src="https://www.google.com/maps?q=850+E+Center+St,+Lindon,+UT+84042&output=embed"
-          width="100%" height="380" style="border:0; display:block;"
-          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-          title="Lindon Utah Temple" class="venue-map">
-        </iframe>
-      </div>
+    </div>
 
-      <!-- Walker Farms -->
-      <div class="card" style="text-align:center; margin-bottom:1rem;">
+    <!-- ── Temple full-width photo strip ── -->
+    <div class="venue-strip">
+      <div class="venue-strip__inner">
+        <!-- original set -->
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-64454.jpg" alt="Lindon Utah Temple" loading="eager" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69011.jpg" alt="Lindon Utah Temple" loading="lazy" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69012.jpg" alt="Lindon Utah Temple" loading="lazy" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69223.jpg" alt="Lindon Utah Temple" loading="lazy" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69013.jpg" alt="Lindon Utah Temple" loading="lazy" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-68329.jpg" alt="Lindon Utah Temple" loading="lazy" />
+        <!-- duplicate set for seamless loop -->
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-64454.jpg" alt="Lindon Utah Temple" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69011.jpg" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69012.jpg" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69223.jpg" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-69013.jpg" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-68329.jpg" alt="" loading="lazy" aria-hidden="true" />
+      </div>
+    </div>
+
+
+    <!-- ── Walker Farms card ── -->
+    <div class="container" style="max-width:70vw;">
+      <div class="card" style="text-align:center; margin-bottom:1.5rem;">
         <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Luncheon &amp; Reception</p>
         <h3 style="margin-bottom:0.5rem;">Walker Farms</h3>
         <p style="color:var(--color-muted);">26 S 500 E, Lindon, UT 84042</p>
-        <a href="https://maps.google.com/?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
-          Open in Maps
-        </a>
+        <div class="maps-btns">
+          <a href="https://maps.google.com/?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042" class="btn btn--outline" target="_blank" rel="noopener">Open in Google Maps</a>
+          <a href="https://maps.apple.com/?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042" class="btn btn--outline" target="_blank" rel="noopener">Open in Apple Maps</a>
+        </div>
       </div>
-      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--color-border);">
-        <iframe
-          src="about:blank"
-          data-src="https://www.google.com/maps?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042&output=embed"
-          width="100%" height="380" style="border:0; display:block;"
-          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-          title="Walker Farms" class="venue-map">
-        </iframe>
-      </div>
+    </div>
 
-      <div style="margin-top:2rem; color:var(--color-muted); font-size:0.92rem; text-align:center;">
+    <!-- ── Walker Farms full-width photo strip ── -->
+    <div class="venue-strip">
+      <div class="venue-strip__inner" style="animation-delay:-18s;">
+        <!-- original set -->
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_112.jpg?fit=1600%2C1068&ssl=1" alt="Walker Farms" loading="eager" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_107.jpg?fit=1600%2C1068&ssl=1" alt="Walker Farms" loading="lazy" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_117.jpg?fit=1600%2C1068&ssl=1" alt="Walker Farms" loading="lazy" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/01/XI7A2509-scaled.jpg?fit=2560%2C1707&ssl=1" alt="Walker Farms" loading="lazy" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_031.jpg?fit=1600%2C1068&ssl=1" alt="Walker Farms" loading="lazy" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_111-1.jpg?fit=1600%2C1068&ssl=1" alt="Walker Farms" loading="lazy" />
+        <!-- duplicate set for seamless loop -->
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_112.jpg?fit=1600%2C1068&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_107.jpg?fit=1600%2C1068&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_117.jpg?fit=1600%2C1068&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/01/XI7A2509-scaled.jpg?fit=2560%2C1707&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_031.jpg?fit=1600%2C1068&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+        <img class="venue-strip__img" src="https://i0.wp.com/walkerfarms.com/wp-content/uploads/2020/07/Walker-Farms_Utah-Wedding-Venue_111-1.jpg?fit=1600%2C1068&ssl=1" alt="" loading="lazy" aria-hidden="true" />
+      </div>
+    </div>
+
+    <div class="container" style="max-width:680px; margin-top:0.5rem;">
+      <div style="margin-top:1rem; color:var(--color-muted); font-size:0.92rem; text-align:center;">
         <p><!-- PARKING / TRANSPORT PLACEHOLDER --></p>
       </div>
     </div>
+
   </section>
 
   <!-- ==================== TEMPLE FAQ ==================== -->
@@ -516,11 +589,6 @@
   <script src="js/main.js"></script>
   <script>
     (function(){
-      document.querySelectorAll('.venue-map').forEach(function(iframe) {
-        var src = iframe.getAttribute('data-src');
-        if (src && src.indexOf('<!--') === -1) iframe.src = src;
-      });
-
       // FAQ accordion
       document.querySelectorAll('.faq-q').forEach(function(btn) {
         btn.addEventListener('click', function() {
