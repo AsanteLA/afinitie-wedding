@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Utah Living Sealing Finder</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #222; min-height: 100vh; }
+  .hero { background: linear-gradient(135deg, #154360, #1a5276); color: white; padding: 40px 24px 32px; text-align: center; }
+  .hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .hero p { opacity: 0.85; font-size: 15px; }
+  .container { max-width: 700px; margin: 0 auto; padding: 32px 20px; }
+  .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .card h2 { font-size: 16px; font-weight: 700; color: #154360; margin-bottom: 14px; }
+  .steps ol { padding-left: 20px; }
+  .steps li { margin-bottom: 12px; line-height: 1.6; color: #333; }
+  .steps li strong { color: #154360; }
+  .range-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  .range-row label { font-size: 13px; font-weight: 600; color: #154360; display: block; margin-bottom: 4px; }
+  .range-row input { padding: 9px 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 14px; font-family: inherit; }
+  #rangeMsg { font-size: 12px; color: #888; margin-top: 4px; min-height: 16px; }
+  #rangeMsg.err { color: #c0392b; font-weight: 600; }
+  .bookmarklet-wrap { background: #eaf4fb; border: 2px dashed #7fb3d3; border-radius: 10px; padding: 20px; text-align: center; margin: 16px 0; }
+  .bookmarklet-wrap p { font-size: 13px; color: #555; margin-bottom: 12px; }
+  #bmLink {
+    display: inline-block; background: #154360; color: white !important; text-decoration: none;
+    padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: grab;
+    user-select: none; box-shadow: 0 3px 10px rgba(21,67,96,.35); transition: transform .1s, box-shadow .1s;
+  }
+  #bmLink.disabled { background: #95a5a6; pointer-events: none; box-shadow: none; }
+  #bmLink:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(21,67,96,.4); }
+  .note { background: #fef9e7; border-left: 4px solid #f1c40f; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 13px; color: #555; line-height: 1.6; }
+  .note strong { color: #8d6e00; }
+  footer { text-align: center; padding: 24px; font-size: 12px; color: #999; }
+  code { background: #f0f4f8; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>&#127963; Utah Living Sealing Finder</h1>
+  <p>Pick your date range, then find living sealing openings across all Utah temples</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>&#128197; Step 1 — Choose your date range</h2>
+    <div class="range-row">
+      <div>
+        <label for="startDate">From</label>
+        <input type="date" id="startDate">
+      </div>
+      <div>
+        <label for="endDate">To</label>
+        <input type="date" id="endDate">
+      </div>
+    </div>
+    <div id="rangeMsg"></div>
+  </div>
+
+  <div class="card">
+    <h2>&#9881;&#65039; Step 2 — Install the bookmarklet</h2>
+    <div class="bookmarklet-wrap">
+      <p>Drag this button to your <strong>bookmarks bar</strong> (show it with <code>Cmd+Shift+B</code> if hidden). Re-drag it whenever you change the dates above.</p>
+      <a id="bmLink" href="#" class="disabled">&#127963; Utah Sealing Finder</a>
+      <p style="margin-top:12px;font-size:12px;color:#888;">Or right-click &rarr; "Bookmark this link"</p>
+    </div>
+    <div class="note">
+      <strong>Note:</strong> The bookmarklet only runs on the temple scheduling site while you're logged in — it uses your existing session. No passwords are touched or stored.
+    </div>
+  </div>
+
+  <div class="card steps">
+    <h2>&#128640; Step 3 — Use it</h2>
+    <ol>
+      <li>Go to <a href="https://tos.churchofjesuschrist.org" target="_blank"><strong>tos.churchofjesuschrist.org</strong></a> and sign in with your Church Account.</li>
+      <li>Click the <strong>"&#127963; Utah Sealing Finder"</strong> bookmark — a panel appears on the right.</li>
+      <li>In the scheduler, pick <strong>any Utah temple</strong>, choose <strong>Living Sealing</strong> (under living ordinances), then click <strong>any date inside your range</strong>.</li>
+      <li>The panel detects the API automatically and searches <em>all</em> Utah temples across your whole date range for living sealing openings.</li>
+      <li>Green dates have openings. <strong>Click any date</strong> to see which temples have times, and when.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>&#127963; Utah temples searched</h2>
+    <p style="font-size:13px;color:#555;line-height:1.8;">
+      Bountiful &middot; Cedar City &middot; Deseret Peak &middot; Draper &middot; Jordan River &middot; Layton &middot; Lindon &middot; Logan &middot; Manti &middot;
+      Mt.&nbsp;Timpanogos &middot; Ogden &middot; Orem &middot; Payson &middot; Provo City Center &middot; Provo &middot; Red Cliffs &middot;
+      Saratoga Springs &middot; Smithfield &middot; St.&nbsp;George &middot; Syracuse &middot; Taylorsville &middot; Vernal &middot; Washington — and any
+      other Utah temples your account can see.
+    </p>
+    <p style="font-size:12px;color:#999;margin-top:10px;">
+      Temple IDs are discovered automatically from the scheduling site — nothing hard-coded.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>&#10067; Troubleshooting</h2>
+    <p style="font-size:13px;color:#444;line-height:1.8;">
+      <strong>Panel doesn't appear:</strong> Make sure you're on <code>tos.churchofjesuschrist.org</code> and signed in.<br>
+      <strong>Stuck on "Waiting for API":</strong> Click a specific temple, choose Living Sealing, then click a date inside your range — the panel needs to see one availability call to learn the API.<br>
+      <strong>Wrong dates searched:</strong> The dates are baked into the bookmark. Change them above, then re-drag the button to replace the old bookmark.<br>
+      <strong>Click the bookmark again</strong> to close and reset the panel.
+    </p>
+  </div>
+
+  <div class="note" style="margin-bottom:20px;">
+    <strong>Personal use only.</strong> Runs entirely in your browser with your own Church Account session. No data is collected, transmitted, or stored anywhere else.
+  </div>
+
+</div>
+
+<footer>Utah Living Sealing Finder &middot; Personal use only &middot; Not affiliated with The Church of Jesus Christ of Latter-day Saints</footer>
+
+<script>
+// ============================================================
+// BOOKMARKLET SOURCE — readable version.
+// %%START%% / %%END%% are replaced with the chosen range,
+// then the whole function is encoded into a javascript: URL.
+// ============================================================
+function bookmarkletSource() {
+  'use strict';
+
+  var START = '%%START%%';
+  var END = '%%END%%';
+  var ID = '__utahSealingFinder';
+
+  // Toggle: click bookmark again to close
+  if (document.getElementById(ID)) {
+    document.getElementById(ID).remove();
+    var sty0 = document.getElementById(ID + '_style');
+    if (sty0) sty0.remove();
+    if (window.__usfOf) { window.fetch = window.__usfOf; delete window.__usfOf; }
+    return;
+  }
+
+  if (location.protocol === 'file:' || location.hostname === 'localhost' || START.indexOf('%') === 0) {
+    alert('You are on the instruction page or the dates were not set.\n\n1. Pick a date range on the finder page\n2. Re-drag the bookmark\n3. Go to tos.churchofjesuschrist.org, sign in, click the bookmark.');
+    return;
+  }
+
+  // ========== STATE ==========
+  var state = {
+    utahTemples: [],
+    pattern: null,
+    results: {},   // date -> { templeName: [timeStr, ...] }
+    done: 0,
+    total: 0
+  };
+
+  var UTAH_RE = /bountiful|cedar city|deseret peak|draper|jordan river|layton|lindon|logan utah|manti|timpanogos|ogden|(^|[^a-z])orem|payson|provo|red cliffs|saratoga|smithfield|george utah|st\. george|syracuse|taylorsville|tooele|vernal|washington utah|lehi utah/i;
+  function isUtah(n) { return UTAH_RE.test(n || ''); }
+
+  // Build the list of dates in [START, END]
+  var DATES = [];
+  (function () {
+    var d = new Date(START + 'T12:00:00');
+    var end = new Date(END + 'T12:00:00');
+    while (d <= end) {
+      DATES.push(d.toISOString().slice(0, 10));
+      d.setDate(d.getDate() + 1);
+    }
+  })();
+
+  // ========== FETCH INTERCEPT ==========
+  if (!window.__usfOf) window.__usfOf = window.fetch.bind(window);
+  var origFetch = window.__usfOf;
+
+  window.fetch = async function () {
+    var args = Array.prototype.slice.call(arguments);
+    var url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url ? args[0].url : '');
+    var opts = args[1] || {};
+    var resp = await origFetch.apply(this, args);
+    if (!state.pattern && url) {
+      try {
+        var clone = resp.clone();
+        var text = await clone.text();
+        var data = JSON.parse(text);
+        sniff(url, opts, data);
+      } catch (e) { /* ignore */ }
+    }
+    return resp;
+  };
+
+  // ========== SNIFFER ==========
+  function findArr(obj) {
+    if (!obj || typeof obj !== 'object') return null;
+    var vals = Object.values(obj);
+    for (var i = 0; i < vals.length; i++) {
+      if (Array.isArray(vals[i]) && vals[i].length > 0) return vals[i];
+    }
+    return null;
+  }
+
+  function sniff(url, opts, data) {
+    // --- Learn temple list ---
+    if (state.utahTemples.length === 0) {
+      var arr = Array.isArray(data) ? data : findArr(data);
+      if (arr && arr.length > 2 && arr[0] && typeof arr[0] === 'object') {
+        var keys = Object.keys(arr[0]).join(' ').toLowerCase();
+        if (/temple|facility|name/.test(keys)) {
+          var all = arr.map(function (t) {
+            return {
+              id: String(t.id || t.templeId || t.facilityId || t.uid || t.siteId || t.templeOrgId || ''),
+              name: String(t.name || t.templeName || t.facilityName || t.displayName || t.title || '')
+            };
+          }).filter(function (t) { return t.id && t.name && t.id !== 'undefined'; });
+          var utah = all.filter(function (t) { return isUtah(t.name); });
+          if (utah.length > 0) {
+            state.utahTemples = utah;
+            setStatus('Found ' + utah.length + ' Utah temples. Now choose Living Sealing and click a date in your range...');
+          }
+        }
+      }
+    }
+
+    // --- Learn availability API ---
+    if (!state.pattern) {
+      var str = JSON.stringify(data).toLowerCase();
+      var looksLikeAvail = (str.indexOf('slot') >= 0 || str.indexOf('session') >= 0 || str.indexOf('appointment') >= 0) &&
+                           (str.indexOf('time') >= 0 || str.indexOf('available') >= 0 || str.indexOf('start') >= 0);
+      if (looksLikeAvail) learnPattern(url, opts);
+    }
+  }
+
+  function learnPattern(url, opts) {
+    try {
+      var u = new URL(url, location.origin);
+      var templeParam = null, dateParam = null;
+
+      u.searchParams.forEach(function (val, key) {
+        if (!templeParam && /temple|facility|location|site|org/i.test(key) && /^\d+$/.test(val)) templeParam = { type: 'query', key: key };
+        if (!dateParam && /date|month|day/i.test(key) && /\d{4}/.test(val)) dateParam = { type: 'query', key: key };
+      });
+
+      var parts = u.pathname.split('/');
+      for (var i = 0; i < parts.length; i++) {
+        if (!templeParam && /^\d{3,}$/.test(parts[i])) templeParam = { type: 'path', idx: i };
+        if (!dateParam && /^\d{4}-\d{2}-\d{2}$/.test(parts[i])) dateParam = { type: 'path', idx: i };
+      }
+
+      var bodyTpl = null;
+      if ((opts.method === 'POST' || opts.method === 'PUT') && opts.body) {
+        try {
+          bodyTpl = JSON.parse(typeof opts.body === 'string' ? opts.body : '{}');
+          Object.keys(bodyTpl).forEach(function (k) {
+            if (!templeParam && /temple|facility|site|org/i.test(k) && /^\d+$/.test(String(bodyTpl[k]))) templeParam = { type: 'body', key: k };
+            if (!dateParam && /date|month|start|day/i.test(k) && /\d{4}/.test(String(bodyTpl[k]))) dateParam = { type: 'body', key: k };
+          });
+        } catch (e) { }
+      }
+
+      if (!templeParam && !dateParam) return; // not parameterizable; keep listening
+
+      state.pattern = {
+        baseUrl: u.toString(),
+        method: opts.method || 'GET',
+        headers: opts.headers || {},
+        bodyTpl: bodyTpl,
+        templeParam: templeParam,
+        dateParam: dateParam
+      };
+
+      setStatus('API detected. Searching all Utah temples, ' + START + ' to ' + END + '...');
+      runSearch();
+    } catch (e) {
+      setStatus('Could not parse the API call. Pick a Utah temple, Living Sealing, then a date in your range to retry.');
+    }
+  }
+
+  function buildReq(templeId, date) {
+    var p = state.pattern;
+    var u = new URL(p.baseUrl);
+    if (p.templeParam) {
+      if (p.templeParam.type === 'query') u.searchParams.set(p.templeParam.key, templeId);
+      else if (p.templeParam.type === 'path') { var a = u.pathname.split('/'); a[p.templeParam.idx] = templeId; u.pathname = a.join('/'); }
+    }
+    if (p.dateParam) {
+      if (p.dateParam.type === 'query') u.searchParams.set(p.dateParam.key, date);
+      else if (p.dateParam.type === 'path') { var b = u.pathname.split('/'); b[p.dateParam.idx] = date; u.pathname = b.join('/'); }
+    }
+    var reqOpts = { method: p.method, credentials: 'include', headers: p.headers };
+    if (p.bodyTpl) {
+      var body = {};
+      Object.keys(p.bodyTpl).forEach(function (k) { body[k] = p.bodyTpl[k]; });
+      if (p.templeParam && p.templeParam.type === 'body') body[p.templeParam.key] = templeId;
+      if (p.dateParam && p.dateParam.type === 'body') body[p.dateParam.key] = date;
+      reqOpts.body = JSON.stringify(body);
+    }
+    return { url: u.toString(), opts: reqOpts };
+  }
+
+  function parseSlots(data) {
+    var arr = Array.isArray(data) ? data : findArr(data) || [];
+    return arr.filter(function (s) {
+      if (!s) return false;
+      var str = JSON.stringify(s).toLowerCase();
+      return !(str.indexOf('"available":false') >= 0 || str.indexOf('"isavailable":false') >= 0 ||
+               str.indexOf('"isbooked":true') >= 0 || str.indexOf('"status":"unavailable"') >= 0);
+    }).map(function (s) {
+      if (typeof s === 'string') return s;
+      return s.time || s.startTime || s.sessionTime || s.displayTime || s.slot || '?';
+    });
+  }
+
+  async function runSearch() {
+    var temples = state.utahTemples;
+    if (temples.length === 0) { setStatus('No Utah temples detected yet — open one in the scheduler first.'); return; }
+
+    var tasks = [];
+    temples.forEach(function (t) { DATES.forEach(function (date) { tasks.push({ temple: t, date: date }); }); });
+    state.total = tasks.length;
+    state.done = 0;
+
+    var BATCH = 5;
+    for (var i = 0; i < tasks.length; i += BATCH) {
+      var batch = tasks.slice(i, i + BATCH);
+      await Promise.all(batch.map(doFetch));
+      state.done += batch.length;
+      updateProgress();
+      renderCal();
+      await sleep(120);
+    }
+
+    var found = Object.keys(state.results).length;
+    setStatus('Done. ' + found + ' date' + (found !== 1 ? 's' : '') + ' with living sealing openings. Click any green date.');
+    renderCal();
+  }
+
+  async function doFetch(task) {
+    try {
+      var req = buildReq(task.temple.id, task.date);
+      var resp = await origFetch(req.url, req.opts);
+      if (!resp.ok) return;
+      var data = await resp.json();
+      var slots = parseSlots(data);
+      if (slots.length > 0) {
+        if (!state.results[task.date]) state.results[task.date] = {};
+        state.results[task.date][task.temple.name] = slots;
+      }
+    } catch (e) { /* skip */ }
+  }
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  // ========== UI ==========
+  var sty = document.createElement('style');
+  sty.id = ID + '_style';
+  sty.textContent = [
+    '#' + ID + '{position:fixed!important;top:0!important;right:0!important;width:385px!important;height:100vh!important;',
+    'background:#fff!important;border-left:3px solid #154360!important;z-index:2147483647!important;',
+    'display:flex!important;flex-direction:column!important;',
+    'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;',
+    'font-size:13px!important;box-shadow:-4px 0 20px rgba(0,0,0,.22)!important;overflow:hidden!important;}',
+    '.' + ID + '_day{border-radius:7px;padding:5px 3px;text-align:center;cursor:pointer;',
+    'border:1px solid #e0e0e0;min-height:44px;display:flex;flex-direction:column;align-items:center;',
+    'justify-content:center;transition:background .15s,transform .1s;}',
+    '.' + ID + '_day:hover{transform:scale(1.05);}',
+    '.' + ID + '_out{opacity:.35;cursor:default;}',
+    '.' + ID + '_avail{background:#d4efdf!important;border-color:#27ae60!important;}',
+    '.' + ID + '_sel{background:#154360!important;border-color:#154360!important;}',
+    '.' + ID + '_sel span{color:#fff!important;}',
+    '.' + ID + '_chip{display:inline-block;background:#154360;color:#fff;border-radius:12px;',
+    'padding:3px 10px;font-size:12px;margin:2px;}'
+  ].join('');
+  document.head.appendChild(sty);
+
+  var panel = document.createElement('div');
+  panel.id = ID;
+  panel.innerHTML =
+    '<div style="background:#154360;color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+      '<b style="font-size:13px;">Utah Living Sealing Finder<br><span style="font-weight:400;font-size:11px;opacity:.8;">' + START + ' &rarr; ' + END + '</span></b>' +
+      '<button id="' + ID + '_x" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;">&#10005;</button>' +
+    '</div>' +
+    '<div id="' + ID + '_s" style="padding:10px 14px;background:#eaf4fb;border-bottom:1px solid #bee3f8;color:#154360;font-size:12px;line-height:1.5;flex-shrink:0;"></div>' +
+    '<div id="' + ID + '_pb" style="height:3px;background:#e8e8e8;display:none;flex-shrink:0;"><div id="' + ID + '_pbr" style="height:3px;background:#154360;width:0%;transition:width .4s;"></div></div>' +
+    '<div id="' + ID + '_c" style="overflow-y:auto;flex:1;padding:12px;"></div>' +
+    '<div id="' + ID + '_d" style="display:none;border-top:1px solid #e8e8e8;padding:12px;max-height:44vh;overflow-y:auto;background:#f8f9fa;flex-shrink:0;"></div>';
+  document.body.appendChild(panel);
+
+  document.getElementById(ID + '_x').addEventListener('click', function () {
+    panel.remove(); sty.remove();
+    if (window.__usfOf) { window.fetch = window.__usfOf; delete window.__usfOf; }
+  });
+
+  var selDate = null;
+
+  function setStatus(msg) {
+    var el = document.getElementById(ID + '_s');
+    if (el) el.textContent = msg;
+  }
+
+  function updateProgress() {
+    var pb = document.getElementById(ID + '_pb');
+    var pbr = document.getElementById(ID + '_pbr');
+    if (!pb || !pbr) return;
+    pb.style.display = 'block';
+    pbr.style.width = (state.total ? Math.round(state.done / state.total * 100) : 0) + '%';
+    setStatus('Searching... ' + state.done + ' / ' + state.total + ' checked — ' + Object.keys(state.results).length + ' dates found so far');
+  }
+
+  function monthsInRange() {
+    var out = [];
+    var d = new Date(DATES[0] + 'T12:00:00');
+    d.setDate(1);
+    var last = new Date(DATES[DATES.length - 1] + 'T12:00:00');
+    while (d <= last) {
+      out.push({ y: d.getFullYear(), m: d.getMonth() });
+      d.setMonth(d.getMonth() + 1);
+    }
+    return out;
+  }
+
+  function renderCal() {
+    var c = document.getElementById(ID + '_c');
+    if (!c) return;
+
+    var hdr = '<div style="margin-bottom:10px;font-size:12px;color:#555;line-height:1.6;">';
+    if (state.utahTemples.length === 0) {
+      hdr += '<b>Waiting for API...</b> In the scheduler: open any Utah temple, choose Living Sealing, click a date in your range.';
+    } else if (state.pattern && state.done < state.total) {
+      hdr += '<b>Searching ' + state.utahTemples.length + ' Utah temples...</b> Results appear as they come in.';
+    } else if (state.pattern) {
+      hdr += Object.keys(state.results).length + ' dates with openings. <b>Click a green date.</b>';
+    } else {
+      hdr += state.utahTemples.length + ' Utah temples found. Choose Living Sealing, then click a date in your range.';
+    }
+    hdr += '</div>';
+
+    var dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var inRange = {};
+    DATES.forEach(function (ds) { inRange[ds] = true; });
+
+    var html = hdr;
+    monthsInRange().forEach(function (mo) {
+      html += '<div style="font-weight:bold;color:#154360;font-size:13px;margin:10px 0 6px;">' + monthNames[mo.m] + ' ' + mo.y + '</div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">';
+      dayNames.forEach(function (d) {
+        html += '<div style="text-align:center;font-size:10px;font-weight:bold;color:#888;padding:3px 0;">' + d + '</div>';
+      });
+      var first = new Date(mo.y, mo.m, 1);
+      var daysInMonth = new Date(mo.y, mo.m + 1, 0).getDate();
+      for (var i = 0; i < first.getDay(); i++) html += '<div></div>';
+      for (var day = 1; day <= daysInMonth; day++) {
+        var ds = mo.y + '-' + ('0' + (mo.m + 1)).slice(-2) + '-' + ('0' + day).slice(-2);
+        var out = !inRange[ds];
+        var rd = state.results[ds];
+        var tCount = rd ? Object.keys(rd).length : 0;
+        var isSel = selDate === ds;
+        var cls = ID + '_day' + (out ? ' ' + ID + '_out' : '') + (tCount > 0 ? ' ' + ID + '_avail' : '') + (isSel ? ' ' + ID + '_sel' : '');
+        html += '<div class="' + cls + '"' + (out ? '' : ' data-date="' + ds + '"') + '>' +
+          '<span style="font-size:13px;font-weight:bold;">' + day + '</span>' +
+          (tCount > 0 ? '<span style="font-size:10px;font-weight:bold;color:' + (isSel ? '#a9dfbf' : '#27ae60') + ';">' + tCount + 't</span>' : '') +
+          '</div>';
+      }
+      html += '</div>';
+    });
+
+    c.innerHTML = html;
+    c.onclick = function (e) {
+      var el = e.target;
+      while (el && el !== c && !(el.dataset && el.dataset.date)) el = el.parentElement;
+      if (el && el !== c && el.dataset && el.dataset.date) showDay(el.dataset.date);
+    };
+  }
+
+  function showDay(ds) {
+    selDate = ds;
+    renderCal();
+    var detail = document.getElementById(ID + '_d');
+    if (!detail) return;
+    var rd = state.results[ds];
+    var dt = new Date(ds + 'T12:00:00');
+    var label = dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+    if (!rd || Object.keys(rd).length === 0) {
+      detail.style.display = 'block';
+      detail.innerHTML = '<b>' + label + '</b><br><span style="color:#888;font-size:12px;">No living sealing openings found for this date.</span>';
+      return;
+    }
+
+    var h = '<b>' + label + '</b>';
+    Object.keys(rd).forEach(function (tName) {
+      h += '<div style="margin-top:12px;">' +
+           '<div style="font-weight:bold;color:#154360;font-size:13px;">&#127963; ' + tName + '</div>' +
+           '<div style="margin-top:5px;">' + rd[tName].map(function (t) {
+             return '<span class="' + ID + '_chip">' + t + '</span>';
+           }).join('') + '</div></div>';
+    });
+
+    detail.style.display = 'block';
+    detail.innerHTML = h;
+  }
+
+  // Init
+  setStatus('On tos.churchofjesuschrist.org: open a Utah temple, choose Living Sealing, click a date in your range to activate.');
+  renderCal();
+}
+// END bookmarkletSource
+
+// ============================================================
+// PAGE LOGIC — date range + bookmarklet generation
+// ============================================================
+(function () {
+  var startEl = document.getElementById('startDate');
+  var endEl = document.getElementById('endDate');
+  var link = document.getElementById('bmLink');
+  var msg = document.getElementById('rangeMsg');
+
+  // Defaults: today -> +30 days
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  var today = new Date();
+  var plus30 = new Date(today.getTime() + 30 * 86400000);
+  startEl.value = iso(today);
+  endEl.value = iso(plus30);
+  startEl.min = iso(today);
+  endEl.min = iso(today);
+
+  var MAX_DAYS = 120;
+
+  function rebuild() {
+    var s = startEl.value, e = endEl.value;
+    if (!s || !e) { fail('Pick both dates.'); return; }
+    if (e < s) { fail('"To" date must be on or after "From" date.'); return; }
+    var days = Math.round((new Date(e) - new Date(s)) / 86400000) + 1;
+    if (days > MAX_DAYS) { fail('Range too large — keep it under ' + MAX_DAYS + ' days (currently ' + days + ').'); return; }
+
+    var src = bookmarkletSource.toString()
+      .replace(/^function bookmarkletSource\(\)\s*\{/, '(function(){')
+      .replace(/\}$/, '})();')
+      .replace('%%START%%', s)
+      .replace('%%END%%', e);
+
+    link.href = 'javascript:' + encodeURIComponent(src);
+    link.classList.remove('disabled');
+    msg.classList.remove('err');
+    msg.textContent = days + ' days, ' + s + ' to ' + e + ' — bookmarklet updated. Drag it to your bookmarks bar.';
+  }
+
+  function fail(t) {
+    link.href = '#';
+    link.classList.add('disabled');
+    msg.classList.add('err');
+    msg.textContent = t;
+  }
+
+  startEl.addEventListener('change', rebuild);
+  endEl.addEventListener('change', rebuild);
+  rebuild();
+})();
+</script>
+</body>
+</html>

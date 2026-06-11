@@ -104,14 +104,14 @@
     });
   });
 
-  /* --- Countdown timer (September 23rd of the next upcoming year) --- */
+  /* --- Countdown timer (September 15, 2026) --- */
   var cdDays  = document.getElementById('cd-days');
   var cdHours = document.getElementById('cd-hours');
   var cdMins  = document.getElementById('cd-mins');
   var cdSecs  = document.getElementById('cd-secs');
 
   if (cdDays) {
-    var weddingDate = new Date('September 23, 2026 00:00:00');
+    var weddingDate = new Date('September 15, 2026 00:00:00');
 
     function pad(n) { return n < 10 ? '0' + n : n; }
 
