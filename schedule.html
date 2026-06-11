@@ -379,47 +379,46 @@
         <div class="divider"></div>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:1.5rem;">
+      <!-- Temple -->
+      <div class="card" style="text-align:center; margin-bottom:1rem;">
+        <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Sealing</p>
+        <h3 style="margin-bottom:0.5rem;">Lindon Utah Temple</h3>
+        <p style="color:var(--color-muted);">850 E Center St, Lindon, UT 84042</p>
+        <a href="https://maps.google.com/?q=850+E+Center+St,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
+          Open in Maps
+        </a>
+      </div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--color-border); margin-bottom:2.5rem;">
+        <iframe
+          src="about:blank"
+          data-src="https://www.google.com/maps?q=850+E+Center+St,+Lindon,+UT+84042&output=embed"
+          width="100%" height="380" style="border:0; display:block;"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Lindon Utah Temple" class="venue-map">
+        </iframe>
+      </div>
 
-        <div class="card" style="text-align:center;">
-          <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Sealing</p>
-          <h3 style="margin-bottom:0.5rem;">Lindon Utah Temple</h3>
-          <p style="color:var(--color-muted);">850 E Center St<br>Lindon, UT 84042</p>
-          <a href="https://maps.google.com/?q=850+E+Center+St,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
-            Open in Maps
-          </a>
-        </div>
-
-        <div class="card" style="text-align:center;">
-          <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Reception &amp; Luncheon</p>
-          <h3 style="margin-bottom:0.5rem;">Walker Farms</h3>
-          <p style="color:var(--color-muted);">26 S 500 E<br>Lindon, UT 84042</p>
-          <a href="https://maps.google.com/?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
-            Open in Maps
-          </a>
-        </div>
-
+      <!-- Walker Farms -->
+      <div class="card" style="text-align:center; margin-bottom:1rem;">
+        <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Reception &amp; Luncheon</p>
+        <h3 style="margin-bottom:0.5rem;">Walker Farms</h3>
+        <p style="color:var(--color-muted);">26 S 500 E, Lindon, UT 84042</p>
+        <a href="https://maps.google.com/?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042" class="btn btn--outline" style="margin-top:1.25rem;" target="_blank" rel="noopener">
+          Open in Maps
+        </a>
+      </div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--color-border);">
+        <iframe
+          src="about:blank"
+          data-src="https://www.google.com/maps?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042&output=embed"
+          width="100%" height="380" style="border:0; display:block;"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Walker Farms" class="venue-map">
+        </iframe>
       </div>
 
       <div style="margin-top:2rem; color:var(--color-muted); font-size:0.92rem; text-align:center;">
         <p><!-- PARKING / TRANSPORT PLACEHOLDER --></p>
-      </div>
-
-      <!-- MAP EMBED: Replace the src below with your Google Maps embed URL.
-           In Google Maps: search your venue → Share → Embed a map → copy the src URL -->
-      <div style="margin-top:2rem; border-radius:var(--radius); overflow:hidden; border:1px solid var(--color-border);">
-        <iframe
-          id="venueMap"
-          src="about:blank"
-          data-src="https://www.google.com/maps?q=Walker+Farms,+26+S+500+E,+Lindon,+UT+84042&output=embed"
-          width="100%"
-          height="380"
-          style="border:0; display:block;"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Venue location">
-        </iframe>
       </div>
     </div>
   </section>
@@ -541,11 +540,10 @@
   <script src="js/main.js"></script>
   <script>
     (function(){
-      var iframe = document.getElementById('venueMap');
-      if (iframe) {
+      document.querySelectorAll('.venue-map').forEach(function(iframe) {
         var src = iframe.getAttribute('data-src');
         if (src && src.indexOf('<!--') === -1) iframe.src = src;
-      }
+      });
 
       // FAQ accordion
       document.querySelectorAll('.faq-q').forEach(function(btn) {
