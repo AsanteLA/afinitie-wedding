@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Code — Afinitie</title>
+  <title>QR Codes — Afinitie</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/logo.png" />
 
-  <!-- Open Graph -->
   <meta property="og:type"        content="website" />
   <meta property="og:title"       content="Abbie &amp; Asante — September 15, 2026" />
   <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
@@ -34,23 +32,52 @@
       text-align: center;
     }
 
-    #qr-container {
+    .qr-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: var(--space-md) 0;
+    }
+
+    .qr-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .qr-card__label {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-text, #2c1810);
+    }
+
+    .qr-card__tier {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--color-muted, #8a7060);
+    }
+
+    .qr-box {
       border: 1px solid var(--color-border);
       border-radius: var(--radius);
-      padding: 1.5rem;
+      padding: 1rem;
       background: #fff;
-      margin: var(--space-md) auto;
       display: inline-block;
       line-height: 0;
     }
 
-    .qr-url {
-      font-size: 0.8rem;
-      color: var(--color-muted);
-      letter-spacing: 0.05em;
-      margin-bottom: var(--space-md);
-      word-break: break-all;
-      max-width: 400px;
+    .qr-legend {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: var(--color-muted, #8a7060);
+      margin-top: 0.5rem;
     }
 
     @media print {
@@ -86,15 +113,33 @@
     <h2 style="margin-bottom:0.5rem;">Our Wedding Website</h2>
     <div class="divider"></div>
 
-    <div id="qr-container"></div>
+    <div class="qr-grid">
 
-    <p class="qr-url" id="qr-url-label"></p>
+      <div class="qr-card">
+        <div class="qr-card__label">Full</div>
+        <div class="qr-box" id="qr-full"></div>
+        <div class="qr-card__tier">Sealing · Luncheon · Reception</div>
+      </div>
 
-    <p class="qr-instructions" style="color:var(--color-muted); font-size:0.85rem; max-width:400px; margin-bottom:var(--space-md);">
-      Print this page and include it with your invitations so guests can scan and visit the site on their phone.
+      <div class="qr-card">
+        <div class="qr-card__label">Luncheon</div>
+        <div class="qr-box" id="qr-luncheon"></div>
+        <div class="qr-card__tier">Luncheon · Reception</div>
+      </div>
+
+      <div class="qr-card">
+        <div class="qr-card__label">Reception</div>
+        <div class="qr-box" id="qr-reception"></div>
+        <div class="qr-card__tier">Reception only</div>
+      </div>
+
+    </div>
+
+    <p class="qr-instructions" style="color:var(--color-muted); font-size:0.85rem; max-width:460px; margin:var(--space-md) 0;">
+      Print this page and include the appropriate QR code with each invitation so guests are taken directly to their schedule.
     </p>
 
-    <button onclick="window.print()" class="btn btn--primary">Print QR Code</button>
+    <button onclick="window.print()" class="btn btn--primary">Print QR Codes</button>
   </div>
 
   <script src="js/gate.js"></script>
@@ -104,22 +149,25 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     (function () {
-      // -------------------------------------------------------
-      // SET YOUR SITE URL HERE once you have your domain/S3 URL
-      // -------------------------------------------------------
-      var SITE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      var BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? window.location.href.split('/qr.html')[0]
-        : 'https://afinitie.com'; // <-- REPLACE WITH YOUR URL
+        : 'https://afinitie.com';
 
-      document.getElementById('qr-url-label').textContent = SITE_URL;
+      var codes = [
+        { id: 'qr-full',      token: 'wf9k2mxp' },
+        { id: 'qr-luncheon',  token: 'n4wr9tlv' },
+        { id: 'qr-reception', token: 'x2hj6nbc' },
+      ];
 
-      new QRCode(document.getElementById('qr-container'), {
-        text:           SITE_URL,
-        width:          248,
-        height:         248,
-        colorDark:      '#1b3a6b',
-        colorLight:     '#ffffff',
-        correctLevel:   QRCode.CorrectLevel.H,
+      codes.forEach(function (c) {
+        new QRCode(document.getElementById(c.id), {
+          text:          BASE + '?invite=' + c.token,
+          width:         180,
+          height:        180,
+          colorDark:     '#1b3a6b',
+          colorLight:    '#ffffff',
+          correctLevel:  QRCode.CorrectLevel.H,
+        });
       });
     })();
   </script>
