@@ -34,12 +34,14 @@
       text-align: center;
     }
 
-    #qr-canvas {
+    #qr-container {
       border: 1px solid var(--color-border);
       border-radius: var(--radius);
       padding: 1.5rem;
       background: #fff;
       margin: var(--space-md) auto;
+      display: inline-block;
+      line-height: 0;
     }
 
     .qr-url {
@@ -84,7 +86,7 @@
     <h2 style="margin-bottom:0.5rem;">Our Wedding Website</h2>
     <div class="divider"></div>
 
-    <canvas id="qr-canvas" width="280" height="280"></canvas>
+    <div id="qr-container"></div>
 
     <p class="qr-url" id="qr-url-label"></p>
 
@@ -111,8 +113,7 @@
 
       document.getElementById('qr-url-label').textContent = SITE_URL;
 
-      var canvas = document.getElementById('qr-canvas');
-      new QRCode(canvas, {
+      new QRCode(document.getElementById('qr-container'), {
         text:           SITE_URL,
         width:          248,
         height:         248,

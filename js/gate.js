@@ -1,18 +1,45 @@
 /* ============================================================
-   AFINITIE WEDDING — PASSWORD GATE
-   Change SITE_PASSWORD below to your chosen passcode.
-   The gate uses sessionStorage so guests only enter it once
-   per browser session (not on every page).
+   AFINITIE WEDDING — GATE + INVITE TOKEN SYSTEM
+
+   Three ways to unlock the site:
+     1. URL token  → ?invite=CODE  (QR codes, digital invites)
+     2. Password   → afinitie2026  (fallback / manual entry)
+     3. localStorage → remembered on return visits (same browser)
+
+   Invite tiers (for future tiered schedule):
+     full      → wf9k2mxp   (sealing + luncheon + reception)
+     luncheon  → n4wr9tlv   (luncheon + reception)
+     reception → x2hj6nbc   (reception only)
    ============================================================ */
 
 (function () {
   'use strict';
 
-  var SITE_PASSWORD = 'afinitie2026'; // <-- CHANGE THIS
+  var SITE_PASSWORD = 'afinitie2026';
 
-  if (sessionStorage.getItem('afinitie_auth') === '1') return;
+  var INVITE_TOKENS = {
+    'wf9k2mxp': 'full',
+    'n4wr9tlv': 'luncheon',
+    'x2hj6nbc': 'reception'
+  };
 
-  /* Build overlay */
+  /* ── 1. Check URL for invite token ── */
+  var params  = new URLSearchParams(window.location.search);
+  var token   = params.get('invite');
+
+  if (token && INVITE_TOKENS[token]) {
+    localStorage.setItem('afinitie_auth', '1');
+    localStorage.setItem('afinitie_tier', INVITE_TOKENS[token]);
+    // Clean token from URL without reloading
+    params.delete('invite');
+    var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    history.replaceState(null, '', clean);
+  }
+
+  /* ── 2. Already authenticated ── */
+  if (localStorage.getItem('afinitie_auth') === '1') return;
+
+  /* ── 3. Show password gate ── */
   var overlay = document.createElement('div');
   overlay.id = 'gate-overlay';
   overlay.innerHTML = [
@@ -49,7 +76,8 @@
     e.preventDefault();
     var val = document.getElementById('gate-input').value.trim();
     if (val === SITE_PASSWORD) {
-      sessionStorage.setItem('afinitie_auth', '1');
+      localStorage.setItem('afinitie_auth', '1');
+      localStorage.setItem('afinitie_tier', 'full');
       overlay.remove();
       document.body.style.overflow = '';
     } else {
