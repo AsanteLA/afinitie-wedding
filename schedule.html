@@ -299,6 +299,20 @@
   </style>
 </head>
 <body>
+  <!-- Tier-based visibility — runs before render to avoid flash -->
+  <script>
+  (function(){
+    var t = localStorage.getItem('afinitie_tier');
+    if (!t || t === 'full') return;
+    var s = document.createElement('style');
+    if (t === 'luncheon') {
+      s.textContent = '[data-tiers="full"]{display:none!important}';
+    } else if (t === 'reception') {
+      s.textContent = '[data-tiers="full"],[data-tiers="full luncheon"]{display:none!important}';
+    }
+    document.head.appendChild(s);
+  })();
+  </script>
 
   <!-- ==================== NAV ==================== -->
   <nav class="nav" id="nav">
@@ -345,7 +359,7 @@
     <div class="container">
       <div class="program">
 
-        <div class="program__item">
+        <div class="program__item" data-tiers="full">
           <div class="program__time">12:00 PM</div>
           <div class="program__event">
             <h3>Temple Sealing</h3>
@@ -353,7 +367,7 @@
           </div>
         </div>
 
-        <div class="program__item">
+        <div class="program__item" data-tiers="full luncheon">
           <div class="program__time">12:45 PM</div>
           <div class="program__event">
             <h3>Temple Grounds Gathering</h3>
@@ -361,7 +375,7 @@
           </div>
         </div>
 
-<div class="program__item">
+<div class="program__item" data-tiers="full luncheon">
           <div class="program__time">4:00 PM</div>
           <div class="program__event">
             <h3>Luncheon</h3>
@@ -401,7 +415,7 @@
     </div>
 
     <!-- ── Temple card ── -->
-    <div class="container" style="max-width:70vw;">
+    <div class="container" style="max-width:70vw;" data-tiers="full luncheon">
       <div class="card" style="text-align:center; margin-bottom:1.5rem;">
         <p style="font-size:0.7rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--color-gold); margin-bottom:0.5rem;">Sealing</p>
         <h3 style="margin-bottom:0.5rem;">Lindon Utah Temple</h3>
@@ -414,7 +428,7 @@
     </div>
 
     <!-- ── Temple full-width photo strip ── -->
-    <div class="venue-strip">
+    <div class="venue-strip" data-tiers="full luncheon">
       <div class="venue-strip__inner">
         <!-- original set -->
         <img class="venue-strip__img" src="https://churchofjesuschristtemples.org/assets/img/temples/lindon-utah-temple/lindon-utah-temple-64454.jpg" alt="Lindon Utah Temple" loading="eager" />
@@ -476,7 +490,7 @@
   </section>
 
   <!-- ==================== TEMPLE FAQ ==================== -->
-  <section class="section section--alt">
+  <section class="section section--alt" data-tiers="full luncheon">
     <div class="container" style="max-width:720px;">
       <div class="section__header">
         <span class="eyebrow">For Our Guests</span>
