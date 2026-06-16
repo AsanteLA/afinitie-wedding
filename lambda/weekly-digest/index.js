@@ -24,7 +24,7 @@ const TO_EMAIL   = process.env.TO_EMAIL;
 const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const showDietary = v => v && !['na','n/a','none','no','-',''].includes(v.trim().toLowerCase());
 
-function buildEmail(items) {
+function buildEmail(items, allTimeGuests) {
   const attending    = items.filter(i => i.attending.S === 'yes');
   const notAttending = items.filter(i => i.attending.S === 'no');
   const totalGuests  = attending.reduce((s, i) => s + parseInt(i.guests.S || '1', 10), 0);
@@ -86,10 +86,11 @@ function buildEmail(items) {
   </div>
   <div style="background:#faf6f0;border-bottom:1px solid #e2d8cc;padding:24px 40px;">
     <table style="width:100%;border-collapse:collapse;"><tr>
-      ${stat(items.length,       'New This Week', '#1b3a6b')}
-      ${stat(attending.length,   'Attending',     '#1b3a6b')}
-      ${stat(totalGuests,        'Total Guests',  '#c4601a')}
-      ${stat(notAttending.length,'Declined',      '#888888')}
+      ${stat(items.length,       'New This Week',      '#1b3a6b')}
+      ${stat(attending.length,   'Attending',          '#1b3a6b')}
+      ${stat(totalGuests,        'Guests This Week',   '#c4601a')}
+      ${stat(allTimeGuests,      'Total Guests So Far','#c4601a')}
+      ${stat(notAttending.length,'Declined',           '#888888')}
     </tr></table>
   </div>
   <div style="padding:32px 40px;">
@@ -123,6 +124,7 @@ function buildEmail(items) {
 exports.handler = async () => {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
+  // This week's RSVPs
   let items = [];
   try {
     const result = await dynamo.send(new ScanCommand({
@@ -142,8 +144,18 @@ exports.handler = async () => {
     return;
   }
 
+  // All-time total guest count
+  let allTimeGuests = 0;
+  try {
+    const allResult = await dynamo.send(new ScanCommand({ TableName: TABLE_NAME }));
+    const allAttending = (allResult.Items || []).filter(i => i.attending?.S === 'yes');
+    allTimeGuests = allAttending.reduce((s, i) => s + parseInt(i.guests?.S || '1', 10), 0);
+  } catch (err) {
+    console.error('All-time scan error:', err);
+  }
+
   const subject  = `Weekly RSVP Update — ${items.length} new response${items.length !== 1 ? 's' : ''}`;
-  const htmlBody = buildEmail(items);
+  const htmlBody = buildEmail(items, allTimeGuests);
 
   try {
     await ses.send(new SendEmailCommand({
