@@ -76,9 +76,26 @@ async function sendConfirmation(guest) {
           <a href="https://afinitie.com/schedule.html"
              style="display:inline-block; padding:14px 32px; background:#1b3a6b; color:#fff;
                     text-decoration:none; font-size:12px; letter-spacing:0.15em;
-                    text-transform:uppercase;">
+                    text-transform:uppercase; margin-bottom:16px;">
             View the Schedule
           </a>
+
+          <div style="margin-top:16px;">
+            <p style="font-size:12px; color:#8a7060; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 12px;">Add to Calendar</p>
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Abbie+%26+Asante%27s+Wedding&dates=20260915T180000Z%2F20260916T030000Z&details=Temple+Sealing+at+noon%2C+Luncheon+at+4pm%2C+Reception+at+6pm.+Full+details+at+https%3A%2F%2Fafinitie.com&location=850+E+Center+St%2C+Lindon%2C+UT+84042"
+               target="_blank"
+               style="display:inline-block; padding:10px 20px; border:1px solid #1b3a6b; color:#1b3a6b;
+                      text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+                      margin:0 6px;">
+              Google Calendar
+            </a>
+            <a href="https://afinitie.com/wedding.ics"
+               style="display:inline-block; padding:10px 20px; border:1px solid #1b3a6b; color:#1b3a6b;
+                      text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+                      margin:0 6px;">
+              Apple / Outlook
+            </a>
+          </div>
         </div>
 
         <p style="font-size:14px; color:#8a7060; text-align:center; margin:0;">

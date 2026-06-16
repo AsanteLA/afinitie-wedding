@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Afinitie Wedding//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:abbie-asante-wedding-20260915@afinitie.com
+SUMMARY:Abbie & Asante's Wedding
+DTSTART:20260915T180000Z
+DTEND:20260916T030000Z
+LOCATION:Lindon Utah Temple & Walker Farms, Lindon, UT
+DESCRIPTION:Join us for our wedding day!\n\n12:00 PM — Temple Sealing, Lindon Utah Temple\n4:00 PM — Luncheon, Walker Farms\n6:00 PM — Reception, Walker Farms\n\nFull details at https://afinitie.com
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
