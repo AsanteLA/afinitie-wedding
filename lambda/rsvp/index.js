@@ -205,7 +205,12 @@ exports.handler = async (event) => {
 
   // Send confirmation email to guest (non-blocking — don't fail the RSVP if email fails)
   if (attending === 'yes') {
-    await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song })]);
+    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song })]);
+    if (result.status === 'rejected') {
+      console.error('SES confirmation failed:', JSON.stringify(result.reason));
+    } else {
+      console.log('SES confirmation sent to:', email);
+    }
   }
 
   return {
