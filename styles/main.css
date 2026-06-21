@@ -1,27 +1,27 @@
 /* ============================================================
    AFINITIE WEDDING — MAIN STYLESHEET
-   Elegant & Minimal — Palette: Navy · Burgundy · Burnt Orange · Mustard · Cream
+   Elegant & Minimal — Palette: Peacock Teal · Deep Purple · Burnt Orange · Mustard · Cream
    ============================================================ */
 
 /* ---------- CSS Variables ---------- */
 :root {
   /* Brand palette */
-  --color-navy:      #1b3a6b;
-  --color-burgundy:  #6b1a2a;
-  --color-orange:    #c4601a;
-  --color-mustard:   #d4981a;
+  --color-navy:      #0c6870;          /* peacock teal */
+  --color-burgundy:  #5a2d88;          /* deep jewel purple */
+  --color-orange:    #c4601a;          /* burnt orange */
+  --color-mustard:   #c89020;          /* mustard gold */
   --color-cream:     #faf6f0;
 
   /* Semantic roles */
   --color-bg:        #faf6f0;          /* warm cream background */
   --color-surface:   #ffffff;
-  --color-text:      #1b3a6b;          /* navy for headings & body */
-  --color-muted:     #5a6a7a;
-  --color-accent:    #6b1a2a;          /* burgundy as primary accent */
-  --color-accent-lt: #f2e8e8;          /* light burgundy tint */
-  --color-border:    #e2d8cc;
+  --color-text:      #0c6870;          /* peacock teal for headings & body */
+  --color-muted:     #526870;          /* teal-gray muted */
+  --color-accent:    #5a2d88;          /* deep purple as primary accent */
+  --color-accent-lt: #ede5f7;          /* light purple tint */
+  --color-border:    #e0d8cc;
   --color-highlight: #c4601a;          /* burnt orange for CTAs */
-  --color-gold:      #d4981a;          /* mustard / gold detail */
+  --color-gold:      #c89020;          /* mustard / gold detail */
 
   --font-serif:  'Cormorant Garamond', Georgia, serif;
   --font-sans:   'Jost', 'Helvetica Neue', Arial, sans-serif;
@@ -147,7 +147,7 @@ p:last-child { margin-bottom: 0; }
   height: 90px;
   width: auto;
   /* Logo is navy on black — invert to show on light nav bg */
-  filter: brightness(0) saturate(100%) invert(18%) sepia(60%) saturate(600%) hue-rotate(195deg) brightness(80%);
+  filter: brightness(0) saturate(100%) invert(30%) sepia(80%) saturate(700%) hue-rotate(155deg) brightness(85%);
   transition: opacity var(--transition);
 }
 
@@ -156,7 +156,7 @@ p:last-child { margin-bottom: 0; }
 .footer__logo-img {
   height: 64px;
   width: auto;
-  filter: brightness(0) saturate(100%) invert(18%) sepia(60%) saturate(600%) hue-rotate(195deg) brightness(80%);
+  filter: brightness(0) saturate(100%) invert(30%) sepia(80%) saturate(700%) hue-rotate(155deg) brightness(85%);
   margin: 0 auto 0.5rem;
   display: block;
 }
@@ -248,11 +248,11 @@ p:last-child { margin-bottom: 0; }
   padding: 0.7rem 1.4rem;
   text-decoration: none;
   transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
-  box-shadow: 0 4px 16px rgba(27,58,107,0.35);
+  box-shadow: 0 4px 16px rgba(12,104,112,0.35);
 }
 .back-btn:hover {
   background: var(--color-burgundy);
-  box-shadow: 0 6px 24px rgba(107,26,42,0.35);
+  box-shadow: 0 6px 24px rgba(90,45,136,0.35);
   transform: translateY(-2px);
 }
 
@@ -274,8 +274,8 @@ p:last-child { margin-bottom: 0; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 80%, rgba(107,26,42,0.07) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 20%, rgba(27,58,107,0.07) 0%, transparent 55%);
+    radial-gradient(ellipse at 20% 80%, rgba(90,45,136,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(12,104,112,0.08) 0%, transparent 55%);
   pointer-events: none;
 }
 

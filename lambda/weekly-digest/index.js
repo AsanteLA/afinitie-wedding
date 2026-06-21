@@ -45,10 +45,10 @@ function buildEmail(items, allTimeGuests) {
       <tr style="border-bottom:1px solid #e8e0d4;">
         <td style="padding:12px 16px;font-size:13px;color:#5a6a7a;text-align:center;">${idx + 1}</td>
         <td style="padding:12px 16px;">
-          <strong style="color:#1b3a6b;font-size:14px;">${esc(i.name.S)}</strong>
+          <strong style="color:#0c6870;font-size:14px;">${esc(i.name.S)}</strong>
           ${dietary}${song}${note}
         </td>
-        <td style="padding:12px 16px;text-align:center;font-size:13px;color:#1b3a6b;font-weight:500;">${g}</td>
+        <td style="padding:12px 16px;text-align:center;font-size:13px;color:#0c6870;font-weight:500;">${g}</td>
       </tr>`;
   }).join('');
 
@@ -65,29 +65,29 @@ function buildEmail(items, allTimeGuests) {
 
   const songRows = songs.map(i => `
     <tr style="border-bottom:1px solid #e8e0d4;">
-      <td style="padding:10px 16px;font-size:13px;color:#1b3a6b;font-style:italic;">${esc(i.song.S)}</td>
+      <td style="padding:10px 16px;font-size:13px;color:#0c6870;font-style:italic;">${esc(i.song.S)}</td>
       <td style="padding:10px 16px;font-size:12px;color:#5a6a7a;">${esc(i.name.S)}</td>
     </tr>`).join('');
 
   const section = (title, content) => `
     <div style="margin-bottom:28px;">
-      <div style="border-top:2px solid #d4981a;padding-top:12px;margin-bottom:12px;">
-        <span style="font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#d4981a;">${title}</span>
+      <div style="border-top:2px solid #c89020;padding-top:12px;margin-bottom:12px;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#c89020;">${title}</span>
       </div>${content}
     </div>`;
 
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>
 <body style="margin:0;padding:0;background:#f5f0e8;font-family:'Helvetica Neue',Arial,sans-serif;">
 <div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:4px;overflow:hidden;border:1px solid #e2d8cc;">
-  <div style="background:#1b3a6b;padding:32px 40px;text-align:center;">
-    <div style="font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:#d4981a;margin-bottom:8px;">Weekly Digest</div>
+  <div style="background:#0c6870;padding:32px 40px;text-align:center;">
+    <div style="font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:#c89020;margin-bottom:8px;">Weekly Digest</div>
     <div style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#ffffff;line-height:1.2;">Abbie &amp; Asante</div>
     <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;letter-spacing:0.1em;">September 15, 2026</div>
   </div>
   <div style="background:#faf6f0;border-bottom:1px solid #e2d8cc;padding:24px 40px;">
     <table style="width:100%;border-collapse:collapse;"><tr>
-      ${stat(items.length,       'New This Week',      '#1b3a6b')}
-      ${stat(attending.length,   'Attending',          '#1b3a6b')}
+      ${stat(items.length,       'New This Week',      '#0c6870')}
+      ${stat(attending.length,   'Attending',          '#0c6870')}
       ${stat(totalGuests,        'Guests This Week',   '#c4601a')}
       ${stat(allTimeGuests,      'Total Guests So Far','#c4601a')}
       ${stat(notAttending.length,'Declined',           '#888888')}

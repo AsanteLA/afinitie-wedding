@@ -39,8 +39,8 @@ async function sendConfirmation(guest) {
     <div style="font-family:'Helvetica Neue',Arial,sans-serif; max-width:560px; margin:0 auto; color:#2c1810;">
       <div style="text-align:center; padding:40px 0 24px;">
         <p style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#8a7060; margin:0 0 12px;">Abbie &amp; Asante · September 15, 2026</p>
-        <h1 style="font-family:Georgia,serif; font-size:32px; font-weight:300; color:#1b3a6b; margin:0 0 8px;">We'll see you there! 🤍</h1>
-        <div style="width:60px; height:1px; background:#d4981a; margin:16px auto;"></div>
+        <h1 style="font-family:Georgia,serif; font-size:32px; font-weight:300; color:#0c6870; margin:0 0 8px;">We'll see you there! 🤍</h1>
+        <div style="width:60px; height:1px; background:#c89020; margin:16px auto;"></div>
       </div>
 
       <div style="padding:0 32px 32px;">
@@ -69,12 +69,12 @@ async function sendConfirmation(guest) {
 
         <p style="font-size:15px; line-height:1.6; color:#5a6a7a;">
           Need to make changes? Just reach out to us at
-          <a href="mailto:hello@afinitie.com" style="color:#1b3a6b;">hello@afinitie.com</a>.
+          <a href="mailto:hello@afinitie.com" style="color:#0c6870;">hello@afinitie.com</a>.
         </p>
 
         <div style="text-align:center; margin:32px 0;">
           <a href="https://afinitie.com/schedule.html"
-             style="display:inline-block; padding:14px 32px; background:#1b3a6b; color:#fff;
+             style="display:inline-block; padding:14px 32px; background:#0c6870; color:#fff;
                     text-decoration:none; font-size:12px; letter-spacing:0.15em;
                     text-transform:uppercase; margin-bottom:16px;">
             View the Schedule
@@ -84,13 +84,13 @@ async function sendConfirmation(guest) {
             <p style="font-size:12px; color:#8a7060; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 12px;">Add to Calendar</p>
             <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Abbie+%26+Asante%27s+Wedding&dates=20260915T180000Z%2F20260916T030000Z&details=Temple+Sealing+at+noon%2C+Luncheon+at+4pm%2C+Reception+at+6pm.+Full+details+at+https%3A%2F%2Fafinitie.com&location=850+E+Center+St%2C+Lindon%2C+UT+84042"
                target="_blank"
-               style="display:inline-block; padding:10px 20px; border:1px solid #1b3a6b; color:#1b3a6b;
+               style="display:inline-block; padding:10px 20px; border:1px solid #0c6870; color:#0c6870;
                       text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
                       margin:0 6px;">
               Google Calendar
             </a>
             <a href="https://afinitie.com/wedding.ics"
-               style="display:inline-block; padding:10px 20px; border:1px solid #1b3a6b; color:#1b3a6b;
+               style="display:inline-block; padding:10px 20px; border:1px solid #0c6870; color:#0c6870;
                       text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
                       margin:0 6px;">
               Apple / Outlook
@@ -100,7 +100,7 @@ async function sendConfirmation(guest) {
 
         <p style="font-size:14px; color:#8a7060; text-align:center; margin:0;">
           With love,<br>
-          <span style="font-family:Georgia,serif; font-size:18px; color:#1b3a6b;">Abbie &amp; Asante</span>
+          <span style="font-family:Georgia,serif; font-size:18px; color:#0c6870;">Abbie &amp; Asante</span>
         </p>
       </div>
 
