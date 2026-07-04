@@ -32,7 +32,7 @@ const CORS = {
 /* ── Email helpers ─────────────────────────────────────────── */
 
 async function sendConfirmation(guest) {
-  const { name, email, guests, dietary, song } = guest;
+  const { name, email, guests, dietary, song, sealing, luncheon, reception } = guest;
   const firstName = name.split(' ')[0];
 
   const html = `
@@ -51,8 +51,23 @@ async function sendConfirmation(guest) {
         </p>
 
         <table style="width:100%; border-collapse:collapse; margin:24px 0; font-size:15px;">
+          ${sealing === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
-            <td style="padding:10px 0; color:#8a7060; width:140px;">Guests attending</td>
+            <td style="padding:10px 0; color:#8a7060; width:160px;">Temple Sealing</td>
+            <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple</td>
+          </tr>` : ''}
+          ${luncheon === 'yes' ? `
+          <tr style="border-bottom:1px solid #e8e0d4;">
+            <td style="padding:10px 0; color:#8a7060;">Luncheon</td>
+            <td style="padding:10px 0; font-weight:500;">4:00 PM · Walker Farms</td>
+          </tr>` : ''}
+          ${reception === 'yes' ? `
+          <tr style="border-bottom:1px solid #e8e0d4;">
+            <td style="padding:10px 0; color:#8a7060;">Reception</td>
+            <td style="padding:10px 0; font-weight:500;">6:00 PM · Walker Farms</td>
+          </tr>` : ''}
+          <tr style="border-bottom:1px solid #e8e0d4;">
+            <td style="padding:10px 0; color:#8a7060;">Guests attending</td>
             <td style="padding:10px 0; font-weight:500;">${guests}</td>
           </tr>
           ${dietary ? `
@@ -173,7 +188,8 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { name, email, attending, guests, dietary, song, message, timestamp } = body;
+  const { name, email, attending, guests, dietary, song, message, timestamp,
+          tier, sealing, luncheon, reception } = body;
 
   if (!name || !email || !attending) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing required fields' }) };
@@ -191,6 +207,10 @@ exports.handler = async (event) => {
         name:      { S: name },
         email:     { S: email },
         attending: { S: attending },
+        tier:      { S: tier      || 'full' },
+        sealing:   { S: sealing   || 'na' },
+        luncheon:  { S: luncheon  || 'na' },
+        reception: { S: reception || 'na' },
         guests:    { S: guests   || '0' },
         dietary:   { S: dietary  || '' },
         song:      { S: song     || '' },
@@ -205,7 +225,7 @@ exports.handler = async (event) => {
 
   // Send confirmation email to guest (non-blocking — don't fail the RSVP if email fails)
   if (attending === 'yes') {
-    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song })]);
+    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song, sealing, luncheon, reception })]);
     if (result.status === 'rejected') {
       console.error('SES confirmation failed:', JSON.stringify(result.reason));
     } else {
