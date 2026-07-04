@@ -226,7 +226,7 @@
       <button class="admin-refresh" id="refreshBtn">↻ Refresh</button>
     </div>
 
-    <!-- Stats -->
+    <!-- Stats: overall -->
     <div class="stat-grid">
       <div class="stat-card stat-card--attending">
         <div class="stat-card__num" id="stat-attending">—</div>
@@ -246,11 +246,33 @@
       </div>
     </div>
 
+    <!-- Stats: per event -->
+    <div style="margin-bottom:0.5rem;">
+      <span class="eyebrow" style="margin-bottom:0.25rem;">Guest Count by Event</span>
+    </div>
+    <div class="stat-grid" style="margin-bottom:var(--space-lg);">
+      <div class="stat-card" style="border-top:3px solid var(--color-navy);">
+        <div class="stat-card__num" id="stat-sealing" style="color:var(--color-navy);">—</div>
+        <div class="stat-card__label">Sealing</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--color-highlight);">
+        <div class="stat-card__num" id="stat-luncheon" style="color:var(--color-highlight);">—</div>
+        <div class="stat-card__label">Luncheon</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--color-burgundy);">
+        <div class="stat-card__num" id="stat-reception" style="color:var(--color-burgundy);">—</div>
+        <div class="stat-card__label">Reception</div>
+      </div>
+    </div>
+
     <!-- Filter -->
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="yes">Attending</button>
       <button class="filter-btn" data-filter="no">Not Attending</button>
+      <button class="filter-btn" data-filter="sealing">Sealing</button>
+      <button class="filter-btn" data-filter="luncheon">Luncheon</button>
+      <button class="filter-btn" data-filter="reception">Reception</button>
       <button class="filter-btn" data-filter="dietary">Has Dietary Note</button>
       <button class="filter-btn" data-filter="song">Has Song Request</button>
     </div>
@@ -267,6 +289,7 @@
             <th data-col="name">Name</th>
             <th data-col="attending">Status</th>
             <th data-col="guests">Guests</th>
+            <th data-col="events">Events</th>
             <th data-col="dietary">Dietary</th>
             <th data-col="song">Song Request</th>
             <th data-col="timestamp">Date</th>
@@ -289,6 +312,9 @@
         <button class="filter-btn active" data-sub-filter="all">All</button>
         <button class="filter-btn" data-sub-filter="yes">Attending</button>
         <button class="filter-btn" data-sub-filter="no">Not Attending</button>
+        <button class="filter-btn" data-sub-filter="sealing">Sealing</button>
+        <button class="filter-btn" data-sub-filter="luncheon">Luncheon</button>
+        <button class="filter-btn" data-sub-filter="reception">Reception</button>
         <button class="filter-btn" data-sub-filter="dietary">Has Dietary Note</button>
         <button class="filter-btn" data-sub-filter="song">Has Song Request</button>
       </div>
@@ -353,11 +379,11 @@
     // ── Mock data for local dev ───────────────────────────────────
     const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MOCK_RSVPS = [
-      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', guests:'1', dietary:'',          song:'Bruno Mars — Treasure',               message:'Can\'t wait!',     timestamp: new Date().toISOString() },
-      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', guests:'2', dietary:'Vegan',     song:'Adele — Make You Feel My Love',       message:'So excited!',      timestamp: new Date().toISOString() },
-      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', guests:'3', dietary:'Nut allergy',song:'LMFAO — Party Rock Anthem',           message:'',                 timestamp: new Date().toISOString() },
-      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', guests:'1', dietary:'',          song:'',                                    message:'Congratulations!', timestamp: new Date().toISOString() },
-      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  guests:'0', dietary:'',          song:'',                                    message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
+      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', tier:'full',      sealing:'yes', luncheon:'yes', reception:'yes', guests:'1', dietary:'',           song:'Bruno Mars — Treasure',         message:'Can\'t wait!',          timestamp: new Date().toISOString() },
+      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', tier:'full',      sealing:'yes', luncheon:'yes', reception:'yes', guests:'2', dietary:'Vegan',      song:'Adele — Make You Feel My Love', message:'So excited!',           timestamp: new Date().toISOString() },
+      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', tier:'luncheon',  sealing:'na',  luncheon:'yes', reception:'yes', guests:'3', dietary:'Nut allergy', song:'LMFAO — Party Rock Anthem',     message:'',                      timestamp: new Date().toISOString() },
+      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', tier:'reception', sealing:'na',  luncheon:'na',  reception:'yes', guests:'1', dietary:'',           song:'',                              message:'Congratulations!',      timestamp: new Date().toISOString() },
+      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  tier:'full',      sealing:'no',  luncheon:'no',  reception:'no',  guests:'0', dietary:'',           song:'',                              message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
     ];
 
     // ── Fetch ─────────────────────────────────────────────────────
@@ -405,10 +431,17 @@
       const guests    = attending.reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
       const songs     = attending.filter(r => r.song && r.song.trim()).length;
 
-      document.getElementById('stat-attending').textContent = attending.length;
-      document.getElementById('stat-guests').textContent    = guests;
-      document.getElementById('stat-declined').textContent  = declined.length;
-      document.getElementById('stat-songs').textContent     = songs;
+      const evtGuests = (field) =>
+        allRsvps.filter(r => r[field] === 'yes')
+                .reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
+
+      document.getElementById('stat-attending').textContent  = attending.length;
+      document.getElementById('stat-guests').textContent     = guests;
+      document.getElementById('stat-declined').textContent   = declined.length;
+      document.getElementById('stat-songs').textContent      = songs;
+      document.getElementById('stat-sealing').textContent    = evtGuests('sealing');
+      document.getElementById('stat-luncheon').textContent   = evtGuests('luncheon');
+      document.getElementById('stat-reception').textContent  = evtGuests('reception');
     }
 
     // ── Filter buttons (main table) ───────────────────────────────
@@ -448,10 +481,13 @@
       let rows = [...allRsvps];
 
       // Apply filter
-      if (filter === 'yes')      rows = rows.filter(r => r.attending === 'yes');
-      if (filter === 'no')       rows = rows.filter(r => r.attending === 'no');
-      if (filter === 'dietary')  rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
-      if (filter === 'song')     rows = rows.filter(r => r.song && r.song.trim());
+      if (filter === 'yes')       rows = rows.filter(r => r.attending === 'yes');
+      if (filter === 'no')        rows = rows.filter(r => r.attending === 'no');
+      if (filter === 'sealing')   rows = rows.filter(r => r.sealing   === 'yes');
+      if (filter === 'luncheon')  rows = rows.filter(r => r.luncheon  === 'yes');
+      if (filter === 'reception') rows = rows.filter(r => r.reception === 'yes');
+      if (filter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
+      if (filter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
 
       // Sort
       rows.sort((a, b) => {
@@ -480,11 +516,20 @@
         const dietary  = r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase());
         const date     = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
+        const evts = [];
+        if (r.sealing   === 'yes') evts.push('<span class="badge badge--yes">Sealing</span>');
+        if (r.luncheon  === 'yes') evts.push('<span class="badge badge--yes">Luncheon</span>');
+        if (r.reception === 'yes') evts.push('<span class="badge badge--yes">Reception</span>');
+        const evtCell = evts.length > 0
+          ? `<div style="display:flex;flex-wrap:wrap;gap:3px;">${evts.join('')}</div>`
+          : '<span style="color:var(--color-muted)">—</span>';
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${esc(r.name)}</strong>${r.email ? `<br><span class="ts-text">${esc(r.email)}</span>` : ''}</td>
           <td><span class="badge badge--${r.attending}">${r.attending === 'yes' ? 'Attending' : 'Declined'}</span></td>
           <td>${r.attending === 'yes' ? (r.guests || '1') : '—'}</td>
+          <td>${evtCell}</td>
           <td>${dietary ? `<span class="dietary-tag">${esc(r.dietary)}</span>` : '<span style="color:var(--color-muted)">—</span>'}</td>
           <td>${r.song ? `<span class="song-text">${esc(r.song)}</span>` : '<span style="color:var(--color-muted)">—</span>'}</td>
           <td><span class="ts-text">${date}</span></td>
@@ -506,10 +551,13 @@
 
       // Apply sub-filter independently from main filter
       let rows = [...sourceRows];
-      if (subFilter === 'yes')      rows = rows.filter(r => r.attending === 'yes');
-      if (subFilter === 'no')       rows = rows.filter(r => r.attending === 'no');
-      if (subFilter === 'dietary')  rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
-      if (subFilter === 'song')     rows = rows.filter(r => r.song && r.song.trim());
+      if (subFilter === 'yes')       rows = rows.filter(r => r.attending === 'yes');
+      if (subFilter === 'no')        rows = rows.filter(r => r.attending === 'no');
+      if (subFilter === 'sealing')   rows = rows.filter(r => r.sealing   === 'yes');
+      if (subFilter === 'luncheon')  rows = rows.filter(r => r.luncheon  === 'yes');
+      if (subFilter === 'reception') rows = rows.filter(r => r.reception === 'yes');
+      if (subFilter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
+      if (subFilter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
 
       const configs = {
         all:     { label: 'Name & attendance status',   cols: ['Name', 'Status', 'Guests'],   render: r => [`<strong>${esc(r.name)}</strong>`, `<span class="badge badge--${r.attending}">${r.attending === 'yes' ? 'Attending' : 'Declined'}</span>`, r.attending === 'yes' ? (r.guests || '1') : '—'] },

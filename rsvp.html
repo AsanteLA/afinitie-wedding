@@ -73,6 +73,70 @@
 
     .form-success p { color: var(--color-muted); }
 
+    /* ── Event checkboxes (full / luncheon tiers) ── */
+    .event-check-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .check-option { position: relative; }
+    .check-option input[type="checkbox"] { display: none; }
+
+    .check-option__label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem 1rem 1.25rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .check-option__label:hover {
+      border-color: var(--color-accent);
+      background: var(--color-accent-lt);
+    }
+
+    .check-option input[type="checkbox"]:checked + .check-option__label {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+
+    .check-option__text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .check-option__time {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      letter-spacing: 0.05em;
+      font-weight: 300;
+      text-transform: none;
+    }
+
+    .check-option--decline { margin-top: 0.5rem; }
+
+    .check-option--decline .check-option__label {
+      border-style: dashed;
+      color: var(--color-muted);
+    }
+
+    .check-option--decline input[type="checkbox"]:checked + .check-option__label {
+      background: #888;
+      border-color: #888;
+      color: #fff;
+      border-style: solid;
+    }
+
     /* Song autocomplete */
     .song-autocomplete { position: relative; }
 
@@ -202,17 +266,10 @@
             <input type="email" id="email" name="email" placeholder="you@example.com" required />
           </div>
 
-          <div class="form-group">
-            <label>Will you be attending?</label>
-            <div class="radio-group">
-              <div class="radio-option">
-                <input type="radio" id="attending-yes" name="attending" value="yes" required />
-                <label for="attending-yes">Joyfully accepts</label>
-              </div>
-              <div class="radio-option">
-                <input type="radio" id="attending-no" name="attending" value="no" />
-                <label for="attending-no">Regretfully declines</label>
-              </div>
+          <div class="form-group" id="attendingGroup">
+            <label id="attendingLabel">Will you be attending?</label>
+            <div id="attendingOptions">
+              <!-- Populated by rsvp.js based on guest tier -->
             </div>
           </div>
 
