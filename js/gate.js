@@ -38,7 +38,7 @@
 
     // Show RSVP check modal on first-ever scan only
     if (!localStorage.getItem('afinitie_welcomed')) {
-      showRsvpCheckModal();
+      showRsvpCheckModal(token);
       return;
     }
   }
@@ -96,7 +96,7 @@
 
   /* ── RSVP check modal (first QR scan only) ─────────────────── */
 
-  function showRsvpCheckModal() {
+  function showRsvpCheckModal(inviteToken) {
     var modal = document.createElement('div');
     modal.id = 'rsvp-check-overlay';
     modal.innerHTML = [
@@ -134,14 +134,20 @@
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 
+    // Re-embed the invite token in the redirect URL so gate.js on the destination
+    // page auto-authenticates even if localStorage didn't persist across the redirect.
+    var tokenParam = inviteToken ? '?invite=' + inviteToken : '';
+
     document.getElementById('rsvp-check-yes').addEventListener('click', function () {
       localStorage.setItem('afinitie_welcomed', '1');
-      window.location.href = 'index.html';
+      localStorage.setItem('afinitie_auth', '1');
+      window.location.href = 'index.html' + tokenParam;
     });
 
     document.getElementById('rsvp-check-no').addEventListener('click', function () {
       localStorage.setItem('afinitie_welcomed', '1');
-      window.location.href = 'rsvp.html';
+      localStorage.setItem('afinitie_auth', '1');
+      window.location.href = 'rsvp.html' + tokenParam;
     });
   }
 
