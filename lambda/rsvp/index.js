@@ -32,7 +32,7 @@ const CORS = {
 /* ── Email helpers ─────────────────────────────────────────── */
 
 async function sendConfirmation(guest) {
-  const { name, email, guests, dietary, song, sealing, luncheon, reception } = guest;
+  const { name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception } = guest;
   const firstName = name.split(' ')[0];
 
   const html = `
@@ -55,6 +55,11 @@ async function sendConfirmation(guest) {
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060; width:160px;">Temple Sealing</td>
             <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple</td>
+          </tr>` : ''}
+          ${ring_ceremony === 'yes' ? `
+          <tr style="border-bottom:1px solid #e8e0d4;">
+            <td style="padding:10px 0; color:#8a7060; width:160px;">Ring Ceremony</td>
+            <td style="padding:10px 0; font-weight:500;">2:30 PM</td>
           </tr>` : ''}
           ${luncheon === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
@@ -189,7 +194,7 @@ exports.handler = async (event) => {
   }
 
   const { name, email, attending, guests, dietary, song, message, timestamp,
-          tier, sealing, luncheon, reception } = body;
+          tier, sealing, ring_ceremony, luncheon, reception } = body;
 
   if (!name || !email || !attending) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing required fields' }) };
@@ -207,10 +212,11 @@ exports.handler = async (event) => {
         name:      { S: name },
         email:     { S: email },
         attending: { S: attending },
-        tier:      { S: tier      || 'full' },
-        sealing:   { S: sealing   || 'na' },
-        luncheon:  { S: luncheon  || 'na' },
-        reception: { S: reception || 'na' },
+        tier:         { S: tier         || 'full' },
+        sealing:      { S: sealing      || 'na' },
+        ring_ceremony:{ S: ring_ceremony|| 'na' },
+        luncheon:     { S: luncheon     || 'na' },
+        reception:    { S: reception    || 'na' },
         guests:    { S: guests   || '0' },
         dietary:   { S: dietary  || '' },
         song:      { S: song     || '' },
@@ -225,7 +231,7 @@ exports.handler = async (event) => {
 
   // Send confirmation email to guest (non-blocking — don't fail the RSVP if email fails)
   if (attending === 'yes') {
-    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song, sealing, luncheon, reception })]);
+    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception })]);
     if (result.status === 'rejected') {
       console.error('SES confirmation failed:', JSON.stringify(result.reason));
     } else {

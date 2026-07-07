@@ -54,10 +54,11 @@
 
     const events = [];
     if (tier === 'full') {
-      events.push({ id: 'ev-sealing',   label: 'Temple Sealing', time: '12:00 PM' });
+      events.push({ id: 'ev-sealing',      label: 'Temple Sealing', time: '12:00 PM' });
     }
-    events.push({ id: 'ev-luncheon',  label: 'Luncheon',         time: '4:00 PM' });
-    events.push({ id: 'ev-reception', label: 'Reception',         time: '7:00 PM' });
+    events.push({ id: 'ev-ring',         label: 'Ring Ceremony',   time: '2:30 PM' });
+    events.push({ id: 'ev-luncheon',     label: 'Luncheon',         time: '4:00 PM' });
+    events.push({ id: 'ev-reception',    label: 'Reception',         time: '7:00 PM' });
 
     attendingOptions.innerHTML = `
       <div class="event-check-group">
@@ -137,35 +138,39 @@
     var name    = document.getElementById('name').value.trim();
     var email   = document.getElementById('email').value.trim();
     var message = document.getElementById('message').value.trim();
-    var attending, sealing, luncheon, reception;
+    var attending, sealing, ring_ceremony, luncheon, reception;
 
     if (tier === 'reception') {
-      attending = attendingOptions.querySelector('input[name="attending"]:checked').value;
-      sealing   = 'na';
-      luncheon  = 'na';
-      reception = attending === 'yes' ? 'yes' : 'no';
+      attending    = attendingOptions.querySelector('input[name="attending"]:checked').value;
+      sealing      = 'na';
+      ring_ceremony = 'na';
+      luncheon     = 'na';
+      reception    = attending === 'yes' ? 'yes' : 'no';
     } else {
       var sealingCb  = document.getElementById('ev-sealing');
+      var ringCb     = document.getElementById('ev-ring');
       var luncheonCb = document.getElementById('ev-luncheon');
       var recepCb    = document.getElementById('ev-reception');
 
-      sealing   = sealingCb  ? (sealingCb.checked  ? 'yes' : 'no') : 'na';
-      luncheon  = luncheonCb ? (luncheonCb.checked  ? 'yes' : 'no') : 'na';
-      reception = recepCb    ? (recepCb.checked     ? 'yes' : 'no') : 'na';
+      sealing       = sealingCb  ? (sealingCb.checked  ? 'yes' : 'no') : 'na';
+      ring_ceremony = ringCb     ? (ringCb.checked      ? 'yes' : 'no') : 'na';
+      luncheon      = luncheonCb ? (luncheonCb.checked  ? 'yes' : 'no') : 'na';
+      reception     = recepCb    ? (recepCb.checked     ? 'yes' : 'no') : 'na';
 
-      var anyYes = [sealing, luncheon, reception].some(function (v) { return v === 'yes'; });
+      var anyYes = [sealing, ring_ceremony, luncheon, reception].some(function (v) { return v === 'yes'; });
       attending = anyYes ? 'yes' : 'no';
     }
 
     var isAttending = attending === 'yes';
     return {
-      name:      name,
-      email:     email,
-      attending: attending,
-      tier:      tier,
-      sealing:   sealing,
-      luncheon:  luncheon,
-      reception: reception,
+      name:         name,
+      email:        email,
+      attending:    attending,
+      tier:         tier,
+      sealing:      sealing,
+      ring_ceremony: ring_ceremony,
+      luncheon:     luncheon,
+      reception:    reception,
       guests:    isAttending ? document.getElementById('guests').value : '0',
       dietary:   isAttending ? document.getElementById('dietary').value.trim() : '',
       song:      isAttending ? document.getElementById('song').value.trim() : '',

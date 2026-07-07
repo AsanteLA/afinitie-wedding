@@ -255,6 +255,10 @@
         <div class="stat-card__num" id="stat-sealing" style="color:var(--color-navy);">—</div>
         <div class="stat-card__label">Sealing</div>
       </div>
+      <div class="stat-card" style="border-top:3px solid var(--color-gold);">
+        <div class="stat-card__num" id="stat-ring" style="color:var(--color-gold);">—</div>
+        <div class="stat-card__label">Ring Ceremony</div>
+      </div>
       <div class="stat-card" style="border-top:3px solid var(--color-highlight);">
         <div class="stat-card__num" id="stat-luncheon" style="color:var(--color-highlight);">—</div>
         <div class="stat-card__label">Luncheon</div>
@@ -271,6 +275,7 @@
       <button class="filter-btn" data-filter="yes">Attending</button>
       <button class="filter-btn" data-filter="no">Not Attending</button>
       <button class="filter-btn" data-filter="sealing">Sealing</button>
+      <button class="filter-btn" data-filter="ring">Ring Ceremony</button>
       <button class="filter-btn" data-filter="luncheon">Luncheon</button>
       <button class="filter-btn" data-filter="reception">Reception</button>
       <button class="filter-btn" data-filter="dietary">Has Dietary Note</button>
@@ -313,6 +318,7 @@
         <button class="filter-btn" data-sub-filter="yes">Attending</button>
         <button class="filter-btn" data-sub-filter="no">Not Attending</button>
         <button class="filter-btn" data-sub-filter="sealing">Sealing</button>
+        <button class="filter-btn" data-sub-filter="ring">Ring Ceremony</button>
         <button class="filter-btn" data-sub-filter="luncheon">Luncheon</button>
         <button class="filter-btn" data-sub-filter="reception">Reception</button>
         <button class="filter-btn" data-sub-filter="dietary">Has Dietary Note</button>
@@ -440,6 +446,7 @@
       document.getElementById('stat-declined').textContent   = declined.length;
       document.getElementById('stat-songs').textContent      = songs;
       document.getElementById('stat-sealing').textContent    = evtGuests('sealing');
+      document.getElementById('stat-ring').textContent       = evtGuests('ring_ceremony');
       document.getElementById('stat-luncheon').textContent   = evtGuests('luncheon');
       document.getElementById('stat-reception').textContent  = evtGuests('reception');
     }
@@ -483,9 +490,10 @@
       // Apply filter
       if (filter === 'yes')       rows = rows.filter(r => r.attending === 'yes');
       if (filter === 'no')        rows = rows.filter(r => r.attending === 'no');
-      if (filter === 'sealing')   rows = rows.filter(r => r.sealing   === 'yes');
-      if (filter === 'luncheon')  rows = rows.filter(r => r.luncheon  === 'yes');
-      if (filter === 'reception') rows = rows.filter(r => r.reception === 'yes');
+      if (filter === 'sealing')   rows = rows.filter(r => r.sealing       === 'yes');
+      if (filter === 'ring')      rows = rows.filter(r => r.ring_ceremony === 'yes');
+      if (filter === 'luncheon')  rows = rows.filter(r => r.luncheon      === 'yes');
+      if (filter === 'reception') rows = rows.filter(r => r.reception     === 'yes');
       if (filter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
       if (filter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
 
@@ -517,9 +525,10 @@
         const date     = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
         const evts = [];
-        if (r.sealing   === 'yes') evts.push('<span class="badge badge--yes">Sealing</span>');
-        if (r.luncheon  === 'yes') evts.push('<span class="badge badge--yes">Luncheon</span>');
-        if (r.reception === 'yes') evts.push('<span class="badge badge--yes">Reception</span>');
+        if (r.sealing       === 'yes') evts.push('<span class="badge badge--yes">Sealing</span>');
+        if (r.ring_ceremony === 'yes') evts.push('<span class="badge badge--yes">Ring Ceremony</span>');
+        if (r.luncheon      === 'yes') evts.push('<span class="badge badge--yes">Luncheon</span>');
+        if (r.reception     === 'yes') evts.push('<span class="badge badge--yes">Reception</span>');
         const evtCell = evts.length > 0
           ? `<div style="display:flex;flex-wrap:wrap;gap:3px;">${evts.join('')}</div>`
           : '<span style="color:var(--color-muted)">—</span>';
@@ -553,9 +562,10 @@
       let rows = [...sourceRows];
       if (subFilter === 'yes')       rows = rows.filter(r => r.attending === 'yes');
       if (subFilter === 'no')        rows = rows.filter(r => r.attending === 'no');
-      if (subFilter === 'sealing')   rows = rows.filter(r => r.sealing   === 'yes');
-      if (subFilter === 'luncheon')  rows = rows.filter(r => r.luncheon  === 'yes');
-      if (subFilter === 'reception') rows = rows.filter(r => r.reception === 'yes');
+      if (subFilter === 'sealing')   rows = rows.filter(r => r.sealing       === 'yes');
+      if (subFilter === 'ring')      rows = rows.filter(r => r.ring_ceremony === 'yes');
+      if (subFilter === 'luncheon')  rows = rows.filter(r => r.luncheon      === 'yes');
+      if (subFilter === 'reception') rows = rows.filter(r => r.reception     === 'yes');
       if (subFilter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
       if (subFilter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
 
