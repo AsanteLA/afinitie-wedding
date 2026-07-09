@@ -353,6 +353,16 @@
     const gateErr  = document.getElementById('admin-gate-error');
     const wrap     = document.getElementById('adminWrap');
 
+    // ── Mock data for local dev ───────────────────────────────────
+    const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const MOCK_RSVPS = [
+      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'1', dietary:'',           song:'Bruno Mars — Treasure',         message:'Can\'t wait!',          timestamp: new Date().toISOString() },
+      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'2', dietary:'Vegan',      song:'Adele — Make You Feel My Love', message:'So excited!',           timestamp: new Date().toISOString() },
+      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', tier:'luncheon',  sealing:'na',  ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'3', dietary:'Nut allergy', song:'LMFAO — Party Rock Anthem',     message:'',                      timestamp: new Date().toISOString() },
+      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', tier:'reception', sealing:'na',  ring_ceremony:'na',  luncheon:'na',  reception:'yes', guests:'1', dietary:'',           song:'',                              message:'Congratulations!',      timestamp: new Date().toISOString() },
+      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  tier:'full',      sealing:'no',  ring_ceremony:'no',  luncheon:'no',  reception:'no',  guests:'0', dietary:'',           song:'',                              message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
+    ];
+
     // Check session storage for saved key
     const savedKey = sessionStorage.getItem(SESSION_KEY);
     if (savedKey) { adminKey = savedKey; unlockDashboard(); }
@@ -381,16 +391,6 @@
       wrap.style.display = 'block';
       fetchRsvps(adminKey);
     }
-
-    // ── Mock data for local dev ───────────────────────────────────
-    const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    const MOCK_RSVPS = [
-      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', tier:'full',      sealing:'yes', luncheon:'yes', reception:'yes', guests:'1', dietary:'',           song:'Bruno Mars — Treasure',         message:'Can\'t wait!',          timestamp: new Date().toISOString() },
-      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', tier:'full',      sealing:'yes', luncheon:'yes', reception:'yes', guests:'2', dietary:'Vegan',      song:'Adele — Make You Feel My Love', message:'So excited!',           timestamp: new Date().toISOString() },
-      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', tier:'luncheon',  sealing:'na',  luncheon:'yes', reception:'yes', guests:'3', dietary:'Nut allergy', song:'LMFAO — Party Rock Anthem',     message:'',                      timestamp: new Date().toISOString() },
-      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', tier:'reception', sealing:'na',  luncheon:'na',  reception:'yes', guests:'1', dietary:'',           song:'',                              message:'Congratulations!',      timestamp: new Date().toISOString() },
-      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  tier:'full',      sealing:'no',  luncheon:'no',  reception:'no',  guests:'0', dietary:'',           song:'',                              message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
-    ];
 
     // ── Fetch ─────────────────────────────────────────────────────
     async function fetchRsvps(key) {
