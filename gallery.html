@@ -22,34 +22,43 @@
 
   <link rel="stylesheet" href="styles/main.css" />
   <style>
+    /* ── Editorial grid: 4 columns, fixed row height, varied spans ── */
     .gallery-grid {
-      columns: 3 280px;
-      column-gap: 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 220px;
+      gap: 0.625rem;
     }
 
     .gallery-grid__item {
-      break-inside: avoid;
-      margin-bottom: 1rem;
       overflow: hidden;
       border-radius: var(--radius);
       background: var(--color-accent-lt);
+      cursor: pointer;
     }
 
     .gallery-grid__item img {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
       display: block;
-      transition: transform 0.4s ease;
+      transition: transform 0.45s ease;
     }
 
-    .gallery-grid__item:hover img {
-      transform: scale(1.03);
-    }
+    .gallery-grid__item:hover img { transform: scale(1.04); }
 
-    /* Placeholder tiles for before photos are added */
+    /* Repeating pattern every 9 items */
+    /* 1st: big feature — 2×2 */
+    .gallery-grid__item:nth-child(9n+1) { grid-column: span 2; grid-row: span 2; }
+    /* 4th: tall portrait — 1×2 */
+    .gallery-grid__item:nth-child(9n+4) { grid-row: span 2; }
+    /* 7th: wide strip — 2×1 */
+    .gallery-grid__item:nth-child(9n+7) { grid-column: span 2; }
+
+    /* Placeholder tiles */
     .gallery-placeholder {
       width: 100%;
-      aspect-ratio: 4/5;
-      background: var(--color-accent-lt);
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -59,8 +68,62 @@
       text-transform: uppercase;
     }
 
-    .gallery-placeholder:nth-child(even) { aspect-ratio: 3/4; }
-    .gallery-placeholder:nth-child(3n)   { aspect-ratio: 1/1; }
+    /* Mobile: 2-column fallback */
+    @media (max-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 160px;
+      }
+      .gallery-grid__item:nth-child(9n+1) { grid-column: span 2; grid-row: span 1; }
+      .gallery-grid__item:nth-child(9n+7) { grid-column: span 2; }
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox__img {
+      max-width: 90vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .lightbox__close {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .lightbox__close:hover { opacity: 1; }
+    .lightbox__prev,
+    .lightbox__next {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      padding: 1rem 0.75rem;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1.25rem;
+      transition: background 0.2s;
+    }
+    .lightbox__prev:hover, .lightbox__next:hover { background: rgba(255,255,255,0.2); }
+    .lightbox__prev { left: 1rem; }
+    .lightbox__next { right: 1rem; }
   </style>
 </head>
 <body>
@@ -95,15 +158,10 @@
 
   <!-- ==================== GALLERY ==================== -->
   <section class="section section--alt">
-    <div class="container">
+    <div class="container" style="max-width:1100px;">
       <div class="gallery-grid" id="galleryGrid">
-        <!--
-          TO ADD PHOTOS:
-          Replace each .gallery-placeholder div with:
-          <div class="gallery-grid__item">
-            <img src="images/gallery/your-photo.jpg" alt="Description" loading="lazy" />
-          </div>
-        -->
+        <!-- GALLERY:START -->
+        <!-- Run: node tools/generate-gallery.js  (after adding photos to images/gallery/) -->
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
@@ -113,9 +171,20 @@
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
         <div class="gallery-grid__item"><div class="gallery-placeholder">Photo coming soon</div></div>
+        <!-- GALLERY:END -->
       </div>
     </div>
   </section>
+
+  <!-- ==================== LIGHTBOX ==================== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="lightbox__close" id="lbClose" aria-label="Close">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="lightbox__prev" id="lbPrev" aria-label="Previous">&#8592;</button>
+    <img class="lightbox__img" id="lbImg" src="" alt="" />
+    <button class="lightbox__next" id="lbNext" aria-label="Next">&#8594;</button>
+  </div>
 
   <!-- ==================== FOOTER ==================== -->
   <footer class="footer">
@@ -126,5 +195,52 @@
 
   <script src="js/gate.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var grid = document.getElementById('galleryGrid');
+      var lb   = document.getElementById('lightbox');
+      var lbImg = document.getElementById('lbImg');
+      var imgs = [];
+      var cur  = 0;
+
+      function open(i) {
+        cur = i;
+        lbImg.src = imgs[i].src;
+        lbImg.alt = imgs[i].alt;
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      function go(delta) {
+        cur = (cur + delta + imgs.length) % imgs.length;
+        lbImg.src = imgs[cur].src;
+        lbImg.alt = imgs[cur].alt;
+      }
+
+      // Wire up real images only (not placeholders)
+      grid.querySelectorAll('img').forEach(function (img, i) {
+        imgs.push(img);
+        img.parentElement.addEventListener('click', function () { open(i); });
+      });
+
+      document.getElementById('lbClose').addEventListener('click', close);
+      document.getElementById('lbPrev').addEventListener('click', function () { go(-1); });
+      document.getElementById('lbNext').addEventListener('click', function () { go(1); });
+
+      lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+
+      document.addEventListener('keydown', function (e) {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape')      close();
+        if (e.key === 'ArrowLeft')   go(-1);
+        if (e.key === 'ArrowRight')  go(1);
+      });
+    })();
+  </script>
 </body>
 </html>
