@@ -20,7 +20,7 @@ const dynamo = new DynamoDBClient({ region: process.env.AWS_REGION });
 const ses    = new SESClient({ region: 'us-east-2' });
 
 const TABLE_NAME  = process.env.RSVP_TABLE  || 'afinitie-rsvps';
-const ADMIN_KEY   = process.env.ADMIN_KEY   || 'afinitie-admin-2026';
+const ADMIN_KEY   = process.env.ADMIN_KEY   || 'MindyRoxx!!';
 const FROM_EMAIL  = 'hello@afinitie.com';
 
 const CORS = {
