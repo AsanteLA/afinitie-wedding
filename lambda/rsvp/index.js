@@ -32,7 +32,8 @@ const CORS = {
 /* ── Email helpers ─────────────────────────────────────────── */
 
 async function sendConfirmation(guest) {
-  const { name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception } = guest;
+  const { name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception,
+          sealing_count, ring_count, luncheon_count, reception_count } = guest;
   const firstName = name.split(' ')[0];
 
   const html = `
@@ -54,27 +55,23 @@ async function sendConfirmation(guest) {
           ${sealing === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060; width:160px;">Temple Sealing</td>
-            <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple</td>
+            <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple <span style="font-weight:400; color:#8a7060;">(${sealing_count || '1'} guest${(sealing_count || '1') !== '1' ? 's' : ''})</span></td>
           </tr>` : ''}
           ${ring_ceremony === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060; width:160px;">Ring Ceremony</td>
-            <td style="padding:10px 0; font-weight:500;">2:30 PM</td>
+            <td style="padding:10px 0; font-weight:500;">2:30 PM <span style="font-weight:400; color:#8a7060;">(${ring_count || '1'} guest${(ring_count || '1') !== '1' ? 's' : ''})</span></td>
           </tr>` : ''}
           ${luncheon === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060;">Luncheon</td>
-            <td style="padding:10px 0; font-weight:500;">4:00 PM · Walker Farms</td>
+            <td style="padding:10px 0; font-weight:500;">4:00 PM · Walker Farms <span style="font-weight:400; color:#8a7060;">(${luncheon_count || '1'} guest${(luncheon_count || '1') !== '1' ? 's' : ''})</span></td>
           </tr>` : ''}
           ${reception === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060;">Reception</td>
-            <td style="padding:10px 0; font-weight:500;">7:00 PM · Walker Farms</td>
+            <td style="padding:10px 0; font-weight:500;">7:00 PM · Walker Farms <span style="font-weight:400; color:#8a7060;">(${reception_count || '1'} guest${(reception_count || '1') !== '1' ? 's' : ''})</span></td>
           </tr>` : ''}
-          <tr style="border-bottom:1px solid #e8e0d4;">
-            <td style="padding:10px 0; color:#8a7060;">Guests attending</td>
-            <td style="padding:10px 0; font-weight:500;">${guests}</td>
-          </tr>
           ${dietary ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060;">Dietary notes</td>
@@ -194,7 +191,8 @@ exports.handler = async (event) => {
   }
 
   const { name, email, attending, guests, dietary, song, message, timestamp,
-          tier, sealing, ring_ceremony, luncheon, reception } = body;
+          tier, sealing, ring_ceremony, luncheon, reception,
+          sealing_count, ring_count, luncheon_count, reception_count } = body;
 
   if (!name || !email || !attending) {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing required fields' }) };
@@ -217,7 +215,11 @@ exports.handler = async (event) => {
         ring_ceremony:{ S: ring_ceremony|| 'na' },
         luncheon:     { S: luncheon     || 'na' },
         reception:    { S: reception    || 'na' },
-        guests:    { S: guests   || '0' },
+        guests:          { S: guests          || '0' },
+        sealing_count:   { S: sealing_count   || '0' },
+        ring_count:      { S: ring_count      || '0' },
+        luncheon_count:  { S: luncheon_count  || '0' },
+        reception_count: { S: reception_count || '0' },
         dietary:   { S: dietary  || '' },
         song:      { S: song     || '' },
         message:   { S: message  || '' },
@@ -231,7 +233,11 @@ exports.handler = async (event) => {
 
   // Send confirmation email to guest (non-blocking — don't fail the RSVP if email fails)
   if (attending === 'yes') {
-    const [result] = await Promise.allSettled([sendConfirmation({ name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception })]);
+    const [result] = await Promise.allSettled([sendConfirmation({
+      name, email, guests, dietary, song,
+      sealing, ring_ceremony, luncheon, reception,
+      sealing_count, ring_count, luncheon_count, reception_count,
+    })]);
     if (result.status === 'rejected') {
       console.error('SES confirmation failed:', JSON.stringify(result.reason));
     } else {
