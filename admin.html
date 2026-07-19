@@ -356,11 +356,11 @@
     // ── Mock data for local dev ───────────────────────────────────
     const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const MOCK_RSVPS = [
-      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'1', dietary:'',           song:'Bruno Mars — Treasure',         message:'Can\'t wait!',          timestamp: new Date().toISOString() },
-      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'2', dietary:'Vegan',      song:'Adele — Make You Feel My Love', message:'So excited!',           timestamp: new Date().toISOString() },
-      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', tier:'luncheon',  sealing:'na',  ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'3', dietary:'Nut allergy', song:'LMFAO — Party Rock Anthem',     message:'',                      timestamp: new Date().toISOString() },
-      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', tier:'reception', sealing:'na',  ring_ceremony:'na',  luncheon:'na',  reception:'yes', guests:'1', dietary:'',           song:'',                              message:'Congratulations!',      timestamp: new Date().toISOString() },
-      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  tier:'full',      sealing:'no',  ring_ceremony:'no',  luncheon:'no',  reception:'no',  guests:'0', dietary:'',           song:'',                              message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
+      { id:'1', name:'Asante Test',    email:'asante@test.com',  attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'2', sealing_count:'1', ring_count:'2', luncheon_count:'2', reception_count:'2', dietary:'',            song:'Bruno Mars — Treasure',         message:'Can\'t wait!',           timestamp: new Date().toISOString() },
+      { id:'2', name:'Abbie Test',     email:'abbie@test.com',   attending:'yes', tier:'full',      sealing:'yes', ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'3', sealing_count:'1', ring_count:'3', luncheon_count:'3', reception_count:'3', dietary:'Vegan',       song:'Adele — Make You Feel My Love', message:'So excited!',            timestamp: new Date().toISOString() },
+      { id:'3', name:'Guest Three',    email:'g3@test.com',      attending:'yes', tier:'luncheon',  sealing:'na',  ring_ceremony:'yes', luncheon:'yes', reception:'yes', guests:'4', sealing_count:'0', ring_count:'4', luncheon_count:'2', reception_count:'4', dietary:'Nut allergy', song:'LMFAO — Party Rock Anthem',     message:'',                       timestamp: new Date().toISOString() },
+      { id:'4', name:'Guest Four',     email:'g4@test.com',      attending:'yes', tier:'reception', sealing:'na',  ring_ceremony:'na',  luncheon:'na',  reception:'yes', guests:'1', sealing_count:'0', ring_count:'0', luncheon_count:'0', reception_count:'1', dietary:'',            song:'',                              message:'Congratulations!',       timestamp: new Date().toISOString() },
+      { id:'5', name:'Declined Guest', email:'g5@test.com',      attending:'no',  tier:'full',      sealing:'no',  ring_ceremony:'no',  luncheon:'no',  reception:'no',  guests:'0', sealing_count:'0', ring_count:'0', luncheon_count:'0', reception_count:'0', dietary:'',            song:'',                              message:'Sorry I can\'t make it', timestamp: new Date().toISOString() },
     ];
 
     // Check session storage for saved key
@@ -437,18 +437,17 @@
       const guests    = attending.reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
       const songs     = attending.filter(r => r.song && r.song.trim()).length;
 
-      const evtGuests = (field) =>
-        allRsvps.filter(r => r[field] === 'yes')
-                .reduce((s, r) => s + parseInt(r.guests || '1', 10), 0);
+      const evtGuests = (countField) =>
+        allRsvps.reduce((s, r) => s + parseInt(r[countField] || '0', 10), 0);
 
       document.getElementById('stat-attending').textContent  = attending.length;
       document.getElementById('stat-guests').textContent     = guests;
       document.getElementById('stat-declined').textContent   = declined.length;
       document.getElementById('stat-songs').textContent      = songs;
-      document.getElementById('stat-sealing').textContent    = evtGuests('sealing');
-      document.getElementById('stat-ring').textContent       = evtGuests('ring_ceremony');
-      document.getElementById('stat-luncheon').textContent   = evtGuests('luncheon');
-      document.getElementById('stat-reception').textContent  = evtGuests('reception');
+      document.getElementById('stat-sealing').textContent    = evtGuests('sealing_count');
+      document.getElementById('stat-ring').textContent       = evtGuests('ring_count');
+      document.getElementById('stat-luncheon').textContent   = evtGuests('luncheon_count');
+      document.getElementById('stat-reception').textContent  = evtGuests('reception_count');
     }
 
     // ── Filter buttons (main table) ───────────────────────────────
@@ -525,10 +524,10 @@
         const date     = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
         const evts = [];
-        if (r.sealing       === 'yes') evts.push('<span class="badge badge--yes">Sealing</span>');
-        if (r.ring_ceremony === 'yes') evts.push('<span class="badge badge--yes">Ring Ceremony</span>');
-        if (r.luncheon      === 'yes') evts.push('<span class="badge badge--yes">Luncheon</span>');
-        if (r.reception     === 'yes') evts.push('<span class="badge badge--yes">Reception</span>');
+        if (r.sealing       === 'yes') evts.push(`<span class="badge badge--yes">Sealing&thinsp;·&thinsp;${r.sealing_count   || '1'}</span>`);
+        if (r.ring_ceremony === 'yes') evts.push(`<span class="badge badge--yes">Ring&thinsp;·&thinsp;${r.ring_count        || '1'}</span>`);
+        if (r.luncheon      === 'yes') evts.push(`<span class="badge badge--yes">Luncheon&thinsp;·&thinsp;${r.luncheon_count || '1'}</span>`);
+        if (r.reception     === 'yes') evts.push(`<span class="badge badge--yes">Reception&thinsp;·&thinsp;${r.reception_count|| '1'}</span>`);
         const evtCell = evts.length > 0
           ? `<div style="display:flex;flex-wrap:wrap;gap:3px;">${evts.join('')}</div>`
           : '<span style="color:var(--color-muted)">—</span>';
