@@ -19,15 +19,20 @@
 
   if (!form) return;
 
+  var RSVP_MESSAGES_URL = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/rsvp?source=messages';
+
   /* --- Load existing messages on page load --- */
   function loadMessages() {
-    fetch(API_URL)
-      .then(function (res) { return res.json(); })
-      .then(function (messages) { renderMessages(messages); })
-      .catch(function () {
-        // Silently fail — show empty state
-        renderMessages([]);
-      });
+    Promise.all([
+      fetch(API_URL).then(function (r) { return r.json(); }).catch(function () { return []; }),
+      fetch(RSVP_MESSAGES_URL).then(function (r) { return r.json(); }).catch(function () { return []; }),
+    ]).then(function (results) {
+      var gbMsgs   = Array.isArray(results[0]) ? results[0] : [];
+      var rsvpMsgs = Array.isArray(results[1]) ? results[1] : [];
+      var combined = gbMsgs.concat(rsvpMsgs);
+      combined.sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+      renderMessages(combined);
+    });
   }
 
   /* --- Render messages to the wall --- */

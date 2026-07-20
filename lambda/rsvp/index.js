@@ -154,9 +154,38 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: CORS, body: '' };
   }
 
-  // ── GET: return all RSVPs (admin only) ──────────────────────
+  // ── GET: return all RSVPs (admin) or public messages ────────
   if (method === 'GET') {
-    const key = event.headers?.['x-admin-key'] || event.queryStringParameters?.key;
+    const params = event.queryStringParameters || {};
+
+    // Public endpoint — returns only name + message for guestbook display
+    if (params.source === 'messages') {
+      try {
+        const items = [];
+        let lastKey;
+        do {
+          const res = await dynamo.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            ExclusiveStartKey: lastKey,
+          }));
+          items.push(...(res.Items || []).map(i => unmarshall(i)));
+          lastKey = res.LastEvaluatedKey;
+        } while (lastKey);
+
+        const messages = items
+          .filter(r => r.message && r.message.trim())
+          .map(r => ({ name: r.name, message: r.message, timestamp: r.timestamp }))
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        return { statusCode: 200, headers: CORS, body: JSON.stringify(messages) };
+      } catch (err) {
+        console.error('DynamoDB scan error:', err);
+        return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Failed to fetch messages' }) };
+      }
+    }
+
+    // Admin endpoint — full RSVP list
+    const key = event.headers?.['x-admin-key'] || params.key;
     if (key !== ADMIN_KEY) {
       return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
     }

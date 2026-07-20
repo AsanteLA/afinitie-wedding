@@ -296,11 +296,16 @@
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    fetch(API_URL)
-      .then(r => r.json())
-      .then(data => {
+    const RSVP_MESSAGES_URL = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/rsvp?source=messages';
+
+    Promise.all([
+      fetch(API_URL).then(r => r.json()).catch(() => []),
+      fetch(RSVP_MESSAGES_URL).then(r => r.json()).catch(() => []),
+    ]).then(([gbData, rsvpMsgs]) => {
         grid.innerHTML = '';
-        const messages = data.messages || data || [];
+        const gbMsgs   = gbData.messages || (Array.isArray(gbData) ? gbData : []);
+        const combined = [...gbMsgs, ...(Array.isArray(rsvpMsgs) ? rsvpMsgs : [])];
+        const messages = combined.filter(m => m.message && m.message.trim());
 
         if (!messages.length) {
           grid.innerHTML = '<div class="wall-empty"><p>No messages yet — be the first to leave one.</p></div>';
