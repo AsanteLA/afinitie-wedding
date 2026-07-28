@@ -60,7 +60,7 @@ async function sendConfirmation(guest) {
           ${ring_ceremony === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060; width:160px;">Ring Ceremony</td>
-            <td style="padding:10px 0; font-weight:500;">2:30 PM <span style="font-weight:400; color:#8a7060;">(${ring_count || '1'} guest${(ring_count || '1') !== '1' ? 's' : ''})</span></td>
+            <td style="padding:10px 0; font-weight:500;">3:00 PM <span style="font-weight:400; color:#8a7060;">(${ring_count || '1'} guest${(ring_count || '1') !== '1' ? 's' : ''})</span></td>
           </tr>` : ''}
           ${luncheon === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
@@ -99,7 +99,7 @@ async function sendConfirmation(guest) {
 
           <div style="margin-top:16px;">
             <p style="font-size:12px; color:#8a7060; letter-spacing:0.08em; text-transform:uppercase; margin:0 0 12px;">Add to Calendar</p>
-            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Abbie+%26+Asante%27s+Wedding&dates=20260915T180000Z%2F20260916T030000Z&details=Temple+Sealing+at+noon%2C+Ring+Ceremony+at+2%3A30pm%2C+Luncheon+at+4pm%2C+Reception+at+7pm.+Full+details+at+https%3A%2F%2Fafinitie.com&location=850+E+Center+St%2C+Lindon%2C+UT+84042"
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Abbie+%26+Asante%27s+Wedding&dates=20260915T180000Z%2F20260916T030000Z&details=Temple+Sealing+at+noon%2C+Ring+Ceremony+at+3pm%2C+Luncheon+at+4pm%2C+Reception+at+7pm.+Full+details+at+https%3A%2F%2Fafinitie.com&location=850+E+Center+St%2C+Lindon%2C+UT+84042"
                target="_blank"
                style="display:inline-block; padding:10px 20px; border:1px solid #0c6870; color:#0c6870;
                       text-decoration:none; font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
