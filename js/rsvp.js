@@ -136,7 +136,7 @@
     if (tier === 'full') {
       events.push({ id: 'ev-sealing',   label: 'Temple Sealing', time: '12:00 PM' });
     }
-    events.push({ id: 'ev-ring',      label: 'Ring Ceremony',  time: '2:30 PM' });
+    events.push({ id: 'ev-ring',      label: 'Ring Ceremony',  time: '3:00 PM' });
     events.push({ id: 'ev-luncheon',  label: 'Luncheon',        time: '4:00 PM' });
     events.push({ id: 'ev-reception', label: 'Reception',        time: '7:00 PM' });
 
