@@ -539,6 +539,10 @@ body.home .nav:not(.scrolled) .nav__hamburger span {
     --space-xl: 5rem;
   }
 
+  .nav {
+    padding: 0.25rem 1rem;
+  }
+
   /* Mobile nav — always flex but hidden via visibility/opacity
      so CSS transitions work. z-index 200 beats the nav's 100. */
   .nav__links {
