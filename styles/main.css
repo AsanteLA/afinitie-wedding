@@ -146,14 +146,13 @@ p:last-child { margin-bottom: 0; }
 .nav__logo-img {
   height: 90px;
   width: auto;
-  /* White over hero photo */
-  filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0,0,0,0.4));
+  filter: brightness(0) saturate(100%) invert(30%) sepia(80%) saturate(700%) hue-rotate(155deg) brightness(85%);
   transition: opacity var(--transition), filter var(--transition);
 }
 
-/* Restore teal color once nav has white background */
-.nav.scrolled .nav__logo-img {
-  filter: brightness(0) saturate(100%) invert(30%) sepia(80%) saturate(700%) hue-rotate(155deg) brightness(85%);
+/* Homepage only — white logo over full-bleed hero */
+body.home .nav:not(.scrolled) .nav__logo-img {
+  filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0,0,0,0.4));
 }
 
 .nav__logo-img:hover { opacity: 0.75; }
@@ -176,16 +175,15 @@ p:last-child { margin-bottom: 0; }
   font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  color: var(--color-text);
   transition: color var(--transition), text-shadow var(--transition);
   position: relative;
 }
 
-/* Once scrolled, nav has white bg — switch links back to dark */
-.nav.scrolled .nav__links a {
-  color: var(--color-text);
-  text-shadow: none;
+/* Homepage only — white links over full-bleed hero */
+body.home .nav:not(.scrolled) .nav__links a {
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .nav__links a::after {
@@ -200,25 +198,25 @@ p:last-child { margin-bottom: 0; }
   transition: transform var(--transition);
 }
 
-.nav__links a:hover { color: var(--color-gold); }
-.nav.scrolled .nav__links a:hover { color: var(--color-burgundy); }
+.nav__links a:hover { color: var(--color-burgundy); }
+body.home .nav:not(.scrolled) .nav__links a:hover { color: var(--color-gold); }
 .nav__links a:hover::after,
 .nav__links a.active::after { transform: scaleX(1); }
 
 /* Playlist music note — no underline animation */
 .nav__links a[aria-label="Playlist"]::after { display: none; }
-.nav__links a[aria-label="Playlist"] {
+.nav__links a[aria-label="Playlist"]:hover { color: var(--color-gold); }
+
+/* Homepage only — white music note over hero */
+body.home .nav:not(.scrolled) .nav__links a[aria-label="Playlist"] {
   color: rgba(255,255,255,0.9) !important;
   border-color: rgba(255,255,255,0.5) !important;
   background: rgba(255,255,255,0.15) !important;
 }
-.nav__links a[aria-label="Playlist"]:hover { color: #fff !important; background: rgba(255,255,255,0.25) !important; }
-.nav.scrolled .nav__links a[aria-label="Playlist"] {
-  color: var(--color-gold) !important;
-  border-color: rgba(212,152,26,0.35) !important;
-  background: rgba(212,152,26,0.12) !important;
+body.home .nav:not(.scrolled) .nav__links a[aria-label="Playlist"]:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.25) !important;
 }
-.nav.scrolled .nav__links a[aria-label="Playlist"]:hover { color: var(--color-gold) !important; background: rgba(212,152,26,0.22) !important; }
 
 .nav__hamburger {
   display: none;
@@ -234,12 +232,13 @@ p:last-child { margin-bottom: 0; }
   display: block;
   width: 24px;
   height: 1px;
-  background: #fff;
+  background: var(--color-text);
   transition: transform var(--transition), opacity var(--transition), background var(--transition);
 }
 
-.nav.scrolled .nav__hamburger span {
-  background: var(--color-text);
+/* Homepage only — white hamburger over hero */
+body.home .nav:not(.scrolled) .nav__hamburger span {
+  background: #fff;
 }
 
 /* ---------- Scroll reveal ---------- */
