@@ -186,6 +186,17 @@ body.home .nav:not(.scrolled) .nav__links a {
   text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
+/* When mobile menu is open, revert to dark regardless of page/scroll state */
+body.home .nav:not(.scrolled) .nav__links.open a {
+  color: var(--color-text);
+  text-shadow: none;
+}
+body.home .nav:not(.scrolled) .nav__links.open a[aria-label="Playlist"] {
+  color: var(--color-gold) !important;
+  border-color: rgba(212,152,26,0.35) !important;
+  background: rgba(212,152,26,0.12) !important;
+}
+
 .nav__links a::after {
   content: '';
   position: absolute;
@@ -239,6 +250,11 @@ body.home .nav:not(.scrolled) .nav__links a[aria-label="Playlist"]:hover {
 /* Homepage only — white hamburger over hero */
 body.home .nav:not(.scrolled) .nav__hamburger span {
   background: #fff;
+}
+
+/* When menu is open, hamburger (X) switches to dark */
+body.home .nav:not(.scrolled) .nav__hamburger.open span {
+  background: var(--color-text);
 }
 
 /* ---------- Scroll reveal ---------- */
