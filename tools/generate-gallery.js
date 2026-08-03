@@ -39,7 +39,7 @@ const classified = { landscape: [], portrait: [], square: [] };
 for (const file of files) {
   const full = path.join(GALLERY_DIR, file);
   try {
-    const { width, height } = imageSize(full);
+    const { width, height } = imageSize(fs.readFileSync(full));
     const ratio = width / height;
     const src   = `images/gallery/${file}`;
     const entry = { src, file, width, height, ratio };
