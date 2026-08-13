@@ -321,9 +321,20 @@
       return;
     }
 
-    form.style.display        = 'none';
-    formSuccess.style.display = 'block';
-    window.scrollTo({ top: formSuccess.offsetTop - 100, behavior: 'smooth' });
+    // Pass summary to confirmation page via sessionStorage
+    sessionStorage.setItem('rsvp_summary', JSON.stringify({
+      name:            data.name,
+      attending:       data.attending,
+      sealing:         data.sealing,
+      ring_ceremony:   data.ring_ceremony,
+      luncheon:        data.luncheon,
+      reception:       data.reception,
+      sealing_count:   data.sealing_count,
+      ring_count:      data.ring_count,
+      luncheon_count:  data.luncheon_count,
+      reception_count: data.reception_count,
+    }));
+    window.location.href = 'confirmation.html';
   }
 
   form.addEventListener('submit', handleSubmit);

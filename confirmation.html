@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're on the list! — Afinitie</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Abbie &amp; Asante — September 15, 2026" />
+  <meta property="og:description" content="Join us as we celebrate our wedding day. We are so glad you are here." />
+  <meta property="og:image"       content="images/logo.png" />
+  <meta property="og:url"         content="https://afinitie.com" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100svh;
+    }
+
+    .confirmation-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .confirmation-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(12,104,112,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .confirmation-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 300;
+      color: var(--color-accent);
+      line-height: 1.1;
+      margin: 0 0 0.5rem;
+    }
+
+    .confirmation-sub {
+      font-size: 1rem;
+      color: var(--color-muted);
+      max-width: 420px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .confirmation-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAV ==================== -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__logo"><img src="images/logo.png" alt="Afinitie" class="nav__logo-img" /></a>
+    <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="our-story.html">Our Story</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="rsvp.html">RSVP</a></li>
+      <li><a href="registry.html">Registry</a></li>
+      <li><a href="guestbook.html">Guestbook</a></li>
+    </ul>
+  </nav>
+
+  <div class="confirmation-wrap">
+
+    <div class="confirmation-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-accent);" aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </div>
+
+    <p class="eyebrow">RSVP Received</p>
+
+    <h1 class="confirmation-heading" id="conf-heading">You're on the list!</h1>
+
+    <div class="divider"></div>
+
+    <p class="confirmation-sub" id="conf-sub">
+      We're so glad you'll be celebrating with us. Keep an eye on your inbox — a confirmation email is on its way.
+    </p>
+
+    <!-- Per-event summary, injected by JS -->
+    <div id="conf-events" style="width:100%;max-width:360px;margin:0 auto 2.5rem;display:none;">
+      <table style="width:100%;border-collapse:collapse;font-family:var(--font-sans);font-size:0.9rem;">
+        <tbody id="conf-events-body"></tbody>
+      </table>
+    </div>
+
+    <div class="confirmation-actions">
+      <a href="index.html" class="btn btn--primary">Explore our website</a>
+      <a href="schedule.html" class="btn btn--outline">View the schedule</a>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer__names"><a href="admin.html"><img src="images/logo.png" alt="Afinitie" class="footer__logo-img" /></a></div>
+    <p>September 15, 2026 · Lindon, Utah</p>
+    <p style="margin-top:0.5rem;">Made with love <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px; color:var(--color-highlight);" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></p>
+  </footer>
+
+  <script src="js/gate.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var raw = sessionStorage.getItem('rsvp_summary');
+      if (!raw) return;
+      sessionStorage.removeItem('rsvp_summary');
+
+      var d = JSON.parse(raw);
+      var firstName = d.name ? d.name.split(' ')[0] : '';
+
+      // Personalise heading
+      if (firstName) {
+        document.getElementById('conf-heading').textContent = firstName + ', you\'re on the list!';
+      }
+
+      if (d.attending !== 'yes') {
+        document.getElementById('conf-sub').textContent =
+          'We\'re sorry you can\'t make it. We\'ll be thinking of you on the day.';
+        return;
+      }
+
+      // Build event rows
+      var events = [
+        { key: 'sealing',       label: 'Temple Sealing',  time: '12:00 PM', count: d.sealing_count },
+        { key: 'ring_ceremony', label: 'Ring Ceremony',   time: '3:00 PM',  count: d.ring_count },
+        { key: 'luncheon',      label: 'Luncheon',        time: '4:00 PM',  count: d.luncheon_count },
+        { key: 'reception',     label: 'Reception',       time: '7:00 PM',  count: d.reception_count },
+      ];
+
+      var rows = events
+        .filter(function (ev) { return d[ev.key] === 'yes' && parseInt(ev.count) > 0; })
+        .map(function (ev) {
+          var g = parseInt(ev.count);
+          return '<tr style="border-bottom:1px solid var(--color-border);">' +
+            '<td style="padding:10px 8px;color:var(--color-muted);">' + ev.label + '</td>' +
+            '<td style="padding:10px 8px;color:var(--color-muted);">' + ev.time + '</td>' +
+            '<td style="padding:10px 8px;text-align:right;font-weight:500;color:var(--color-accent);">' +
+              g + ' guest' + (g !== 1 ? 's' : '') +
+            '</td>' +
+          '</tr>';
+        }).join('');
+
+      if (rows) {
+        document.getElementById('conf-events-body').innerHTML = rows;
+        document.getElementById('conf-events').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>
