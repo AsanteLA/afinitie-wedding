@@ -55,7 +55,7 @@ async function sendConfirmation(guest) {
           ${sealing === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">
             <td style="padding:10px 0; color:#8a7060; width:160px;">Temple Sealing</td>
-            <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple <span style="font-weight:400; color:#8a7060;">(${sealing_count || '1'} guest${(sealing_count || '1') !== '1' ? 's' : ''})</span></td>
+            <td style="padding:10px 0; font-weight:500;">12:00 PM · Lindon Utah Temple <span style="font-weight:400; color:#8a7060;">(${sealing_count || '1'} guest${(sealing_count || '1') !== '1' ? 's' : ''})</span><div style="margin-top:4px;font-size:12px;color:#c4601a;">Please plan to arrive by 11:30 AM</div></td>
           </tr>` : ''}
           ${ring_ceremony === 'yes' ? `
           <tr style="border-bottom:1px solid #e8e0d4;">

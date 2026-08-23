@@ -155,7 +155,7 @@
 
       // Build event rows
       var events = [
-        { key: 'sealing',       label: 'Temple Sealing',  time: '12:00 PM', count: d.sealing_count },
+        { key: 'sealing',       label: 'Temple Sealing',  time: '12:00 PM', note: 'Please arrive by 11:30 AM', count: d.sealing_count },
         { key: 'ring_ceremony', label: 'Ring Ceremony',   time: '3:00 PM',  count: d.ring_count },
         { key: 'luncheon',      label: 'Luncheon',        time: '4:00 PM',  count: d.luncheon_count },
         { key: 'reception',     label: 'Reception',       time: '7:00 PM',  count: d.reception_count },
@@ -165,8 +165,9 @@
         .filter(function (ev) { return d[ev.key] === 'yes' && parseInt(ev.count) > 0; })
         .map(function (ev) {
           var g = parseInt(ev.count);
+          var noteHtml = ev.note ? '<div style="font-size:11px;color:var(--color-highlight);margin-top:2px;">' + ev.note + '</div>' : '';
           return '<tr style="border-bottom:1px solid var(--color-border);">' +
-            '<td style="padding:10px 8px;color:var(--color-muted);">' + ev.label + '</td>' +
+            '<td style="padding:10px 8px;color:var(--color-muted);">' + ev.label + noteHtml + '</td>' +
             '<td style="padding:10px 8px;color:var(--color-muted);">' + ev.time + '</td>' +
             '<td style="padding:10px 8px;text-align:right;font-weight:500;color:var(--color-accent);">' +
               g + ' guest' + (g !== 1 ? 's' : '') +
