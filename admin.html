@@ -172,6 +172,79 @@
       white-space: nowrap;
     }
 
+    /* ── Section toggles ── */
+    .section-toggle {
+      margin-bottom: var(--space-lg);
+    }
+
+    .toggle-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      cursor: pointer; user-select: none;
+      transition: background var(--transition);
+    }
+
+    .toggle-header:hover { background: var(--color-accent-lt); }
+
+    .toggle-header.open {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-color: transparent;
+    }
+
+    .toggle-header__left {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .toggle-header__title {
+      font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--color-navy);
+    }
+
+    .toggle-header__count {
+      font-size: 0.68rem; font-weight: 500;
+      background: var(--color-accent-lt);
+      color: var(--color-accent);
+      padding: 2px 10px; border-radius: 100px;
+    }
+
+    .toggle-chevron {
+      font-size: 1rem; color: var(--color-muted);
+      transition: transform 0.2s ease;
+      display: inline-block;
+    }
+
+    .toggle-header.open .toggle-chevron { transform: rotate(180deg); }
+
+    .toggle-body {
+      display: none;
+      border: 1px solid var(--color-border);
+      border-top: none;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      padding: 1.25rem;
+      background: var(--color-surface);
+    }
+
+    .toggle-body.open { display: block; }
+
+    /* ── Search input ── */
+    .table-search {
+      width: 100%; padding: 0.65rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 0.88rem;
+      background: #fff; color: var(--color-text);
+      margin-bottom: 1rem;
+      box-sizing: border-box;
+    }
+
+    .table-search:focus { outline: none; border-color: var(--color-accent); }
+
     /* ── Empty / loading ── */
     .admin-status {
       text-align: center; padding: var(--space-lg);
@@ -272,42 +345,87 @@
       </div>
     </div>
 
-    <!-- Filter -->
-    <div class="filter-bar">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="yes">Attending</button>
-      <button class="filter-btn" data-filter="no">Not Attending</button>
-      <button class="filter-btn" data-filter="sealing">Sealing</button>
-      <button class="filter-btn" data-filter="ring">Ring Ceremony</button>
-      <button class="filter-btn" data-filter="luncheon">Luncheon</button>
-      <button class="filter-btn" data-filter="reception">Reception</button>
-      <button class="filter-btn" data-filter="dietary">Has Dietary Note</button>
-      <button class="filter-btn" data-filter="song">Has Song Request</button>
+    <!-- Full RSVP table (collapsible) -->
+    <div class="section-toggle">
+      <div class="toggle-header open" id="fullTableHeader">
+        <div class="toggle-header__left">
+          <span class="toggle-header__title">RSVP List</span>
+          <span class="toggle-header__count" id="fullTableCount"></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button class="admin-refresh" id="downloadFullBtn" onclick="event.stopPropagation()">↓ Download</button>
+          <span class="toggle-chevron">▾</span>
+        </div>
+      </div>
+      <div class="toggle-body open" id="fullTableBody">
+        <div class="filter-bar" style="margin-bottom:0.75rem;">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="yes">Attending</button>
+          <button class="filter-btn" data-filter="no">Not Attending</button>
+          <button class="filter-btn" data-filter="sealing">Sealing</button>
+          <button class="filter-btn" data-filter="ring">Ring Ceremony</button>
+          <button class="filter-btn" data-filter="luncheon">Luncheon</button>
+          <button class="filter-btn" data-filter="reception">Reception</button>
+          <button class="filter-btn" data-filter="dietary">Has Dietary Note</button>
+          <button class="filter-btn" data-filter="song">Has Song Request</button>
+        </div>
+        <input type="search" class="table-search" id="fullSearch" placeholder="Search by name, email, song…" />
+        <div class="rsvp-table-wrap">
+          <div class="admin-status" id="adminStatus">Loading RSVPs...</div>
+          <table id="rsvpTable" style="display:none;">
+            <thead>
+              <tr>
+                <th data-col="name">Name</th>
+                <th data-col="attending">Status</th>
+                <th data-col="guests">Guests</th>
+                <th data-col="events">Events</th>
+                <th data-col="dietary">Dietary</th>
+                <th data-col="song">Song Request</th>
+                <th data-col="timestamp">Date</th>
+              </tr>
+            </thead>
+            <tbody id="rsvpBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <!-- Full table -->
-    <div style="display:flex; justify-content:flex-end; margin-bottom:0.75rem;">
-      <button class="admin-refresh" id="downloadFullBtn">↓ Download Full List</button>
-    </div>
-    <div class="rsvp-table-wrap">
-      <div class="admin-status" id="adminStatus">Loading RSVPs...</div>
-      <table id="rsvpTable" style="display:none;">
-        <thead>
-          <tr>
-            <th data-col="name">Name</th>
-            <th data-col="attending">Status</th>
-            <th data-col="guests">Guests</th>
-            <th data-col="events">Events</th>
-            <th data-col="dietary">Dietary</th>
-            <th data-col="song">Song Request</th>
-            <th data-col="timestamp">Date</th>
-          </tr>
-        </thead>
-        <tbody id="rsvpBody"></tbody>
-      </table>
+    <!-- Quick View (collapsible) -->
+    <div class="section-toggle">
+      <div class="toggle-header open" id="subTableHeader">
+        <div class="toggle-header__left">
+          <span class="toggle-header__title">Quick View</span>
+          <span style="font-size:0.75rem;color:var(--color-muted);" id="subTableLabel">Name & attendance status</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button class="admin-refresh" id="downloadSubBtn" onclick="event.stopPropagation()">↓ Download</button>
+          <span class="toggle-chevron">▾</span>
+        </div>
+      </div>
+      <div class="toggle-body open" id="subTableBody">
+        <div class="filter-bar" style="margin-bottom:0.75rem;">
+          <button class="filter-btn active" data-sub-filter="all">All</button>
+          <button class="filter-btn" data-sub-filter="yes">Attending</button>
+          <button class="filter-btn" data-sub-filter="no">Not Attending</button>
+          <button class="filter-btn" data-sub-filter="sealing">Sealing</button>
+          <button class="filter-btn" data-sub-filter="ring">Ring Ceremony</button>
+          <button class="filter-btn" data-sub-filter="luncheon">Luncheon</button>
+          <button class="filter-btn" data-sub-filter="reception">Reception</button>
+          <button class="filter-btn" data-sub-filter="dietary">Has Dietary Note</button>
+          <button class="filter-btn" data-sub-filter="song">Has Song Request</button>
+        </div>
+        <input type="search" class="table-search" id="subSearch" placeholder="Search by name…" />
+        <div class="rsvp-table-wrap">
+          <table id="subTable" style="display:none;">
+            <thead id="subHead"></thead>
+            <tbody id="subBody"></tbody>
+          </table>
+          <div class="admin-status" id="subStatus" style="display:none;"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Stats for Nerds -->
+    <!-- Stats for Nerds (bottom) -->
     <div style="margin-top:var(--space-xl);" id="nerdsSection">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
         <div>
@@ -316,17 +434,13 @@
         </div>
         <button class="admin-refresh" id="refreshNerdsBtn">↻ Refresh</button>
       </div>
-
       <div style="background:#0d1117;border-radius:var(--radius);border:1px solid #30363d;overflow:hidden;">
-        <!-- Terminal chrome -->
         <div style="padding:0.55rem 1rem;background:#161b22;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:0.45rem;">
           <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
           <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
           <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
           <span style="font-size:0.7rem;color:#8b949e;margin-left:0.5rem;font-family:monospace;">afinitie.com — analytics</span>
         </div>
-
-        <!-- Stat tiles -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#30363d;">
           <div style="background:#0d1117;padding:1.4rem;text-align:center;">
             <div id="nerd-visitors" style="font-family:monospace;font-size:2rem;color:#58a6ff;font-weight:300;line-height:1;">—</div>
@@ -345,43 +459,10 @@
             <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-top:0.4rem;">Avg Time / Page</div>
           </div>
         </div>
-
-        <!-- Top pages -->
         <div style="padding:1.25rem 1.5rem;">
           <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-bottom:0.75rem;">Top Pages</div>
-          <div id="nerd-pages" style="font-family:monospace;font-size:0.82rem;color:#e6edf3;">
-            <span style="color:#484f58;">Loading...</span>
-          </div>
+          <div id="nerd-pages" style="font-family:monospace;font-size:0.82rem;color:#e6edf3;"><span style="color:#484f58;">Loading...</span></div>
         </div>
-      </div>
-    </div>
-
-    <!-- Sub-table: quick view -->
-    <div style="margin-top: var(--space-lg);">
-      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
-        <div>
-          <span class="eyebrow" style="margin-bottom:0;">Quick View</span>
-          <p style="color:var(--color-muted); font-size:0.85rem; margin:0;" id="subTableLabel">Name & attendance status</p>
-        </div>
-        <button class="admin-refresh" id="downloadSubBtn">↓ Download Quick View</button>
-      </div>
-      <div class="filter-bar" style="margin-bottom:1rem;">
-        <button class="filter-btn active" data-sub-filter="all">All</button>
-        <button class="filter-btn" data-sub-filter="yes">Attending</button>
-        <button class="filter-btn" data-sub-filter="no">Not Attending</button>
-        <button class="filter-btn" data-sub-filter="sealing">Sealing</button>
-        <button class="filter-btn" data-sub-filter="ring">Ring Ceremony</button>
-        <button class="filter-btn" data-sub-filter="luncheon">Luncheon</button>
-        <button class="filter-btn" data-sub-filter="reception">Reception</button>
-        <button class="filter-btn" data-sub-filter="dietary">Has Dietary Note</button>
-        <button class="filter-btn" data-sub-filter="song">Has Song Request</button>
-      </div>
-      <div class="rsvp-table-wrap">
-        <table id="subTable" style="display:none;">
-          <thead id="subHead"></thead>
-          <tbody id="subBody"></tbody>
-        </table>
-        <div class="admin-status" id="subStatus" style="display:none;"></div>
       </div>
     </div>
 
@@ -392,12 +473,14 @@
     const API = 'https://zj2njddkgg.execute-api.us-east-2.amazonaws.com/prod/rsvp';
     const SESSION_KEY = 'afinitie_admin_key';
 
-    let allRsvps  = [];
-    let adminKey  = '';
-    let sortCol   = 'timestamp';
-    let sortAsc   = false;
-    let filter    = 'all';
-    let subFilter = 'all';
+    let allRsvps     = [];
+    let adminKey     = '';
+    let sortCol      = 'timestamp';
+    let sortAsc      = false;
+    let filter       = 'all';
+    let subFilter    = 'all';
+    let searchQuery    = '';
+    let subSearchQuery = '';
 
     // ── Gate ──────────────────────────────────────────────────────
     const gate     = document.getElementById('admin-gate');
@@ -481,6 +564,30 @@
       }
     }
 
+    // ── Section toggles ───────────────────────────────────────────
+    function wireToggle(headerId, bodyId) {
+      const hdr  = document.getElementById(headerId);
+      const body = document.getElementById(bodyId);
+      hdr.addEventListener('click', function (e) {
+        // Don't collapse if the click was on a button inside the header
+        if (e.target.closest('button')) return;
+        const open = body.classList.toggle('open');
+        hdr.classList.toggle('open', open);
+      });
+    }
+    wireToggle('fullTableHeader', 'fullTableBody');
+    wireToggle('subTableHeader',  'subTableBody');
+
+    // ── Search inputs ─────────────────────────────────────────────
+    document.getElementById('fullSearch').addEventListener('input', function () {
+      searchQuery = this.value.trim().toLowerCase();
+      renderTable();
+    });
+    document.getElementById('subSearch').addEventListener('input', function () {
+      subSearchQuery = this.value.trim().toLowerCase();
+      renderSubTable(allRsvps);
+    });
+
     document.getElementById('refreshBtn').addEventListener('click', () => fetchRsvps(adminKey));
 
     document.getElementById('resendBtn').addEventListener('click', async function () {
@@ -494,7 +601,11 @@
           body: JSON.stringify({ source: 'resend', adminKey }),
         });
         const data = await res.json();
-        alert(`Done! Sent: ${data.sent}, Failed: ${data.failed}, Total: ${data.total}`);
+        if (!res.ok || data.error) {
+          alert(`Error: ${data.error || res.status}`);
+        } else {
+          alert(`Done! Sent: ${data.sent}, Failed: ${data.failed}, Total: ${data.total}`);
+        }
       } catch (_) {
         alert('Something went wrong — check the console.');
       }
@@ -568,6 +679,17 @@
       if (filter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
       if (filter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
 
+      // Search
+      if (searchQuery) {
+        rows = rows.filter(r => {
+          const haystack = [r.name, r.email, r.song, r.dietary, r.message].join(' ').toLowerCase();
+          return haystack.includes(searchQuery);
+        });
+      }
+
+      // Update count badge
+      document.getElementById('fullTableCount').textContent = rows.length + ' guests';
+
       // Sort
       rows.sort((a, b) => {
         let va = a[sortCol] || '', vb = b[sortCol] || '';
@@ -639,6 +761,14 @@
       if (subFilter === 'reception') rows = rows.filter(r => r.reception     === 'yes');
       if (subFilter === 'dietary')   rows = rows.filter(r => r.dietary && !skipDietary.includes(r.dietary.trim().toLowerCase()));
       if (subFilter === 'song')      rows = rows.filter(r => r.song && r.song.trim());
+
+      // Search
+      if (subSearchQuery) {
+        rows = rows.filter(r => {
+          const hay = [r.name, r.email, r.song, r.dietary].join(' ').toLowerCase();
+          return hay.includes(subSearchQuery);
+        });
+      }
 
       const configs = {
         all:     { label: 'Name & attendance status',   cols: ['Name', 'Status', 'Guests'],   render: r => [`<strong>${esc(r.name)}</strong>`, `<span class="badge badge--${r.attending}">${r.attending === 'yes' ? 'Attending' : 'Declined'}</span>`, r.attending === 'yes' ? (r.guests || '1') : '—'] },
