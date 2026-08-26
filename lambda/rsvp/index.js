@@ -32,7 +32,7 @@ const CORS = {
 /* ── Email helpers ─────────────────────────────────────────── */
 
 async function sendConfirmation(guest) {
-  const { name, email, guests, dietary, song, sealing, ring_ceremony, luncheon, reception,
+  const { name, email, guests, dietary, song, tier, sealing, ring_ceremony, luncheon, reception,
           sealing_count, ring_count, luncheon_count, reception_count } = guest;
   const firstName = name.split(' ')[0];
 
@@ -90,7 +90,7 @@ async function sendConfirmation(guest) {
         </p>
 
         <div style="text-align:center; margin:32px 0;">
-          <a href="https://afinitie.com/schedule.html"
+          <a href="https://afinitie.com/schedule?go=1&tier=${tier || 'full'}"
              style="display:inline-block; padding:14px 32px; background:#0c6870; color:#fff;
                     text-decoration:none; font-size:12px; letter-spacing:0.15em;
                     text-transform:uppercase; margin-bottom:16px;">
@@ -158,6 +158,45 @@ exports.handler = async (event) => {
   if (method === 'GET') {
     const params = event.queryStringParameters || {};
 
+    // Analytics endpoint (admin key required)
+    if (params.source === 'analytics') {
+      const key = event.headers?.['x-admin-key'] || params.key;
+      if (key !== ADMIN_KEY) {
+        return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
+      }
+      try {
+        const pvs = [], tss = [];
+        let lk;
+        do {
+          const res = await dynamo.send(new ScanCommand({
+            TableName: TABLE_NAME,
+            FilterExpression: '#t = :pv OR #t = :ts',
+            ExpressionAttributeNames:  { '#t': 'type' },
+            ExpressionAttributeValues: { ':pv': { S: 'pv' }, ':ts': { S: 'ts' } },
+            ExclusiveStartKey: lk,
+          }));
+          (res.Items || []).forEach(i => {
+            const u = unmarshall(i);
+            if (u.type === 'pv') pvs.push(u);
+            else                 tss.push(u);
+          });
+          lk = res.LastEvaluatedKey;
+        } while (lk);
+
+        const uniqueVisitors = new Set(pvs.map(i => i.sessionId)).size;
+        const totalViews     = pvs.length;
+        const totalSeconds   = tss.reduce((s, i) => s + (Number(i.seconds) || 0), 0);
+        const avgSeconds     = tss.length > 0 ? Math.round(totalSeconds / tss.length) : 0;
+        const pageMap = {};
+        pvs.forEach(i => { pageMap[i.page] = (pageMap[i.page] || 0) + 1; });
+
+        return { statusCode: 200, headers: CORS, body: JSON.stringify({ uniqueVisitors, totalViews, totalSeconds, avgSeconds, pageMap }) };
+      } catch (err) {
+        console.error('Analytics error:', err);
+        return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Analytics query failed' }) };
+      }
+    }
+
     // Public endpoint — returns only name + message for guestbook display
     if (params.source === 'messages') {
       try {
@@ -191,7 +230,7 @@ exports.handler = async (event) => {
     }
 
     try {
-      const items = [];
+      let items = [];
       let lastKey;
       do {
         const res = await dynamo.send(new ScanCommand({
@@ -202,6 +241,7 @@ exports.handler = async (event) => {
         lastKey = res.LastEvaluatedKey;
       } while (lastKey);
 
+      items = items.filter(i => i.type !== 'pv' && i.type !== 'ts');
       items.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ rsvps: items }) };
@@ -217,6 +257,123 @@ exports.handler = async (event) => {
     body = JSON.parse(event.body || '{}');
   } catch {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Invalid JSON' }) };
+  }
+
+  // Resend confirmation emails with updated auto-auth links (admin only)
+  if (body.source === 'resend') {
+    const key = event.headers?.['x-admin-key'] || body.adminKey;
+    if (key !== ADMIN_KEY) {
+      return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
+    }
+    let guests = [];
+    try {
+      let lk;
+      do {
+        const res = await dynamo.send(new ScanCommand({
+          TableName: TABLE_NAME,
+          FilterExpression: '#att = :yes',
+          ExpressionAttributeNames:  { '#att': 'attending' },
+          ExpressionAttributeValues: { ':yes': { S: 'yes' } },
+          ExclusiveStartKey: lk,
+        }));
+        guests.push(...(res.Items || []).map(i => unmarshall(i)));
+        lk = res.LastEvaluatedKey;
+      } while (lk);
+    } catch (err) {
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'DynamoDB scan failed' }) };
+    }
+
+    const withEmail = guests.filter(g => g.email && g.email.trim() && g.type !== 'pv' && g.type !== 'ts');
+    let sent = 0, failed = 0;
+
+    for (const g of withEmail) {
+      const firstName = (g.name || 'Friend').split(' ')[0];
+      const tier = g.tier || 'full';
+      const scheduleUrl = `https://afinitie.com/schedule?go=1&tier=${tier}`;
+      const siteUrl     = `https://afinitie.com?go=1&tier=${tier}`;
+
+      const html = `
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:560px;margin:0 auto;color:#2c1810;">
+          <div style="text-align:center;padding:40px 0 24px;">
+            <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8a7060;margin:0 0 12px;">Abbie &amp; Asante · September 15, 2026</p>
+            <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#0c6870;margin:0 0 8px;">A quick update 🤍</h1>
+            <div style="width:60px;height:1px;background:#c89020;margin:16px auto;"></div>
+          </div>
+          <div style="padding:0 32px 32px;">
+            <p style="font-size:16px;line-height:1.6;">Hi ${firstName},</p>
+            <p style="font-size:16px;line-height:1.6;color:#5a6a7a;">
+              We've updated our website links so you can visit <strong>without needing to enter a passcode</strong> — just click the button below and you'll go straight in!
+            </p>
+            <div style="text-align:center;margin:32px 0;">
+              <a href="${siteUrl}" style="display:inline-block;padding:14px 32px;background:#0c6870;color:#fff;text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">Visit Our Website</a>
+              <br>
+              <a href="${scheduleUrl}" style="display:inline-block;margin-top:12px;padding:10px 24px;border:1px solid #0c6870;color:#0c6870;text-decoration:none;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">View the Schedule</a>
+            </div>
+            <p style="font-size:14px;color:#8a7060;text-align:center;margin:0;">
+              With love,<br>
+              <span style="font-family:Georgia,serif;font-size:18px;color:#0c6870;">Abbie &amp; Asante</span>
+            </p>
+          </div>
+          <div style="border-top:1px solid #e8e0d4;padding:20px 32px;text-align:center;">
+            <p style="font-size:11px;color:#b0a090;letter-spacing:0.08em;margin:0;">September 15, 2026 · Lindon Utah Temple &amp; Walker Farms</p>
+          </div>
+        </div>`;
+
+      try {
+        await ses.send(new SendEmailCommand({
+          Source: `Abbie & Asante <${FROM_EMAIL}>`,
+          Destination: { ToAddresses: [g.email] },
+          Message: {
+            Subject: { Data: 'Your wedding website link — Abbie & Asante', Charset: 'UTF-8' },
+            Body: {
+              Html: { Data: html, Charset: 'UTF-8' },
+              Text: { Data: `Hi ${firstName},\n\nWe've updated our website so you can visit without a passcode. Click here to go straight in:\n\n${siteUrl}\n\nWith love,\nAbbie & Asante`, Charset: 'UTF-8' },
+            },
+          },
+        }));
+        sent++;
+      } catch (err) {
+        console.error(`Resend failed for ${g.email}:`, err.message);
+        failed++;
+      }
+    }
+
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ sent, failed, total: withEmail.length }) };
+  }
+
+  // Analytics tracking — fire-and-forget, no auth
+  if (body.source === 'pageview') {
+    try {
+      await dynamo.send(new PutItemCommand({
+        TableName: TABLE_NAME,
+        Item: {
+          id:        { S: randomUUID() },
+          type:      { S: 'pv' },
+          sessionId: { S: (body.sessionId || 'unknown').slice(0, 64) },
+          page:      { S: (body.page || '/').slice(0, 128) },
+          referrer:  { S: (body.referrer || 'direct').slice(0, 256) },
+          timestamp: { S: new Date().toISOString() },
+        },
+      }));
+    } catch (_) {}
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+  }
+
+  if (body.source === 'timespent') {
+    try {
+      await dynamo.send(new PutItemCommand({
+        TableName: TABLE_NAME,
+        Item: {
+          id:        { S: randomUUID() },
+          type:      { S: 'ts' },
+          sessionId: { S: (body.sessionId || 'unknown').slice(0, 64) },
+          page:      { S: (body.page || '/').slice(0, 128) },
+          seconds:   { N: String(Math.min(parseInt(body.seconds) || 0, 3600)) },
+          timestamp: { S: new Date().toISOString() },
+        },
+      }));
+    } catch (_) {}
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
   }
 
   const { name, email, attending, guests, dietary, song, message, timestamp,
@@ -263,7 +420,7 @@ exports.handler = async (event) => {
   // Send confirmation email to guest (non-blocking — don't fail the RSVP if email fails)
   if (attending === 'yes') {
     const [result] = await Promise.allSettled([sendConfirmation({
-      name, email, guests, dietary, song,
+      name, email, guests, dietary, song, tier,
       sealing, ring_ceremony, luncheon, reception,
       sealing_count, ring_count, luncheon_count, reception_count,
     })]);

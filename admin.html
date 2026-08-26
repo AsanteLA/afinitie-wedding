@@ -223,7 +223,10 @@
         <span class="eyebrow">Afinitie Wedding</span>
         <h1>RSVP Dashboard</h1>
       </div>
-      <button class="admin-refresh" id="refreshBtn">↻ Refresh</button>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button class="admin-refresh" id="resendBtn">✉ Resend Links</button>
+        <button class="admin-refresh" id="refreshBtn">↻ Refresh</button>
+      </div>
     </div>
 
     <!-- Stats: overall -->
@@ -302,6 +305,55 @@
         </thead>
         <tbody id="rsvpBody"></tbody>
       </table>
+    </div>
+
+    <!-- Stats for Nerds -->
+    <div style="margin-top:var(--space-xl);" id="nerdsSection">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <span class="eyebrow" style="margin-bottom:0;">Stats for Nerds</span>
+          <p style="color:var(--color-muted);font-size:0.85rem;margin:0;">Live site analytics — anonymous, no cookies</p>
+        </div>
+        <button class="admin-refresh" id="refreshNerdsBtn">↻ Refresh</button>
+      </div>
+
+      <div style="background:#0d1117;border-radius:var(--radius);border:1px solid #30363d;overflow:hidden;">
+        <!-- Terminal chrome -->
+        <div style="padding:0.55rem 1rem;background:#161b22;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:0.45rem;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+          <span style="font-size:0.7rem;color:#8b949e;margin-left:0.5rem;font-family:monospace;">afinitie.com — analytics</span>
+        </div>
+
+        <!-- Stat tiles -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#30363d;">
+          <div style="background:#0d1117;padding:1.4rem;text-align:center;">
+            <div id="nerd-visitors" style="font-family:monospace;font-size:2rem;color:#58a6ff;font-weight:300;line-height:1;">—</div>
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-top:0.4rem;">Unique Visitors</div>
+          </div>
+          <div style="background:#0d1117;padding:1.4rem;text-align:center;">
+            <div id="nerd-views" style="font-family:monospace;font-size:2rem;color:#3fb950;font-weight:300;line-height:1;">—</div>
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-top:0.4rem;">Total Page Views</div>
+          </div>
+          <div style="background:#0d1117;padding:1.4rem;text-align:center;">
+            <div id="nerd-total-time" style="font-family:monospace;font-size:2rem;color:#d2a8ff;font-weight:300;line-height:1;">—</div>
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-top:0.4rem;">Total Time on Site</div>
+          </div>
+          <div style="background:#0d1117;padding:1.4rem;text-align:center;">
+            <div id="nerd-avg-time" style="font-family:monospace;font-size:2rem;color:#ffa657;font-weight:300;line-height:1;">—</div>
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-top:0.4rem;">Avg Time / Page</div>
+          </div>
+        </div>
+
+        <!-- Top pages -->
+        <div style="padding:1.25rem 1.5rem;">
+          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#8b949e;margin-bottom:0.75rem;">Top Pages</div>
+          <div id="nerd-pages" style="font-family:monospace;font-size:0.82rem;color:#e6edf3;">
+            <span style="color:#484f58;">Loading...</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Sub-table: quick view -->
@@ -390,6 +442,7 @@
       gate.style.display = 'none';
       wrap.style.display = 'block';
       fetchRsvps(adminKey);
+      fetchAnalytics(adminKey);
     }
 
     // ── Fetch ─────────────────────────────────────────────────────
@@ -429,6 +482,25 @@
     }
 
     document.getElementById('refreshBtn').addEventListener('click', () => fetchRsvps(adminKey));
+
+    document.getElementById('resendBtn').addEventListener('click', async function () {
+      if (!confirm('Send updated website links to all attending guests with emails?')) return;
+      this.disabled = true;
+      this.textContent = '✉ Sending…';
+      try {
+        const res  = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+          body: JSON.stringify({ source: 'resend', adminKey }),
+        });
+        const data = await res.json();
+        alert(`Done! Sent: ${data.sent}, Failed: ${data.failed}, Total: ${data.total}`);
+      } catch (_) {
+        alert('Something went wrong — check the console.');
+      }
+      this.disabled = false;
+      this.textContent = '✉ Resend Links';
+    });
 
     // ── Stats ─────────────────────────────────────────────────────
     function renderStats() {
@@ -628,6 +700,56 @@
       `);
       win.document.close();
     }
+
+    // ── Stats for Nerds ───────────────────────────────────────
+    function fmtTime(secs) {
+      if (!secs || secs < 1) return '0s';
+      if (secs < 60) return secs + 's';
+      var m = Math.floor(secs / 60), s = secs % 60;
+      if (m < 60) return m + 'm' + (s > 0 ? ' ' + s + 's' : '');
+      var h = Math.floor(m / 60); m = m % 60;
+      return h + 'h' + (m > 0 ? ' ' + m + 'm' : '');
+    }
+
+    async function fetchAnalytics(key) {
+      if (IS_LOCAL) {
+        renderAnalytics({ uniqueVisitors: 42, totalViews: 187, totalSeconds: 9420, avgSeconds: 73,
+          pageMap: { '/': 62, '/gallery': 38, '/schedule': 29, '/rsvp': 24, '/registry': 18, '/our-story': 16 } });
+        return;
+      }
+      try {
+        const res = await fetch(API + '?source=analytics', { headers: { 'x-admin-key': key } });
+        if (!res.ok) { document.getElementById('nerd-pages').innerHTML = '<span style="color:#f85149;">Failed to load analytics</span>'; return; }
+        renderAnalytics(await res.json());
+      } catch (_) {
+        document.getElementById('nerd-pages').innerHTML = '<span style="color:#f85149;">Could not reach API</span>';
+      }
+    }
+
+    function renderAnalytics(data) {
+      document.getElementById('nerd-visitors').textContent   = (data.uniqueVisitors || 0).toLocaleString();
+      document.getElementById('nerd-views').textContent      = (data.totalViews    || 0).toLocaleString();
+      document.getElementById('nerd-total-time').textContent = fmtTime(data.totalSeconds || 0);
+      document.getElementById('nerd-avg-time').textContent   = fmtTime(data.avgSeconds   || 0);
+
+      const pages = Object.entries(data.pageMap || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
+      if (!pages.length) {
+        document.getElementById('nerd-pages').innerHTML = '<span style="color:#484f58;">No data yet — visits will appear here once guests start browsing</span>';
+        return;
+      }
+      const max = pages[0][1];
+      document.getElementById('nerd-pages').innerHTML = pages.map(([p, count]) => {
+        const barW = Math.round((count / max) * 120);
+        const label = p.replace(/^\//, '') || 'home';
+        return `<div style="display:flex;align-items:center;margin-bottom:0.5rem;gap:8px;">` +
+          `<span style="color:#58a6ff;width:110px;flex-shrink:0;">/${label}</span>` +
+          `<span style="display:inline-block;width:${barW}px;height:5px;background:#1f6feb;border-radius:3px;flex-shrink:0;"></span>` +
+          `<span style="color:#8b949e;">${count}</span>` +
+          `</div>`;
+      }).join('');
+    }
+
+    document.getElementById('refreshNerdsBtn').addEventListener('click', () => fetchAnalytics(adminKey));
 
     document.getElementById('downloadFullBtn').addEventListener('click', () => printTable('rsvpTable', 'Full RSVP List'));
     document.getElementById('downloadSubBtn').addEventListener('click',  () => printTable('subTable',  document.getElementById('subTableLabel').textContent));

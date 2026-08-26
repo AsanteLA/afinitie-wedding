@@ -66,10 +66,10 @@ function buildReminderEmail(guest) {
     </table>
     <p style="font-size:15px;line-height:1.6;color:#5a6a7a;">
       Full details, directions, and FAQs are on our website at
-      <a href="https://afinitie.com/schedule" style="color:#0c6870;">afinitie.com/schedule</a>.
+      <a href="https://afinitie.com/schedule?go=1&tier=${guest.tier || 'full'}" style="color:#0c6870;">afinitie.com/schedule</a>.
     </p>
     <div style="text-align:center;margin:32px 0;">
-      <a href="https://afinitie.com" style="display:inline-block;padding:14px 32px;background:#0c6870;color:#fff;text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;">
+      <a href="https://afinitie.com?go=1&tier=${guest.tier || 'full'}" style="display:inline-block;padding:14px 32px;background:#0c6870;color:#fff;text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;">
         Visit Our Website
       </a>
     </div>
@@ -119,7 +119,7 @@ exports.handler = async () => {
           Subject: { Data: 'See you next week! — Abbie & Asante, Sept 15', Charset: 'UTF-8' },
           Body: {
             Html: { Data: buildReminderEmail(guest), Charset: 'UTF-8' },
-            Text: { Data: `Hi ${(guest.name||'').split(' ')[0]},\n\nWe are one week away and can't wait to celebrate with you!\n\nFull details at https://afinitie.com/schedule\n\nWith love,\nAbbie & Asante`, Charset: 'UTF-8' },
+            Text: { Data: `Hi ${(guest.name||'').split(' ')[0]},\n\nWe are one week away and can't wait to celebrate with you!\n\nFull details at https://afinitie.com/schedule?go=1&tier=${guest.tier || 'full'}\n\nWith love,\nAbbie & Asante`, Charset: 'UTF-8' },
           },
         },
       }));

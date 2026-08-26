@@ -43,7 +43,18 @@
     }
   }
 
-  /* ── 2. Already authenticated ── */
+  /* ── 2. Check for email magic link (?go=1) ── */
+  if (params.get('go') === '1') {
+    localStorage.setItem('afinitie_auth', '1');
+    var goTier = params.get('tier');
+    if (goTier) localStorage.setItem('afinitie_tier', goTier);
+    params.delete('go');
+    params.delete('tier');
+    var goClean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    history.replaceState(null, '', goClean);
+  }
+
+  /* ── 3. Already authenticated ── */
   if (localStorage.getItem('afinitie_auth') === '1') return;
 
   /* ── 3. Show password gate ── */
