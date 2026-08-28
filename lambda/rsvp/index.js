@@ -11,7 +11,7 @@
    - SES (sends confirmation + notification emails)
    ============================================================ */
 
-const { DynamoDBClient, PutItemCommand, ScanCommand } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBClient, PutItemCommand, ScanCommand, DeleteItemCommand, UpdateItemCommand } = require('@aws-sdk/client-dynamodb');
 const { unmarshall } = require('@aws-sdk/util-dynamodb');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { randomUUID } = require('crypto');
@@ -339,6 +339,76 @@ exports.handler = async (event) => {
     }
 
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ sent, failed, total: withEmail.length }) };
+  }
+
+  // Delete an RSVP (admin only)
+  if (body.source === 'delete') {
+    const key = event.headers?.['x-admin-key'] || body.adminKey;
+    if (key !== ADMIN_KEY) {
+      return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
+    }
+    if (!body.id) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing id' }) };
+    }
+    try {
+      await dynamo.send(new DeleteItemCommand({
+        TableName: TABLE_NAME,
+        Key: { id: { S: body.id } },
+      }));
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+    } catch (err) {
+      console.error('Delete error:', err);
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Delete failed' }) };
+    }
+  }
+
+  // Update an RSVP (admin only)
+  if (body.source === 'update') {
+    const key = event.headers?.['x-admin-key'] || body.adminKey;
+    if (key !== ADMIN_KEY) {
+      return { statusCode: 401, headers: CORS, body: JSON.stringify({ error: 'Unauthorized' }) };
+    }
+    if (!body.id) {
+      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Missing id' }) };
+    }
+    const { id, name, email, attending, tier, sealing, ring_ceremony, luncheon, reception,
+            guests, sealing_count, ring_count, luncheon_count, reception_count,
+            dietary, song, message } = body;
+    try {
+      await dynamo.send(new UpdateItemCommand({
+        TableName: TABLE_NAME,
+        Key: { id: { S: id } },
+        UpdateExpression: [
+          'SET #n = :n, #e = :e, attending = :attending, tier = :tier',
+          'sealing = :sealing, ring_ceremony = :ring, luncheon = :luncheon, reception = :reception',
+          'guests = :guests, sealing_count = :sc, ring_count = :rc, luncheon_count = :lc, reception_count = :rec_c',
+          'dietary = :dietary, song = :song, #msg = :msg',
+        ].join(', '),
+        ExpressionAttributeNames: { '#n': 'name', '#e': 'email', '#msg': 'message' },
+        ExpressionAttributeValues: {
+          ':n':        { S: name          || '' },
+          ':e':        { S: email         || '' },
+          ':attending':{ S: attending     || 'yes' },
+          ':tier':     { S: tier          || 'full' },
+          ':sealing':  { S: sealing       || 'na' },
+          ':ring':     { S: ring_ceremony || 'na' },
+          ':luncheon': { S: luncheon      || 'na' },
+          ':reception':{ S: reception     || 'na' },
+          ':guests':   { S: String(guests          || '1') },
+          ':sc':       { S: String(sealing_count   || '0') },
+          ':rc':       { S: String(ring_count      || '0') },
+          ':lc':       { S: String(luncheon_count  || '0') },
+          ':rec_c':    { S: String(reception_count || '0') },
+          ':dietary':  { S: dietary || '' },
+          ':song':     { S: song    || '' },
+          ':msg':      { S: message || '' },
+        },
+      }));
+      return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true }) };
+    } catch (err) {
+      console.error('Update error:', err);
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Update failed' }) };
+    }
   }
 
   // Analytics tracking — fire-and-forget, no auth
