@@ -144,6 +144,35 @@ async function sendConfirmation(guest) {
   }));
 }
 
+function buildResendHtml(firstName, siteUrl, scheduleUrl) {
+  return `
+    <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:560px;margin:0 auto;color:#2c1810;">
+      <div style="text-align:center;padding:40px 0 24px;">
+        <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8a7060;margin:0 0 12px;">Abbie &amp; Asante · September 15, 2026</p>
+        <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#0c6870;margin:0 0 8px;">A quick update 🤍</h1>
+        <div style="width:60px;height:1px;background:#c89020;margin:16px auto;"></div>
+      </div>
+      <div style="padding:0 32px 32px;">
+        <p style="font-size:16px;line-height:1.6;">Hi ${firstName},</p>
+        <p style="font-size:16px;line-height:1.6;color:#5a6a7a;">
+          We've updated our website links so you can visit <strong>without needing to enter a passcode</strong> — just click the button below and you'll go straight in!
+        </p>
+        <div style="text-align:center;margin:32px 0;">
+          <a href="${siteUrl}" style="display:inline-block;padding:14px 32px;background:#0c6870;color:#fff;text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">Visit Our Website</a>
+          <br>
+          <a href="${scheduleUrl}" style="display:inline-block;margin-top:12px;padding:10px 24px;border:1px solid #0c6870;color:#0c6870;text-decoration:none;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">View the Schedule</a>
+        </div>
+        <p style="font-size:14px;color:#8a7060;text-align:center;margin:0;">
+          With love,<br>
+          <span style="font-family:Georgia,serif;font-size:18px;color:#0c6870;">Abbie &amp; Asante</span>
+        </p>
+      </div>
+      <div style="border-top:1px solid #e8e0d4;padding:20px 32px;text-align:center;">
+        <p style="font-size:11px;color:#b0a090;letter-spacing:0.08em;margin:0;">September 15, 2026 · Lindon Utah Temple &amp; Walker Farms</p>
+      </div>
+    </div>`;
+}
+
 /* ── Handler ───────────────────────────────────────────────── */
 
 exports.handler = async (event) => {
@@ -283,41 +312,44 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'DynamoDB scan failed' }) };
     }
 
+    // Test mode — send to one address only
+    if (body.testMode) {
+      if (!body.testEmail) {
+        return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'testEmail required in test mode' }) };
+      }
+      const tier        = 'full';
+      const firstName   = 'Test Guest';
+      const scheduleUrl = `https://afinitie.com/schedule?go=1&tier=${tier}`;
+      const siteUrl     = `https://afinitie.com?go=1&tier=${tier}`;
+      const html = buildResendHtml(firstName, siteUrl, scheduleUrl);
+      try {
+        await ses.send(new SendEmailCommand({
+          Source: `Abbie & Asante <${FROM_EMAIL}>`,
+          Destination: { ToAddresses: [body.testEmail] },
+          Message: {
+            Subject: { Data: '[TEST] Your wedding website link — Abbie & Asante', Charset: 'UTF-8' },
+            Body: {
+              Html: { Data: html, Charset: 'UTF-8' },
+              Text: { Data: `[TEST EMAIL]\n\nHi ${firstName},\n\nThis is a test of the resend email.\n\n${siteUrl}\n\nWith love,\nAbbie & Asante`, Charset: 'UTF-8' },
+            },
+          },
+        }));
+        return { statusCode: 200, headers: CORS, body: JSON.stringify({ sent: 1, failed: 0, total: 1, testMode: true }) };
+      } catch (err) {
+        console.error('Test send failed:', err.message);
+        return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Test send failed: ' + err.message }) };
+      }
+    }
+
     const withEmail = guests.filter(g => g.email && g.email.trim() && g.type !== 'pv' && g.type !== 'ts');
     let sent = 0, failed = 0;
 
     for (const g of withEmail) {
-      const firstName = (g.name || 'Friend').split(' ')[0];
-      const tier = g.tier || 'full';
+      const firstName   = (g.name || 'Friend').split(' ')[0];
+      const tier        = g.tier || 'full';
       const scheduleUrl = `https://afinitie.com/schedule?go=1&tier=${tier}`;
       const siteUrl     = `https://afinitie.com?go=1&tier=${tier}`;
-
-      const html = `
-        <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:560px;margin:0 auto;color:#2c1810;">
-          <div style="text-align:center;padding:40px 0 24px;">
-            <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#8a7060;margin:0 0 12px;">Abbie &amp; Asante · September 15, 2026</p>
-            <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:300;color:#0c6870;margin:0 0 8px;">A quick update 🤍</h1>
-            <div style="width:60px;height:1px;background:#c89020;margin:16px auto;"></div>
-          </div>
-          <div style="padding:0 32px 32px;">
-            <p style="font-size:16px;line-height:1.6;">Hi ${firstName},</p>
-            <p style="font-size:16px;line-height:1.6;color:#5a6a7a;">
-              We've updated our website links so you can visit <strong>without needing to enter a passcode</strong> — just click the button below and you'll go straight in!
-            </p>
-            <div style="text-align:center;margin:32px 0;">
-              <a href="${siteUrl}" style="display:inline-block;padding:14px 32px;background:#0c6870;color:#fff;text-decoration:none;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">Visit Our Website</a>
-              <br>
-              <a href="${scheduleUrl}" style="display:inline-block;margin-top:12px;padding:10px 24px;border:1px solid #0c6870;color:#0c6870;text-decoration:none;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">View the Schedule</a>
-            </div>
-            <p style="font-size:14px;color:#8a7060;text-align:center;margin:0;">
-              With love,<br>
-              <span style="font-family:Georgia,serif;font-size:18px;color:#0c6870;">Abbie &amp; Asante</span>
-            </p>
-          </div>
-          <div style="border-top:1px solid #e8e0d4;padding:20px 32px;text-align:center;">
-            <p style="font-size:11px;color:#b0a090;letter-spacing:0.08em;margin:0;">September 15, 2026 · Lindon Utah Temple &amp; Walker Farms</p>
-          </div>
-        </div>`;
+      const html        = buildResendHtml(firstName, siteUrl, scheduleUrl);
 
       try {
         await ses.send(new SendEmailCommand({
