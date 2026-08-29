@@ -134,7 +134,7 @@
 
     function applyContent() {
       textEl.innerHTML = '“' + escapeHtml(msg.message) + '”';
-      author.textContent = '— ' + escapeHtml(msg.name);
+      author.innerHTML = '— ' + escapeHtml(msg.name);
       updateDots(index);
     }
 
