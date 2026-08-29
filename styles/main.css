@@ -91,7 +91,7 @@ p:last-child { margin-bottom: 0; }
 }
 
 .section {
-  padding: var(--space-xl) 0;
+  padding: var(--space-lg) 0;
 }
 
 .section--alt {
