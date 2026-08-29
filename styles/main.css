@@ -542,7 +542,7 @@ body.home .nav:not(.scrolled) .nav__hamburger.open span {
 
 /* ---------- Page Hero (inner pages) ---------- */
 .page-hero {
-  padding: calc(var(--space-xl) + 80px) var(--space-md) var(--space-lg);
+  padding: calc(var(--space-lg) + 80px) var(--space-md) var(--space-md);
   text-align: center;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
