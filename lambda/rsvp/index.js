@@ -453,7 +453,7 @@ exports.handler = async (event) => {
     const SITE_URL   = 'https://afinitie.com/?go=1';
     const PHOTO_1    = 'https://afinitie.com/images/thank-you/thankyou-1.JPG';
     const PHOTO_2    = 'https://afinitie.com/images/thank-you/thankyou-2.JPG';
-    const LOGO_URL   = 'https://afinitie.com/images/logo.png';
+    const LOGO_URL   = 'https://afinitie.com/images/logo-gold.png';
 
     function buildThankYouHtml(firstName) {
       return `<!DOCTYPE html>
@@ -464,7 +464,7 @@ exports.handler = async (event) => {
 
   <!-- Header -->
   <div style="background:#1b3a6b;padding:24px 32px 20px;text-align:center;">
-    <img src="${LOGO_URL}" alt="Afinitie" width="90" style="display:block;margin:0 auto;filter:brightness(0) invert(1);">
+    <img src="${LOGO_URL}" alt="Afinitie" width="90" style="display:block;margin:0 auto;">
     <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:400;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin:6px 0 0;">Abbie &amp; Asante</p>
   </div>
 
@@ -502,7 +502,7 @@ exports.handler = async (event) => {
 
   <!-- Footer -->
   <div style="background:#1b3a6b;padding:16px 32px 20px;text-align:center;">
-    <img src="${LOGO_URL}" alt="Afinitie" width="52" style="display:block;margin:0 auto;filter:brightness(0) invert(1);opacity:0.85;">
+    <img src="${LOGO_URL}" alt="Afinitie" width="52" style="display:block;margin:0 auto;opacity:0.9;">
     <p style="font-size:10px;font-weight:400;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:8px 0 0;">September 15, 2026 &middot; Lindon, Utah</p>
   </div>
 
