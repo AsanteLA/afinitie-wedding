@@ -878,7 +878,7 @@
       status.style.display = 'none';
 
       try {
-        const res  = await fetch(API_URL, {
+        const res  = await fetch(API, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
           body:    JSON.stringify({ source: 'thankyou', testMode, testEmail }),
