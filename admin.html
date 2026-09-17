@@ -421,6 +421,10 @@
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
           Resend Links
         </button>
+        <button class="admin-refresh" id="thankYouBtn" style="display:inline-flex;align-items:center;gap:0.4rem;background:var(--color-gold);color:#fff;border-color:var(--color-gold);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Send Thank You
+        </button>
         <button class="admin-refresh" id="refreshBtn" style="display:inline-flex;align-items:center;gap:0.4rem;">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Refresh
@@ -631,6 +635,41 @@
     </div>
   </div>
 
+  <!-- ── Thank You modal ── -->
+  <div class="modal-overlay hidden" id="thankYouModal">
+    <div class="modal-box" style="max-width:480px;">
+      <h3 style="color:var(--color-gold);">Send Thank You Emails</h3>
+      <p style="font-size:0.88rem;color:var(--color-muted);margin:0.5rem 0 1.25rem;line-height:1.6;">
+        Sends the thank you email to all attending guests. Use test mode first to verify it looks right in your inbox.
+      </p>
+
+      <div class="modal-field" style="margin-bottom:1rem;">
+        <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;font-weight:500;cursor:pointer;">
+          <div class="toggle-switch">
+            <input type="checkbox" id="tyTestToggle">
+            <span class="toggle-slider"></span>
+          </div>
+          Test mode
+        </label>
+      </div>
+
+      <div id="tyTestEmailWrap" style="display:none;" class="modal-field">
+        <label>Send test to</label>
+        <input type="email" id="tyTestEmail" placeholder="your@email.com" style="width:100%;box-sizing:border-box;">
+      </div>
+
+      <div style="background:#fdf6e3;border:1px solid #f0d070;border-radius:var(--radius);padding:0.85rem 1rem;font-size:0.8rem;color:#7a6010;margin:1rem 0 1.5rem;line-height:1.6;">
+        This will send a personal thank you with your wedding photos to every attending guest. Only send once.
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="thankYouCancel">Cancel</button>
+        <button class="btn-modal-save" id="thankYouConfirm" style="background:var(--color-gold);border-color:var(--color-gold);">Send Thank You</button>
+      </div>
+      <p id="tyStatus" style="display:none;margin-top:1rem;font-size:0.85rem;text-align:center;"></p>
+    </div>
+  </div>
+
   <!-- ── Edit modal ── -->
   <div class="modal-overlay hidden" id="editModal">
     <div class="modal-box">
@@ -804,6 +843,64 @@
     }
     wireToggle('fullTableHeader', 'fullTableBody');
     wireToggle('subTableHeader',  'subTableBody');
+
+    // ── Thank You modal ───────────────────────────────────────────
+    document.getElementById('thankYouBtn').addEventListener('click', function () {
+      document.getElementById('tyTestToggle').checked = false;
+      document.getElementById('tyTestEmailWrap').style.display = 'none';
+      document.getElementById('tyTestEmail').value = '';
+      document.getElementById('tyStatus').style.display = 'none';
+      document.getElementById('thankYouConfirm').textContent = 'Send Thank You';
+      document.getElementById('thankYouConfirm').disabled = false;
+      document.getElementById('thankYouModal').classList.remove('hidden');
+    });
+
+    document.getElementById('thankYouCancel').addEventListener('click', function () {
+      document.getElementById('thankYouModal').classList.add('hidden');
+    });
+
+    document.getElementById('tyTestToggle').addEventListener('change', function () {
+      document.getElementById('tyTestEmailWrap').style.display = this.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('thankYouConfirm').addEventListener('click', async function () {
+      const testMode  = document.getElementById('tyTestToggle').checked;
+      const testEmail = document.getElementById('tyTestEmail').value.trim();
+      if (testMode && !testEmail) {
+        alert('Please enter a test email address.');
+        return;
+      }
+
+      const btn = document.getElementById('thankYouConfirm');
+      const status = document.getElementById('tyStatus');
+      btn.disabled = true;
+      btn.textContent = testMode ? 'Sending test…' : 'Sending…';
+      status.style.display = 'none';
+
+      try {
+        const res  = await fetch(API_URL, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+          body:    JSON.stringify({ source: 'thankyou', testMode, testEmail }),
+        });
+        const data = await res.json();
+        status.style.display = 'block';
+        if (testMode) {
+          status.style.color = 'var(--color-gold)';
+          status.textContent = `Test sent to ${testEmail}. Check your inbox!`;
+        } else {
+          status.style.color = 'var(--color-accent)';
+          status.textContent = `Done! Sent: ${data.sent}, Failed: ${data.failed}, Total: ${data.total}`;
+        }
+        btn.textContent = 'Sent!';
+      } catch (e) {
+        status.style.display = 'block';
+        status.style.color = 'red';
+        status.textContent = 'Error: ' + e.message;
+        btn.disabled = false;
+        btn.textContent = 'Send Thank You';
+      }
+    });
 
     // ── Search inputs ─────────────────────────────────────────────
     document.getElementById('fullSearch').addEventListener('input', function () {

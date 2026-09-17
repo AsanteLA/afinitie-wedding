@@ -443,6 +443,128 @@ exports.handler = async (event) => {
     }
   }
 
+  // Send thank-you emails to all attending guests (admin only)
+  if (body.source === 'thankyou') {
+    const key = event.headers?.['x-admin-key'] || body.adminKey;
+    if (key !== ADMIN_KEY) {
+      return { statusCode: 403, headers: CORS, body: JSON.stringify({ error: 'Forbidden' }) };
+    }
+
+    const SITE_URL   = 'https://afinitie.com/?go=1';
+    const PHOTO_1    = 'https://afinitie.com/images/thank-you/thankyou-1.JPG';
+    const PHOTO_2    = 'https://afinitie.com/images/thank-you/thankyou-2.JPG';
+    const LOGO_URL   = 'https://afinitie.com/images/logo.png';
+
+    function buildThankYouHtml(firstName) {
+      return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thank You — Abbie &amp; Asante</title></head>
+<body style="margin:0;padding:20px 0;background:#f0ebe3;font-family:'Helvetica Neue',Arial,sans-serif;">
+<div style="max-width:560px;margin:0 auto;background:#faf8f4;border-radius:4px;overflow:hidden;">
+
+  <!-- Header -->
+  <div style="background:#1b3a6b;padding:24px 32px 20px;text-align:center;">
+    <img src="${LOGO_URL}" alt="Afinitie" width="90" style="display:block;margin:0 auto;filter:brightness(0) invert(1);">
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:400;letter-spacing:0.35em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin:6px 0 0;">Abbie &amp; Asante</p>
+  </div>
+
+  <!-- Body -->
+  <div style="padding:40px 40px 32px;text-align:center;">
+    <div style="width:48px;height:1px;background:#d4981a;margin:0 auto 28px;"></div>
+    <p style="font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:#d4981a;margin:0 0 12px;">September 15, 2026</p>
+    <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:40px;font-weight:300;color:#1b3a6b;margin:0 0 28px;line-height:1.15;">Thank You</h1>
+
+    <p style="font-size:15px;font-weight:300;line-height:1.85;color:#3d3d3a;margin:0 0 14px;">Hi ${firstName},</p>
+    <p style="font-size:15px;font-weight:300;line-height:1.85;color:#3d3d3a;margin:0 0 14px;">Thank you for coming and spending this special day with us. We appreciate all the kind words and all the generous gifts!</p>
+    <p style="font-size:15px;font-weight:300;line-height:1.85;color:#3d3d3a;margin:0 0 28px;">We love you so much!</p>
+
+    <!-- Photos -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+      <tr>
+        <td width="49%" style="padding-right:4px;">
+          <img src="${PHOTO_1}" alt="Abbie and Asante" width="100%" style="display:block;border-radius:3px;">
+        </td>
+        <td width="2%"></td>
+        <td width="49%" style="padding-left:4px;">
+          <img src="${PHOTO_2}" alt="Abbie and Asante" width="100%" style="display:block;border-radius:3px;">
+        </td>
+      </tr>
+    </table>
+
+    <p style="font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:300;font-style:italic;color:#1b3a6b;margin:0 0 0;line-height:1.55;">With immense love and gratitude,<br>Abbie &amp; Asante</p>
+
+    <!-- Divider + site note -->
+    <div style="border-top:1px solid #e8e2d8;margin:32px 0 0;padding-top:28px;">
+      <p style="font-size:13px;color:#6b7a8d;line-height:1.75;margin:0 0 20px;">This website will always be live — come back anytime to revisit the memories, browse the gallery, and read the guestbook.</p>
+      <a href="${SITE_URL}" style="display:inline-block;background:#1b3a6b;color:#ffffff;text-decoration:none;font-size:10px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;padding:14px 40px;">Visit the site &rarr;</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="background:#1b3a6b;padding:16px 32px 20px;text-align:center;">
+    <img src="${LOGO_URL}" alt="Afinitie" width="52" style="display:block;margin:0 auto;filter:brightness(0) invert(1);opacity:0.85;">
+    <p style="font-size:10px;font-weight:400;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:8px 0 0;">September 15, 2026 &middot; Lindon, Utah</p>
+  </div>
+
+</div>
+</body></html>`;
+    }
+
+    // Scan all attending guests
+    const scanRes = await dynamo.send(new ScanCommand({
+      TableName: TABLE_NAME,
+      FilterExpression: 'attending = :yes AND #t <> :pv',
+      ExpressionAttributeNames:  { '#t': 'type' },
+      ExpressionAttributeValues: { ':yes': { S: 'yes' }, ':pv': { S: 'pv' } },
+    }));
+    const guests = (scanRes.Items || []).map(i => unmarshall(i)).filter(r => r.email);
+
+    const testMode  = body.testMode === true;
+    const testEmail = body.testEmail || '';
+
+    let sent = 0, failed = 0;
+
+    if (testMode) {
+      // Send one test email to the provided address
+      const html = buildThankYouHtml('Test Guest');
+      try {
+        await ses.send(new SendEmailCommand({
+          Source:      FROM_EMAIL,
+          Destination: { ToAddresses: [testEmail] },
+          Message: {
+            Subject: { Data: '[TEST] Thank You — Abbie & Asante' },
+            Body:    { Html: { Data: html } },
+          },
+        }));
+        sent = 1;
+      } catch (e) {
+        console.error('Test send failed:', e);
+        failed = 1;
+      }
+    } else {
+      for (const guest of guests) {
+        const firstName = (guest.name || 'Friend').split(' ')[0];
+        const html = buildThankYouHtml(firstName);
+        try {
+          await ses.send(new SendEmailCommand({
+            Source:      FROM_EMAIL,
+            Destination: { ToAddresses: [guest.email] },
+            Message: {
+              Subject: { Data: 'Thank You — Abbie & Asante' },
+              Body:    { Html: { Data: html } },
+            },
+          }));
+          sent++;
+        } catch (e) {
+          console.error(`Failed for ${guest.email}:`, e);
+          failed++;
+        }
+      }
+    }
+
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ ok: true, sent, failed, total: guests.length }) };
+  }
+
   // Analytics tracking — fire-and-forget, no auth
   if (body.source === 'pageview') {
     try {
