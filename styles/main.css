@@ -92,6 +92,7 @@ p:last-child { margin-bottom: 0; }
 
 /* RSVP hidden post-wedding */
 a[href="rsvp.html"], a[href*="rsvp.html"] { display: none !important; }
+li:has(> a[href="rsvp.html"]) { display: none !important; }
 
 .section {
   padding: var(--space-lg) 0;
